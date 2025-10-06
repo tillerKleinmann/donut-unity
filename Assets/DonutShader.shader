@@ -46,6 +46,9 @@ Shader "Custom/DonutShader"
                 OUT.uv = TRANSFORM_TEX(IN.uv, _BaseMap);
                 return OUT;
             }
+
+            uniform float2 position;
+            uniform float2 direction;
             
             static const float  Pi = 3.14159;
             static const float   R = 2;
@@ -68,17 +71,26 @@ Shader "Custom/DonutShader"
 
             float confun( float2 p )
             {
-                return cos( p.y );
+                // return 0;
+                // return cos(p.x) / 4;
+                // return cos(p.x)*cos(p.y) / 4;
+                return ( (1-cos(p.x))*(1-cos(p.y)) - 2 ) / 8;
             }
 
             float2 confun_d( float2 p )
             {
-                return float2( 0, -sin( p.y ) );
+                // return float2( 0, 0 );
+                // return float2( -sin(p.x) / 4, 0 );
+                // return -float2( sin(p.x)*cos(p.y), cos(p.x)*sin(p.y) ) / 4;
+                return float2( sin(p.x)*(1-cos(p.y)), sin(p.y)*(1-cos(p.y)) ) / 8;
             }
 
             float confun_lap( float2 p )
             {
-                return -cos( p.y );
+                // return 0;
+                // return -cos(p.x) / 4;
+                // return -cos(p.x)*cos(p.y) / 2;
+                return ( -2*cos(p.x)*cos(p.y) + cos(p.x) + cos(p.y) ) / 8;
             }
 
             float confun_exp( float2 p )
@@ -126,7 +138,8 @@ Shader "Custom/DonutShader"
                     xy  =  xy * L;
 
                     float2 pv[2];
-                    pv[0]  =  float2( 0, ph0 );
+                    //pv[0]  =  float2( 0, ph0 );
+                    pv[0]  =  float2( ph0, 0 );
                     //pv[1]  =  xy / float2( R + r*cos(pv[0].y), r );
                     pv[1]  =  xy / confun_exp(pv[0]);
                     
@@ -143,6 +156,7 @@ Shader "Custom/DonutShader"
                     
                     float2 uv  =  pv_next[0] / ( 2*Pi );
                     
+                    uv.x  +=  0.5;
                     uv.y  +=  0.5;
                     
                     float3 col  =  SAMPLE_TEXTURE2D( _BaseMap, sampler_BaseMap, uv ).xyz;
