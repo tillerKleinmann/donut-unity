@@ -12,13 +12,13 @@ public class FullscreenHotkeyHandler : MonoBehaviour
 	// Enable fullscreen when starting game
     void Start() { if (makeFullscreenAtStart) { FullscreenGameView.Toggle(); } }
 
-    void Update() 
+    void Update()
     {
 		// Toggle fullscreen when hotkey pressed
-        if (Input.GetKeyDown(KeyCode.Backslash))
-        {
-            FullscreenGameView.Toggle();
-        }
+        // if (Input.GetKeyDown(KeyCode.Backslash))
+        // {
+        //     FullscreenGameView.Toggle();
+        // }
     }
 }
 

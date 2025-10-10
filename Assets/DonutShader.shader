@@ -4,6 +4,8 @@ Shader "Custom/DonutShader"
     {
         [MainColor] _BaseColor("Base Color", Color) = (1, 1, 1, 1)
         [MainTexture] _BaseMap("Base Map", 2D) = "white"
+        [CameraPosition] _CamPos("Camera Position", Vector)  =  (0, 0, 0, 0)
+        [CameraAngle] _CamAng("Camera Angle", Float)  =  0
     }
 
     SubShader
@@ -47,6 +49,9 @@ Shader "Custom/DonutShader"
                 return OUT;
             }
 
+            Vector _CamPos;
+            Float _CamAng;
+
             uniform float2 position;
             uniform float2 direction;
             
@@ -74,7 +79,8 @@ Shader "Custom/DonutShader"
                 // return 0;
                 // return cos(p.x) / 4;
                 // return cos(p.x)*cos(p.y) / 4;
-                return ( (1-cos(p.x))*(1-cos(p.y)) - 2 ) / 8;
+                // return ( (1-cos(p.x))*(1-cos(p.y)) - 2 ) / 4;
+                return ( 2 - (1-cos(p.x))*(1-cos(p.y)) ) / 7;
             }
 
             float2 confun_d( float2 p )
@@ -82,7 +88,8 @@ Shader "Custom/DonutShader"
                 // return float2( 0, 0 );
                 // return float2( -sin(p.x) / 4, 0 );
                 // return -float2( sin(p.x)*cos(p.y), cos(p.x)*sin(p.y) ) / 4;
-                return float2( sin(p.x)*(1-cos(p.y)), sin(p.y)*(1-cos(p.y)) ) / 8;
+                // return float2( sin(p.x)*(1-cos(p.y)), sin(p.y)*(1-cos(p.x)) ) / 4;
+                return float2( sin(p.x)*(cos(p.y)-1), sin(p.y)*(cos(p.x)-1) ) / 7;
             }
 
             float confun_lap( float2 p )
@@ -90,7 +97,8 @@ Shader "Custom/DonutShader"
                 // return 0;
                 // return -cos(p.x) / 4;
                 // return -cos(p.x)*cos(p.y) / 2;
-                return ( -2*cos(p.x)*cos(p.y) + cos(p.x) + cos(p.y) ) / 8;
+                // return ( -2*cos(p.x)*cos(p.y) + cos(p.x) + cos(p.y) ) / 4;
+                return ( 2*cos(p.x)*cos(p.y) - cos(p.x) - cos(p.y) ) / 7;
             }
 
             float confun_exp( float2 p )
@@ -107,11 +115,10 @@ Shader "Custom/DonutShader"
             {
                 float2 cfd  =  confun_d( pv[0] );
 
-                float a  =  pow( pv[1].x, 2 );
+                float a  =  pow( pv[1].x, 2 ) - pow( pv[1].y, 2 );
                 float b  =  2 * pv[1].x * pv[1].y;
-                float c  =  pow( pv[1].y, 2 );
 
-                return float2( cfd.x*(a-c) + cfd.y*b, cfd.y*(c-a) + cfd.x*b );
+                return float2( cfd.x*a + cfd.y*b, -cfd.y*a + cfd.x*b );
             }
 
             float curvature( float2 p )
@@ -137,11 +144,17 @@ Shader "Custom/DonutShader"
                 {
                     xy  =  xy * L;
 
+                    float camRad  =  _CamAng * (2*Pi/360);
+
+                    float c = cos( camRad );
+                    float s = sin( camRad );
+
                     float2 pv[2];
                     //pv[0]  =  float2( 0, ph0 );
-                    pv[0]  =  float2( ph0, 0 );
-                    //pv[1]  =  xy / float2( R + r*cos(pv[0].y), r );
-                    pv[1]  =  xy / confun_exp(pv[0]);
+                    //pv[0]  =  float2( ph0, 0 );
+                    //pv[0]  =  float2( ph0, Pi );
+                    pv[0]  =  float2( _CamPos.x, _CamPos.y );
+                    pv[1]  =  mul( xy, float2x2( c, s, -s, c ) ) / confun_exp(pv[0]);
                     
                     float2 pv_next[2];
                     
@@ -149,7 +162,6 @@ Shader "Custom/DonutShader"
                     
                     for( int i = 0; i < itn; i++ )
                     {
-                        //torus_geodesic_euler_step( pv, dt, pv_next );
                         geodesic_euler_step( pv, dt, pv_next );
                         pv  =  pv_next;
                     }
