@@ -122,6 +122,24 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Next Texture",
+                    "type": "Button",
+                    "id": "0435e267-7ea9-4bfa-8951-5e5e10efdd49",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Previous Texture",
+                    "type": "Button",
+                    "id": "74aa12c0-0400-4163-9311-a587b9f4be4d",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -551,6 +569,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "Decrease Vision Radius",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "118224aa-23a0-4ca9-bb54-95de64941246",
+                    "path": "<Keyboard>/numpadPlus",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Next Texture",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "602e31c5-1673-41fc-8eed-c8770f563d14",
+                    "path": "<Keyboard>/numpadMinus",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Previous Texture",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

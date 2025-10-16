@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEditor;
 using UnityEngine.InputSystem;
 
 public class ScreenScript : MonoBehaviour
@@ -13,10 +14,12 @@ public class ScreenScript : MonoBehaviour
 
     public int surfaceNumber;
 
+    public int textureNumber;
+
     public Texture texture_FlatTorus, texture_PseudoTorus, texture_Camel, texture_Dromedar, texture_InverseDromedar;
 
 
-    private InputAction m_moveAction, m_previousAction, m_nextAction, m_increaseVisRad, m_decreaseVisRad, m_increaseAccuracy, m_decreaseAccuracy;
+    private InputAction m_moveAction, m_previousAction, m_nextAction, m_increaseVisRad, m_decreaseVisRad, m_increaseAccuracy, m_decreaseAccuracy, nextTexture, previousTexture;
 
     private Vector2 m_moveVulture;
 
@@ -51,7 +54,7 @@ public class ScreenScript : MonoBehaviour
                 return new Vector2( Mathf.Sin(p.x) * ( Mathf.Cos(p.y) - 1 ) / 7, Mathf.Sin(p.y) * ( Mathf.Cos(p.x) - 1 ) / 7 );
         }
     }
-    
+
     private Vector2 christoffel( Vector2 p, Vector2 u, Vector2 v, int n )
     {
         Vector2 cfd  =  confun_d( p, n );
@@ -69,16 +72,20 @@ public class ScreenScript : MonoBehaviour
     
     private void Update()
     {
+        bool surfaceNumberChanged = false;
+
         if( m_nextAction.WasPressedThisFrame() )
         {
             surfaceNumber += 1;
-            if( surfaceNumber > 5 ) surfaceNumber = 1;
+            if (surfaceNumber > 5) surfaceNumber = 1;
+            surfaceNumberChanged = true;
         }
 
         if (m_previousAction.WasPressedThisFrame())
         {
             surfaceNumber -= 1;
             if (surfaceNumber < 1) surfaceNumber = 5;
+            surfaceNumberChanged = true;
         }
 
         if( m_increaseAccuracy.WasPressedThisFrame() )
@@ -96,29 +103,30 @@ public class ScreenScript : MonoBehaviour
         if( m_decreaseVisRad.WasPressedThisFrame() )
             visionRadius /= Mathf.Exp( Mathf.Log( 2 ) / 4 );
 
-        switch (surfaceNumber)
-        {
-            case 1:
-                material.shader = Shader.Find("Custom/FlatTorus");
-                material.SetTexture("_BaseMap", texture_FlatTorus);
-                break;
-            case 2:
-                material.shader = Shader.Find("Custom/PseudoTorus");
-                material.SetTexture("_BaseMap", texture_PseudoTorus);
-                break;
-            case 3:
-                material.shader = Shader.Find("Custom/Camel");
-                material.SetTexture("_BaseMap", texture_Camel);
-                break;
-            case 4:
-                material.shader = Shader.Find("Custom/Dromedar");
-                material.SetTexture("_BaseMap", texture_Dromedar);
-                break;
-            default:
-                material.shader = Shader.Find("Custom/InverseDromedar");
-                material.SetTexture("_BaseMap", texture_InverseDromedar);
-                break;
-        }
+        if( surfaceNumberChanged )
+            switch (surfaceNumber)
+            {
+                case 1:
+                    material.shader = Shader.Find("Custom/FlatTorus");
+                    material.SetTexture("_BaseMap", AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/Textures/Tilings/Flat/flat_1.png"));
+                    break;
+                case 2:
+                    material.shader = Shader.Find("Custom/PseudoTorus");
+                    material.SetTexture("_BaseMap", texture_PseudoTorus);
+                    break;
+                case 3:
+                    material.shader = Shader.Find("Custom/Camel");
+                    material.SetTexture("_BaseMap", texture_Camel);
+                    break;
+                case 4:
+                    material.shader = Shader.Find("Custom/Dromedar");
+                    material.SetTexture("_BaseMap", texture_Dromedar);
+                    break;
+                default:
+                    material.shader = Shader.Find("Custom/InverseDromedar");
+                    material.SetTexture("_BaseMap", texture_InverseDromedar);
+                    break;
+            }
         
         material.SetFloat("_VisRad",visionRadius);
         material.SetFloat("_Accuracy",accuracy);
@@ -128,13 +136,13 @@ public class ScreenScript : MonoBehaviour
     {
         m_moveVulture = m_moveAction.ReadValue<Vector2>();
 
-        Vector4 camPos = material.GetVector("_CamPos");
-        float camAng = material.GetFloat("_CamAng");
+        Vector4 camPos  =  material.GetVector( "_CamPos" );
+        float   camAng  =  material.GetFloat(  "_CamAng" );
 
-        Vector2 pos = new Vector2(camPos.x, camPos.y);
-        Vector2 vel = new Vector2(-m_moveVulture.x, -m_moveVulture.y) * vultureMoveSpeed;
+        Vector2  pos  =  new Vector2( camPos.x, camPos.y );
+        Vector2  vel  =  new Vector2( -m_moveVulture.x, -m_moveVulture.y ) * vultureMoveSpeed;
 
-        float a = -camAng*(2*Mathf.PI)/360;
+        float a  =  -camAng * ( 2*Mathf.PI ) / 360;
 
         float c = Mathf.Cos(a);
         float s = Mathf.Sin(a);
@@ -146,13 +154,14 @@ public class ScreenScript : MonoBehaviour
 
         Vector2 new_pos = pos + dt * vel;
         Vector2 accel = -christoffel(pos, vel, vel, surfaceNumber);
-        
+
         if( vel.magnitude > 0 )
-            da = dt * ( accel.x*vel.y - accel.y*vel.x ) / ( vel.x*vel.x + vel.y*vel.y );
+            da  =  dt * ( accel.x*vel.y - accel.y*vel.x ) / ( vel.x*vel.x + vel.y*vel.y );
 
         camPos.x = new_pos.x;
         camPos.y = new_pos.y;
-        camAng = camAng - da*360/(2*Mathf.PI);
+        
+        camAng  =  camAng - da*360/(2*Mathf.PI);
 
         material.SetVector("_CamPos", camPos);
         material.SetFloat("_CamAng", camAng);
