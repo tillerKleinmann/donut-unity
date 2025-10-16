@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Donut
-  m_Shader: {fileID: 4800000, guid: 276ab4f155729e73da3632f99126b837, type: 3}
+  m_Shader: {fileID: 4800000, guid: 2312a4a2c8edf7ca2805057cd0e3c656, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -28,7 +28,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BaseMap:
-        m_Texture: {fileID: 2800000, guid: 2178460f0b027a7d0a492972c2de898e, type: 3}
+        m_Texture: {fileID: 2800000, guid: 589ceb5e3f5cbc97f831f5806088583e, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
@@ -45,6 +45,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _Accuracy: 64
     - _CamAng: 0
     - _EnableExternalAlpha: 0
     - _VisRad: 2

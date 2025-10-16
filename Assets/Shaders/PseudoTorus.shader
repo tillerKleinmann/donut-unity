@@ -1,4 +1,4 @@
-Shader "Custom/PseudoTorus"
+Shader "Custom/Confmets/pseudo"
 {
     Properties
     {

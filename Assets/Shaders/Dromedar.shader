@@ -1,4 +1,4 @@
-Shader "Custom/Dromedar"
+Shader "Custom/Confmets/dromedar"
 {
     Properties
     {

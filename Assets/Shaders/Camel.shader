@@ -1,4 +1,4 @@
-Shader "Custom/Camel"
+Shader "Custom/Confmets/camel"
 {
     Properties
     {

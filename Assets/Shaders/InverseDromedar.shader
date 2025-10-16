@@ -1,4 +1,4 @@
-Shader "Custom/InverseDromedar"
+Shader "Custom/Confmets/rademord"
 {
     Properties
     {

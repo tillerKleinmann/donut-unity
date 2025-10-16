@@ -6,36 +6,35 @@ public class ScreenScript : MonoBehaviour
 {
     public InputActionAsset InputActions;
 
-    public float vultureMoveSpeed;
+    public float vultureMoveSpeed = 2.0f, visionRadius = 2.0f;
 
-    public float visionRadius = 2;
+    public int accuracy = 64, metricNumber = 1, textureNumber = 1;
 
-    public int accuracy = 64;
+    private InputAction moveAction, nextMetric, prevMetric, incrVisRad, decrVisRad, incrAccuracy, decrAccuracy, nextTexture, prevTexture;
 
-    public int surfaceNumber;
+    private Vector2 moveVulture;
 
-    public int textureNumber;
-
-    public Texture texture_FlatTorus, texture_PseudoTorus, texture_Camel, texture_Dromedar, texture_InverseDromedar;
-
-
-    private InputAction m_moveAction, m_previousAction, m_nextAction, m_increaseVisRad, m_decreaseVisRad, m_increaseAccuracy, m_decreaseAccuracy, nextTexture, previousTexture;
-
-    private Vector2 m_moveVulture;
-
+    private string metricName;
 
     Material material;
 
     private void Start()
     {
         material = GetComponent<Renderer>().material;
-        m_moveAction = InputSystem.actions.FindAction("Move");
-        m_previousAction = InputSystem.actions.FindAction("Previous Metric");
-        m_nextAction = InputSystem.actions.FindAction("Next Metric");
-        m_increaseAccuracy = InputSystem.actions.FindAction("Increase Accuracy");
-        m_decreaseAccuracy = InputSystem.actions.FindAction("Decrease Accuracy");
-        m_increaseVisRad = InputSystem.actions.FindAction("Increase Vision Radius");
-        m_decreaseVisRad = InputSystem.actions.FindAction("Decrease Vision Radius");
+        
+        moveAction  =  InputSystem.actions.FindAction( "Move" );
+
+        nextMetric  =  InputSystem.actions.FindAction( "Next Metric" );
+        prevMetric  =  InputSystem.actions.FindAction( "Previous Metric" );
+
+        nextTexture  =  InputSystem.actions.FindAction( "Next Texture" );
+        prevTexture  =  InputSystem.actions.FindAction( "Previous Texture" );
+
+        incrAccuracy  =  InputSystem.actions.FindAction( "Increase Accuracy" );
+        decrAccuracy  =  InputSystem.actions.FindAction( "Decrease Accuracy" );
+
+        incrVisRad  =  InputSystem.actions.FindAction( "Increase Vision Radius" );
+        decrVisRad  =  InputSystem.actions.FindAction( "Decrease Vision Radius" );
     }
 
     private Vector2 confun_d(Vector2 p, int n)
@@ -72,75 +71,131 @@ public class ScreenScript : MonoBehaviour
     
     private void Update()
     {
-        bool surfaceNumberChanged = false;
+        bool metricChanged = false;
+        bool textureChanged = false;
 
-        if( m_nextAction.WasPressedThisFrame() )
+        if( nextMetric.WasPressedThisFrame() )
         {
-            surfaceNumber += 1;
-            if (surfaceNumber > 5) surfaceNumber = 1;
-            surfaceNumberChanged = true;
+            metricNumber += 1;
+            if( metricNumber > 5 ) metricNumber = 1;
+            metricChanged = true;
         }
 
-        if (m_previousAction.WasPressedThisFrame())
+        if( prevMetric.WasPressedThisFrame() )
         {
-            surfaceNumber -= 1;
-            if (surfaceNumber < 1) surfaceNumber = 5;
-            surfaceNumberChanged = true;
+            metricNumber -= 1;
+            if( metricNumber < 1 ) metricNumber = 5;
+            metricChanged = true;
         }
 
-        if( m_increaseAccuracy.WasPressedThisFrame() )
+        if( nextTexture.WasPressedThisFrame() )
+        {
+            textureNumber += 1;
+            if( textureNumber > 2 ) textureNumber = 1;
+            textureChanged = true;
+        }
+
+        if( prevTexture.WasPressedThisFrame() )
+        {
+            textureNumber -= 1;
+            if( textureNumber < 1 ) textureNumber = 2;
+            textureChanged = true;
+        }
+
+        if( incrAccuracy.WasPressedThisFrame() )
             accuracy *= 2;
 
-        if (m_decreaseAccuracy.WasPressedThisFrame())
+        if( decrAccuracy.WasPressedThisFrame() )
         {
-            if( accuracy > 1 )
+            if (accuracy > 1)
                 accuracy /= 2;
         }
 
-        if( m_increaseVisRad.WasPressedThisFrame() )
+        if( incrVisRad.WasPressedThisFrame() )
             visionRadius *= Mathf.Exp( Mathf.Log( 2 ) / 4 );
             
-        if( m_decreaseVisRad.WasPressedThisFrame() )
+        if( decrVisRad.WasPressedThisFrame() )
             visionRadius /= Mathf.Exp( Mathf.Log( 2 ) / 4 );
 
-        if( surfaceNumberChanged )
-            switch (surfaceNumber)
+        string  texSuff  =  textureNumber.ToString() + ".png";
+        
+        switch( metricNumber )
+        {
+            case 1:
+                metricName = "flat";
+                break;
+            case 2:
+                metricName = "pseudo";
+                break;
+            case 3:
+                metricName = "camel";
+                break;
+            case 4:
+                metricName = "dromedar";
+                break;
+            case 5:
+                metricName = "rademord";
+                break;
+        }
+
+        if( metricChanged )
+            switch( metricNumber )
             {
                 case 1:
-                    material.shader = Shader.Find("Custom/FlatTorus");
-                    material.SetTexture("_BaseMap", AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/Textures/Tilings/Flat/flat_1.png"));
+                    material.shader  =  Shader.Find( "Custom/Confmets/flat" );
+                    material.SetTexture( "_BaseMap", AssetDatabase.LoadAssetAtPath<Texture2D>( "Assets/Textures/Tilings/flat_" + texSuff ) );
                     break;
                 case 2:
-                    material.shader = Shader.Find("Custom/PseudoTorus");
-                    material.SetTexture("_BaseMap", texture_PseudoTorus);
+                    material.shader  =  Shader.Find( "Custom/Confmets/pseudo" );
+                    material.SetTexture( "_BaseMap", AssetDatabase.LoadAssetAtPath<Texture2D>( "Assets/Textures/Tilings/pseudo_" + texSuff ) );
                     break;
                 case 3:
-                    material.shader = Shader.Find("Custom/Camel");
-                    material.SetTexture("_BaseMap", texture_Camel);
+                    material.shader  =  Shader.Find( "Custom/Confmets/camel" );
+                    material.SetTexture( "_BaseMap", AssetDatabase.LoadAssetAtPath<Texture2D>( "Assets/Textures/Tilings/camel_" + texSuff ) );
                     break;
                 case 4:
-                    material.shader = Shader.Find("Custom/Dromedar");
-                    material.SetTexture("_BaseMap", texture_Dromedar);
+                    material.shader  =  Shader.Find( "Custom/Confmets/dromedar" );
+                    material.SetTexture( "_BaseMap", AssetDatabase.LoadAssetAtPath<Texture2D>( "Assets/Textures/Tilings/dromedar_" + texSuff ) );
                     break;
                 default:
-                    material.shader = Shader.Find("Custom/InverseDromedar");
-                    material.SetTexture("_BaseMap", texture_InverseDromedar);
+                    material.shader  =  Shader.Find( "Custom/Confmets/rademord" );
+                    material.SetTexture( "_BaseMap", AssetDatabase.LoadAssetAtPath<Texture2D>( "Assets/Textures/Tilings/rademord_" + texSuff ) );
                     break;
             }
         
-        material.SetFloat("_VisRad",visionRadius);
-        material.SetFloat("_Accuracy",accuracy);
+        if( textureChanged )
+            switch (textureNumber)
+            {
+                case 1:
+                    material.SetTexture("_BaseMap", AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/Textures/Tilings/Flat/flat_" + texSuff));
+                    break;
+                case 2:
+                    material.SetTexture("_BaseMap", AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/Textures/Tilings/Pseudo/pseudo_" + texSuff));
+                    break;
+                case 3:
+                    material.SetTexture("_BaseMap", AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/Textures/Tilings/Camel/camel_" + texSuff));
+                    break;
+                case 4:
+                    material.SetTexture("_BaseMap", AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/Textures/Tilings/Dromedar/dromedar_" + texSuff));
+                    break;
+                default:
+                    material.SetTexture("_BaseMap", AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/Textures/Tilings/Rademord/rademord_" + texSuff));
+                    break;
+            }
+            
+        material.SetFloat( "_VisRad",   visionRadius );
+        material.SetFloat( "_Accuracy", accuracy     );
     }
 
     private void FixedUpdate()
     {
-        m_moveVulture = m_moveAction.ReadValue<Vector2>();
+        moveVulture = moveAction.ReadValue<Vector2>();
 
         Vector4 camPos  =  material.GetVector( "_CamPos" );
         float   camAng  =  material.GetFloat(  "_CamAng" );
 
         Vector2  pos  =  new Vector2( camPos.x, camPos.y );
-        Vector2  vel  =  new Vector2( -m_moveVulture.x, -m_moveVulture.y ) * vultureMoveSpeed;
+        Vector2  vel  =  new Vector2( -moveVulture.x, -moveVulture.y ) * vultureMoveSpeed;
 
         float a  =  -camAng * ( 2*Mathf.PI ) / 360;
 
@@ -153,7 +208,7 @@ public class ScreenScript : MonoBehaviour
         float da = 0;
 
         Vector2 new_pos = pos + dt * vel;
-        Vector2 accel = -christoffel(pos, vel, vel, surfaceNumber);
+        Vector2 accel = -christoffel(pos, vel, vel, metricNumber);
 
         if( vel.magnitude > 0 )
             da  =  dt * ( accel.x*vel.y - accel.y*vel.x ) / ( vel.x*vel.x + vel.y*vel.y );

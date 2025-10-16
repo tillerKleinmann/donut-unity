@@ -1,4 +1,4 @@
-Shader "Custom/FlatTorus"
+Shader "Custom/Confmets/flat"
 {
     Properties
     {
