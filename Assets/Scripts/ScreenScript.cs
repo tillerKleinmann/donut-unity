@@ -139,49 +139,10 @@ public class ScreenScript : MonoBehaviour
         }
 
         if( metricChanged )
-            switch( metricNumber )
-            {
-                case 1:
-                    material.shader  =  Shader.Find( "Custom/Confmets/flat" );
-                    material.SetTexture( "_BaseMap", AssetDatabase.LoadAssetAtPath<Texture2D>( "Assets/Textures/Tilings/flat_" + texSuff ) );
-                    break;
-                case 2:
-                    material.shader  =  Shader.Find( "Custom/Confmets/pseudo" );
-                    material.SetTexture( "_BaseMap", AssetDatabase.LoadAssetAtPath<Texture2D>( "Assets/Textures/Tilings/pseudo_" + texSuff ) );
-                    break;
-                case 3:
-                    material.shader  =  Shader.Find( "Custom/Confmets/camel" );
-                    material.SetTexture( "_BaseMap", AssetDatabase.LoadAssetAtPath<Texture2D>( "Assets/Textures/Tilings/camel_" + texSuff ) );
-                    break;
-                case 4:
-                    material.shader  =  Shader.Find( "Custom/Confmets/dromedar" );
-                    material.SetTexture( "_BaseMap", AssetDatabase.LoadAssetAtPath<Texture2D>( "Assets/Textures/Tilings/dromedar_" + texSuff ) );
-                    break;
-                default:
-                    material.shader  =  Shader.Find( "Custom/Confmets/rademord" );
-                    material.SetTexture( "_BaseMap", AssetDatabase.LoadAssetAtPath<Texture2D>( "Assets/Textures/Tilings/rademord_" + texSuff ) );
-                    break;
-            }
-        
-        if( textureChanged )
-            switch (textureNumber)
-            {
-                case 1:
-                    material.SetTexture("_BaseMap", AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/Textures/Tilings/Flat/flat_" + texSuff));
-                    break;
-                case 2:
-                    material.SetTexture("_BaseMap", AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/Textures/Tilings/Pseudo/pseudo_" + texSuff));
-                    break;
-                case 3:
-                    material.SetTexture("_BaseMap", AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/Textures/Tilings/Camel/camel_" + texSuff));
-                    break;
-                case 4:
-                    material.SetTexture("_BaseMap", AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/Textures/Tilings/Dromedar/dromedar_" + texSuff));
-                    break;
-                default:
-                    material.SetTexture("_BaseMap", AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/Textures/Tilings/Rademord/rademord_" + texSuff));
-                    break;
-            }
+            material.shader  =  Shader.Find( "Custom/Confmets/" + metricName );
+            
+        if( metricChanged | textureChanged  )
+            material.SetTexture("_BaseMap", AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/Textures/Tilings/" + metricName + "_" + textureNumber.ToString() + ".png" ) );
             
         material.SetFloat( "_VisRad",   visionRadius );
         material.SetFloat( "_Accuracy", accuracy     );
