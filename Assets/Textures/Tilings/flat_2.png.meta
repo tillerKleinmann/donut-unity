@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: b623c63b88ff13e48830e089b4dcdb91
+guid: 3338d8cf56dcdcb77a51c3d3e0b0c758
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -4928170260225863612
-    second: texture_flat_torus_2025-09-02_13-06-31_0
+      213: 2877595036839354658
+    second: texture_flat torus_2025-09-16_17-47-50_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,7 +113,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: texture_flat_torus_2025-09-02_13-06-31_0
+      name: texture_flat torus_2025-09-16_17-47-50_0
       rect:
         serializedVersion: 2
         x: 0
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 440d796424f9b9bb0800000000000000
-      internalID: -4928170260225863612
+      spriteID: 221ac3a90754fe720800000000000000
+      internalID: 2877595036839354658
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      texture_flat_torus_2025-09-02_13-06-31_0: -4928170260225863612
+      texture_flat torus_2025-09-16_17-47-50_0: 2877595036839354658
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

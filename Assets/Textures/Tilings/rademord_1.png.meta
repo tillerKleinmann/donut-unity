@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 2178460f0b027a7d0a492972c2de898e
+guid: 215093d9454f9f83585e405ec52b5c5e
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 4966377008128093146
-    second: texture_inverse dromedar_2025-09-07_13-41-34_0
+      213: -8760346172318099572
+    second: texture_inverse dromedar_2025-09-16_17-45-37_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,7 +113,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: texture_inverse dromedar_2025-09-07_13-41-34_0
+      name: texture_inverse dromedar_2025-09-16_17-45-37_0
       rect:
         serializedVersion: 2
         x: 0
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: adb642e639d1ce440800000000000000
-      internalID: 4966377008128093146
+      spriteID: c87d681129ffc6680800000000000000
+      internalID: -8760346172318099572
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      texture_inverse dromedar_2025-09-07_13-41-34_0: 4966377008128093146
+      texture_inverse dromedar_2025-09-16_17-45-37_0: -8760346172318099572
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

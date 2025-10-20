@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 7d6b4039eaaf97b60b5d02de505bc2f8
+guid: d4023a34abed17452ab032852eae4465
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -9046515765968520210
-    second: texture_camel_2025-09-07_13-25-36_0
+      213: 2498788369687552948
+    second: texture_camel_2025-09-16_17-43-26_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,7 +113,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: texture_camel_2025-09-07_13-25-36_0
+      name: texture_camel_2025-09-16_17-43-26_0
       rect:
         serializedVersion: 2
         x: 0
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: eebb97267d1547280800000000000000
-      internalID: -9046515765968520210
+      spriteID: 4b3aa1878ca7da220800000000000000
+      internalID: 2498788369687552948
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      texture_camel_2025-09-07_13-25-36_0: -9046515765968520210
+      texture_camel_2025-09-16_17-43-26_0: 2498788369687552948
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

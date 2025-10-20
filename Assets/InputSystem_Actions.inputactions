@@ -140,6 +140,24 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Next GSM",
+                    "type": "Button",
+                    "id": "88581395-6420-46e7-bc02-877e3f52bfaf",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Previous GSM",
+                    "type": "Button",
+                    "id": "1832e10b-08a4-4c56-af94-8bdb7101a816",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -591,6 +609,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "Previous Texture",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "93b9cfb5-1db0-4132-988c-3013cece01ff",
+                    "path": "<Keyboard>/numpad2",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Next GSM",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "cd1d70aa-41b6-4c09-9b0d-eaed33727c3c",
+                    "path": "<Keyboard>/numpad1",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Previous GSM",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

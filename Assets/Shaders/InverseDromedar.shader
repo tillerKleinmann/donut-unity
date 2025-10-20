@@ -8,6 +8,7 @@ Shader "Custom/Confmets/rademord"
         [CameraAngle] _CamAng("Camera Angle", Float)  =  0
         [VisionRadius] _VisRad("Vision Radius", Float)  =  2
         [Accuracy] _Accuracy("Accuracy", Float)  =  64
+        [GSM] _GSM("Geodesic Step Method", Float)  =  1
     }
 
     SubShader

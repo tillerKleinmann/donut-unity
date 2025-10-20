@@ -225,7 +225,7 @@ MonoBehaviour:
   vultureMoveSpeed: 2
   visionRadius: 2
   accuracy: 64
-  surfaceNumber: 1
+  metricNumber: 1
   textureNumber: 1
 --- !u!1 &519420028
 GameObject:
@@ -580,7 +580,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   InputActions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
-  vultureTurnSpeed: 100
 --- !u!1 &1034182292
 GameObject:
   m_ObjectHideFlags: 0

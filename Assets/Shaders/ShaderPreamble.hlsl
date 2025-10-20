@@ -30,6 +30,7 @@ Vector _CamPos;
 Float _CamAng;
 Float _VisRad;
 Float _Accuracy;
+Float _GSM;
 
 uniform float2 position;
 uniform float2 direction;

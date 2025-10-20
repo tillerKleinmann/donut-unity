@@ -8,9 +8,9 @@ public class ScreenScript : MonoBehaviour
 
     public float vultureMoveSpeed = 2.0f, visionRadius = 2.0f;
 
-    public int accuracy = 64, metricNumber = 1, textureNumber = 1;
+    public int accuracy = 64, metricNumber = 1, textureNumber = 1, gsmNumber = 1;
 
-    private InputAction moveAction, nextMetric, prevMetric, incrVisRad, decrVisRad, incrAccuracy, decrAccuracy, nextTexture, prevTexture;
+    private InputAction moveAction, nextMetric, prevMetric, incrVisRad, decrVisRad, incrAccuracy, decrAccuracy, nextTexture, prevTexture, nextGSM, prevGSM;
 
     private Vector2 moveVulture;
 
@@ -28,7 +28,10 @@ public class ScreenScript : MonoBehaviour
         prevMetric  =  InputSystem.actions.FindAction( "Previous Metric" );
 
         nextTexture  =  InputSystem.actions.FindAction( "Next Texture" );
-        prevTexture  =  InputSystem.actions.FindAction( "Previous Texture" );
+        prevTexture = InputSystem.actions.FindAction("Previous Texture");
+        
+        nextGSM  =  InputSystem.actions.FindAction( "Next GSM" );
+        prevGSM  =  InputSystem.actions.FindAction( "Previous GSM" );
 
         incrAccuracy  =  InputSystem.actions.FindAction( "Increase Accuracy" );
         decrAccuracy  =  InputSystem.actions.FindAction( "Decrease Accuracy" );
@@ -71,8 +74,8 @@ public class ScreenScript : MonoBehaviour
     
     private void Update()
     {
-        bool metricChanged = false;
-        bool textureChanged = false;
+        bool  metricChanged   =  false;
+        bool  textureChanged  =  false;
 
         if( nextMetric.WasPressedThisFrame() )
         {
@@ -91,25 +94,34 @@ public class ScreenScript : MonoBehaviour
         if( nextTexture.WasPressedThisFrame() )
         {
             textureNumber += 1;
-            if( textureNumber > 2 ) textureNumber = 1;
+            if( textureNumber > 4 ) textureNumber = 1;
             textureChanged = true;
         }
 
         if( prevTexture.WasPressedThisFrame() )
         {
             textureNumber -= 1;
-            if( textureNumber < 1 ) textureNumber = 2;
+            if (textureNumber < 1) textureNumber = 4;
             textureChanged = true;
+        }
+        
+        if( nextGSM.WasPressedThisFrame() )
+        {
+            gsmNumber += 1;
+            if( gsmNumber > 3 ) gsmNumber = 1;
+        }
+
+        if( prevGSM.WasPressedThisFrame() )
+        {
+            gsmNumber -= 1;
+            if( gsmNumber < 1 ) gsmNumber = 3;
         }
 
         if( incrAccuracy.WasPressedThisFrame() )
             accuracy *= 2;
 
         if( decrAccuracy.WasPressedThisFrame() )
-        {
-            if (accuracy > 1)
-                accuracy /= 2;
-        }
+            if( accuracy > 1 )  accuracy /= 2;
 
         if( incrVisRad.WasPressedThisFrame() )
             visionRadius *= Mathf.Exp( Mathf.Log( 2 ) / 4 );
@@ -117,8 +129,6 @@ public class ScreenScript : MonoBehaviour
         if( decrVisRad.WasPressedThisFrame() )
             visionRadius /= Mathf.Exp( Mathf.Log( 2 ) / 4 );
 
-        string  texSuff  =  textureNumber.ToString() + ".png";
-        
         switch( metricNumber )
         {
             case 1:
@@ -140,36 +150,38 @@ public class ScreenScript : MonoBehaviour
 
         if( metricChanged )
             material.shader  =  Shader.Find( "Custom/Confmets/" + metricName );
-            
+        
         if( metricChanged | textureChanged  )
-            material.SetTexture("_BaseMap", AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/Textures/Tilings/" + metricName + "_" + textureNumber.ToString() + ".png" ) );
-            
+            material.SetTexture( "_BaseMap", AssetDatabase.LoadAssetAtPath<Texture2D>( "Assets/Textures/Tilings/" + metricName + "_" + textureNumber.ToString() + ".png" ) );
+        
         material.SetFloat( "_VisRad",   visionRadius );
         material.SetFloat( "_Accuracy", accuracy     );
+        material.SetFloat( "_GSM",      gsmNumber    );
     }
 
     private void FixedUpdate()
     {
         moveVulture = moveAction.ReadValue<Vector2>();
 
-        Vector4 camPos  =  material.GetVector( "_CamPos" );
-        float   camAng  =  material.GetFloat(  "_CamAng" );
+        Vector4  camPos  =  material.GetVector( "_CamPos" );
+        float    camAng  =  material.GetFloat(  "_CamAng" );
 
         Vector2  pos  =  new Vector2( camPos.x, camPos.y );
         Vector2  vel  =  new Vector2( -moveVulture.x, -moveVulture.y ) * vultureMoveSpeed;
 
-        float a  =  -camAng * ( 2*Mathf.PI ) / 360;
+        float  a  =  -camAng * ( 2*Mathf.PI ) / 360;
 
-        float c = Mathf.Cos(a);
-        float s = Mathf.Sin(a);
+        float  c = Mathf.Cos(a);
+        float  s = Mathf.Sin(a);
 
-        vel = new Vector2( c*vel.x + s*vel.y, -s*vel.x + c*vel.y );
+        vel  =  new Vector2( c*vel.x + s*vel.y, -s*vel.x + c*vel.y );
 
-        float dt = Time.deltaTime;
-        float da = 0;
+        float  dt = Time.deltaTime;
+        float  da = 0;
 
-        Vector2 new_pos = pos + dt * vel;
-        Vector2 accel = -christoffel(pos, vel, vel, metricNumber);
+        Vector2  new_pos  =  pos + dt*vel;
+        
+        Vector2  accel  =  -christoffel( pos, vel, vel, metricNumber );
 
         if( vel.magnitude > 0 )
             da  =  dt * ( accel.x*vel.y - accel.y*vel.x ) / ( vel.x*vel.x + vel.y*vel.y );
@@ -179,7 +191,7 @@ public class ScreenScript : MonoBehaviour
         
         camAng  =  camAng - da*360/(2*Mathf.PI);
 
-        material.SetVector("_CamPos", camPos);
-        material.SetFloat("_CamAng", camAng);
+        material.SetVector( "_CamPos", camPos );
+        material.SetFloat(  "_CamAng", camAng );
     }
 }
