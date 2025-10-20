@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEditor;
 using UnityEngine.InputSystem;
+using TMPro;
 
 public class ScreenScript : MonoBehaviour
 {
@@ -15,6 +16,11 @@ public class ScreenScript : MonoBehaviour
     private Vector2 moveVulture;
 
     private string metricName;
+
+    public TextMeshProUGUI domainField, metricField, textureField, GSMField, accuracyField, frameRateField;
+
+    private float pollingTime = 1f, time = 0f;
+    private int frameCount = 0;
 
     Material material;
 
@@ -74,6 +80,19 @@ public class ScreenScript : MonoBehaviour
     
     private void Update()
     {
+        time += Time.deltaTime;
+
+        frameCount++;
+
+        if( time > pollingTime )
+        {
+            int  frameRate  =  Mathf.RoundToInt( frameCount / time );
+            frameRateField.text  =  frameRate.ToString();
+
+            time -= pollingTime;
+            frameCount = 0;
+        }
+
         bool  metricChanged   =  false;
         bool  textureChanged  =  false;
 
@@ -148,11 +167,32 @@ public class ScreenScript : MonoBehaviour
                 break;
         }
 
-        if( metricChanged )
-            material.shader  =  Shader.Find( "Custom/Confmets/" + metricName );
-        
-        if( metricChanged | textureChanged  )
-            material.SetTexture( "_BaseMap", AssetDatabase.LoadAssetAtPath<Texture2D>( "Assets/Textures/Tilings/" + metricName + "_" + textureNumber.ToString() + ".png" ) );
+        if (metricChanged)
+        {
+            material.shader = Shader.Find("Custom/Confmets/" + metricName);
+            metricField.text = metricName;
+        }
+
+        if (metricChanged | textureChanged)
+            material.SetTexture("_BaseMap", AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/Textures/Tilings/" + metricName + "_" + textureNumber.ToString() + ".png"));
+
+        if (textureChanged)
+            textureField.text = textureNumber.ToString();
+
+        accuracyField.text = accuracy.ToString();
+
+        switch( gsmNumber )
+        {
+            case 1:
+                GSMField.text = "RK4";
+                break;
+            case 2:
+                GSMField.text = "midp";
+                break;
+            case 3:
+                GSMField.text = "euler";
+                break;
+        }
         
         material.SetFloat( "_VisRad",   visionRadius );
         material.SetFloat( "_Accuracy", accuracy     );
@@ -169,15 +209,15 @@ public class ScreenScript : MonoBehaviour
         Vector2  pos  =  new Vector2( camPos.x, camPos.y );
         Vector2  vel  =  new Vector2( -moveVulture.x, -moveVulture.y ) * vultureMoveSpeed;
 
-        float  a  =  -camAng * ( 2*Mathf.PI ) / 360;
+        float  a  =  -camAng * (2*Mathf.PI/360);
 
-        float  c = Mathf.Cos(a);
-        float  s = Mathf.Sin(a);
+        float  c  =  Mathf.Cos(a);
+        float  s  =  Mathf.Sin(a);
 
         vel  =  new Vector2( c*vel.x + s*vel.y, -s*vel.x + c*vel.y );
 
-        float  dt = Time.deltaTime;
-        float  da = 0;
+        float  dt  =  Time.deltaTime;
+        float  da  =  0;
 
         Vector2  new_pos  =  pos + dt*vel;
         
@@ -186,10 +226,10 @@ public class ScreenScript : MonoBehaviour
         if( vel.magnitude > 0 )
             da  =  dt * ( accel.x*vel.y - accel.y*vel.x ) / ( vel.x*vel.x + vel.y*vel.y );
 
-        camPos.x = new_pos.x;
-        camPos.y = new_pos.y;
+        camPos.x  =  new_pos.x;
+        camPos.y  =  new_pos.y;
         
-        camAng  =  camAng - da*360/(2*Mathf.PI);
+        camAng   =   camAng  -  da * (360/(2*Mathf.PI));
 
         material.SetVector( "_CamPos", camPos );
         material.SetFloat(  "_CamAng", camAng );
