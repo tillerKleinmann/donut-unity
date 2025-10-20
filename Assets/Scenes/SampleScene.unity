@@ -224,9 +224,10 @@ MonoBehaviour:
   InputActions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   vultureMoveSpeed: 2
   visionRadius: 2
-  accuracy: 64
+  accuracy: 16
   metricNumber: 1
   textureNumber: 1
+  gsmNumber: 1
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0

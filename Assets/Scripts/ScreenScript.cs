@@ -8,7 +8,7 @@ public class ScreenScript : MonoBehaviour
 
     public float vultureMoveSpeed = 2.0f, visionRadius = 2.0f;
 
-    public int accuracy = 64, metricNumber = 1, textureNumber = 1, gsmNumber = 1;
+    public int accuracy = 16, metricNumber = 1, textureNumber = 1, gsmNumber = 1;
 
     private InputAction moveAction, nextMetric, prevMetric, incrVisRad, decrVisRad, incrAccuracy, decrAccuracy, nextTexture, prevTexture, nextGSM, prevGSM;
 
@@ -28,7 +28,7 @@ public class ScreenScript : MonoBehaviour
         prevMetric  =  InputSystem.actions.FindAction( "Previous Metric" );
 
         nextTexture  =  InputSystem.actions.FindAction( "Next Texture" );
-        prevTexture = InputSystem.actions.FindAction("Previous Texture");
+        prevTexture  =  InputSystem.actions.FindAction( "Previous Texture" );
         
         nextGSM  =  InputSystem.actions.FindAction( "Next GSM" );
         prevGSM  =  InputSystem.actions.FindAction( "Previous GSM" );
