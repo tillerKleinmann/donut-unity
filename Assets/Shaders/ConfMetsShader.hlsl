@@ -1,5 +1,5 @@
 static const float  Pi  =  3.14159;
-static const float   L  =  _VisRad * Pi;
+static const float   R  =  _VisRad;
 static const int   itn  =  int( _Accuracy );
 static const int   gsm  =  int( _GSM );
 
@@ -91,7 +91,7 @@ half4 frag( Varyings IN ) : SV_Target
     
     if( pow(xy.x,2) + pow(xy.y,2) < 1.0 )
     {
-        xy  =  xy * L;
+        xy  =  xy * R;
 
         float camRad  =  _CamAng * (2*Pi/360);
 

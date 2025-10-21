@@ -5,9 +5,11 @@ using TMPro;
 
 public class ScreenScript : MonoBehaviour
 {
+    private Texture2D tilingTexture, spaceTexture;
+
     public InputActionAsset InputActions;
 
-    public float vultureMoveSpeed = 2.0f, visionRadius = 2.0f;
+    public float vultureMoveSpeed = 2.0f, visionRadius = 2.0f*Mathf.PI;
 
     public int accuracy = 16, metricNumber = 1, textureNumber = 1, gsmNumber = 1;
 
@@ -17,14 +19,14 @@ public class ScreenScript : MonoBehaviour
 
     private string metricName;
 
-    public TextMeshProUGUI domainField, metricField, textureField, GSMField, accuracyField, frameRateField;
+    public TextMeshProUGUI domainField, metricField, textureField, radiusField, GSMField, accuracyField, frameRateField;
 
     private float pollingTime = 1f, time = 0f;
     private int frameCount = 0;
 
     Material material;
 
-    private void Start()
+    private void Awake()
     {
         material = GetComponent<Renderer>().material;
         
@@ -44,6 +46,8 @@ public class ScreenScript : MonoBehaviour
 
         incrVisRad  =  InputSystem.actions.FindAction( "Increase Vision Radius" );
         decrVisRad  =  InputSystem.actions.FindAction( "Decrease Vision Radius" );
+        
+        tilingTexture = AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/Textures/Tilings/" + metricName + "_" + textureNumber.ToString() + ".png");
     }
 
     private Vector2 confun_d(Vector2 p, int n)
@@ -174,12 +178,16 @@ public class ScreenScript : MonoBehaviour
         }
 
         if (metricChanged | textureChanged)
-            material.SetTexture("_BaseMap", AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/Textures/Tilings/" + metricName + "_" + textureNumber.ToString() + ".png"));
+        {
+            tilingTexture = AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/Textures/Tilings/" + metricName + "_" + textureNumber.ToString() + ".png");
+        }
 
         if (textureChanged)
             textureField.text = textureNumber.ToString();
 
         accuracyField.text = accuracy.ToString();
+        
+        radiusField.text  =  string.Format( "{0:0.000}", visionRadius );
 
         switch( gsmNumber )
         {
@@ -196,7 +204,20 @@ public class ScreenScript : MonoBehaviour
         
         material.SetFloat( "_VisRad",   visionRadius );
         material.SetFloat( "_Accuracy", accuracy     );
-        material.SetFloat( "_GSM",      gsmNumber    );
+        material.SetFloat("_GSM", gsmNumber);
+
+        //spaceTexture = tilingTexture;
+        
+        tilingTexture = AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/Textures/Tilings/" + metricName + "_" + textureNumber.ToString() + ".png");
+
+        for (int k = 0; k < 128; k++)
+            for (int l = 0; l < 128; l++)
+                tilingTexture.SetPixel(k, l, new Color(0.5f, 0.5f, 0.5f));
+
+        tilingTexture.Apply();
+
+        //material.SetTexture("_BaseMap", spaceTexture);
+        material.SetTexture("_BaseMap", tilingTexture);
     }
 
     private void FixedUpdate()
