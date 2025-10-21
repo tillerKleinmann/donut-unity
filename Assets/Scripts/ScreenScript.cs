@@ -46,7 +46,7 @@ public class ScreenScript : MonoBehaviour
 
         incrVisRad  =  InputSystem.actions.FindAction( "Increase Vision Radius" );
         decrVisRad  =  InputSystem.actions.FindAction( "Decrease Vision Radius" );
-        
+
         tilingTexture = AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/Textures/Tilings/" + metricName + "_" + textureNumber.ToString() + ".png");
     }
 
@@ -204,20 +204,24 @@ public class ScreenScript : MonoBehaviour
         
         material.SetFloat( "_VisRad",   visionRadius );
         material.SetFloat( "_Accuracy", accuracy     );
-        material.SetFloat("_GSM", gsmNumber);
+        material.SetFloat( "_GSM",      gsmNumber    );
 
-        //spaceTexture = tilingTexture;
-        
         tilingTexture = AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/Textures/Tilings/" + metricName + "_" + textureNumber.ToString() + ".png");
 
-        for (int k = 0; k < 128; k++)
-            for (int l = 0; l < 128; l++)
-                tilingTexture.SetPixel(k, l, new Color(0.5f, 0.5f, 0.5f));
+        //spaceTexture = new Texture2D( tilingTexture.width, tilingTexture.height );
+        //spaceTexture.SetPixels(tilingTexture.GetPixels());
+        spaceTexture = new Texture2D( tilingTexture.width, tilingTexture.height, tilingTexture.format, false );
+        spaceTexture.LoadRawTextureData( tilingTexture.GetRawTextureData() );
 
-        tilingTexture.Apply();
+        int bs  =  Mathf.RoundToInt(32 * (2 + Mathf.Cos(Time.time)));
 
-        //material.SetTexture("_BaseMap", spaceTexture);
-        material.SetTexture("_BaseMap", tilingTexture);
+        for( int k = 0; k < bs; k++ )
+            for( int l = 0; l < bs; l++ )
+                spaceTexture.SetPixel( k, l, new Color( 0.5f, 0.5f, 0.5f ) );
+
+        spaceTexture.Apply();
+
+        material.SetTexture( "_BaseMap", spaceTexture );
     }
 
     private void FixedUpdate()
