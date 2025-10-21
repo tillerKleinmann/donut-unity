@@ -29,25 +29,47 @@ public class ScreenScript : MonoBehaviour
     private void Awake()
     {
         material = GetComponent<Renderer>().material;
-        
-        moveAction  =  InputSystem.actions.FindAction( "Move" );
 
-        nextMetric  =  InputSystem.actions.FindAction( "Next Metric" );
-        prevMetric  =  InputSystem.actions.FindAction( "Previous Metric" );
+        moveAction = InputSystem.actions.FindAction("Move");
 
-        nextTexture  =  InputSystem.actions.FindAction( "Next Texture" );
-        prevTexture  =  InputSystem.actions.FindAction( "Previous Texture" );
-        
-        nextGSM  =  InputSystem.actions.FindAction( "Next GSM" );
-        prevGSM  =  InputSystem.actions.FindAction( "Previous GSM" );
+        nextMetric = InputSystem.actions.FindAction("Next Metric");
+        prevMetric = InputSystem.actions.FindAction("Previous Metric");
 
-        incrAccuracy  =  InputSystem.actions.FindAction( "Increase Accuracy" );
-        decrAccuracy  =  InputSystem.actions.FindAction( "Decrease Accuracy" );
+        nextTexture = InputSystem.actions.FindAction("Next Texture");
+        prevTexture = InputSystem.actions.FindAction("Previous Texture");
 
-        incrVisRad  =  InputSystem.actions.FindAction( "Increase Vision Radius" );
-        decrVisRad  =  InputSystem.actions.FindAction( "Decrease Vision Radius" );
+        nextGSM = InputSystem.actions.FindAction("Next GSM");
+        prevGSM = InputSystem.actions.FindAction("Previous GSM");
 
+        incrAccuracy = InputSystem.actions.FindAction("Increase Accuracy");
+        decrAccuracy = InputSystem.actions.FindAction("Decrease Accuracy");
+
+        incrVisRad = InputSystem.actions.FindAction("Increase Vision Radius");
+        decrVisRad = InputSystem.actions.FindAction("Decrease Vision Radius");
+    }
+    
+    private void Start()
+    {
         tilingTexture = AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/Textures/Tilings/" + metricName + "_" + textureNumber.ToString() + ".png");
+        material.SetTexture("_BaseMap", tilingTexture);
+        //spaceTexture = new Texture2D( tilingTexture.width, tilingTexture.height, tilingTexture.format, false );
+    }
+
+    private float confun(Vector2 p, int n)
+    {
+        switch (n)
+        {
+            case 1:
+                return 0f;
+            case 2:
+                return Mathf.Cos(p.x) / 4;
+            case 3:
+                return Mathf.Cos(p.x) * Mathf.Cos(p.y) / 4;
+            case 4:
+                return (1-Mathf.Cos(p.x))*(1-Mathf.Cos(p.y)) / 4;
+            default:
+                return (2 - (1-Mathf.Cos(p.x))*(1-Mathf.Cos(p.y)) ) / 7;
+        }
     }
 
     private Vector2 confun_d(Vector2 p, int n)
@@ -55,15 +77,15 @@ public class ScreenScript : MonoBehaviour
         switch (n)
         {
             case 1:
-                return new Vector2( 0, 0 );
+                return new Vector2(0, 0);
             case 2:
-                return new Vector2( -Mathf.Sin(p.x) / 4, 0 );
+                return new Vector2(-Mathf.Sin(p.x) / 4, 0);
             case 3:
-                return new Vector2( -Mathf.Sin(p.x) * Mathf.Cos(p.y) / 4, -Mathf.Cos(p.x) * Mathf.Sin(p.y) / 4 );
+                return new Vector2(-Mathf.Sin(p.x) * Mathf.Cos(p.y) / 4, -Mathf.Cos(p.x) * Mathf.Sin(p.y) / 4);
             case 4:
-                return new Vector2( Mathf.Sin(p.x) * ( 1 - Mathf.Cos(p.y) ) / 4, Mathf.Sin(p.y) * ( 1 - Mathf.Cos(p.x) ) / 4 );
+                return new Vector2(Mathf.Sin(p.x) * (1 - Mathf.Cos(p.y)) / 4, Mathf.Sin(p.y) * (1 - Mathf.Cos(p.x)) / 4);
             default:
-                return new Vector2( Mathf.Sin(p.x) * ( Mathf.Cos(p.y) - 1 ) / 7, Mathf.Sin(p.y) * ( Mathf.Cos(p.x) - 1 ) / 7 );
+                return new Vector2(Mathf.Sin(p.x) * (Mathf.Cos(p.y) - 1) / 7, Mathf.Sin(p.y) * (Mathf.Cos(p.x) - 1) / 7);
         }
     }
 
@@ -208,20 +230,21 @@ public class ScreenScript : MonoBehaviour
 
         tilingTexture = AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/Textures/Tilings/" + metricName + "_" + textureNumber.ToString() + ".png");
 
-        //spaceTexture = new Texture2D( tilingTexture.width, tilingTexture.height );
-        //spaceTexture.SetPixels(tilingTexture.GetPixels());
-        spaceTexture = new Texture2D( tilingTexture.width, tilingTexture.height, tilingTexture.format, false );
-        spaceTexture.LoadRawTextureData( tilingTexture.GetRawTextureData() );
+        // //spaceTexture = new Texture2D( tilingTexture.width, tilingTexture.height );
+        // //spaceTexture.SetPixels(tilingTexture.GetPixels());
+        // spaceTexture = new Texture2D( tilingTexture.width, tilingTexture.height, tilingTexture.format, false );
+        // spaceTexture.LoadRawTextureData( tilingTexture.GetRawTextureData() );
 
-        int bs  =  Mathf.RoundToInt(32 * (2 + Mathf.Cos(Time.time)));
+        // int bs  =  Mathf.RoundToInt(32 * (2 + Mathf.Cos(Time.time)));
 
-        for( int k = 0; k < bs; k++ )
-            for( int l = 0; l < bs; l++ )
-                spaceTexture.SetPixel( k, l, new Color( 0.5f, 0.5f, 0.5f ) );
+        // for( int k = 0; k < bs; k++ )
+        //     for( int l = 0; l < bs; l++ )
+        //         spaceTexture.SetPixel( k, l, new Color( 0.5f, 0.5f, 0.5f ) );
 
-        spaceTexture.Apply();
+        // spaceTexture.Apply();
 
-        material.SetTexture( "_BaseMap", spaceTexture );
+        //material.SetTexture("_BaseMap", spaceTexture);
+        material.SetTexture( "_BaseMap", tilingTexture );
     }
 
     private void FixedUpdate()
@@ -239,7 +262,9 @@ public class ScreenScript : MonoBehaviour
         float  c  =  Mathf.Cos(a);
         float  s  =  Mathf.Sin(a);
 
-        vel  =  new Vector2( c*vel.x + s*vel.y, -s*vel.x + c*vel.y );
+        vel = new Vector2(c * vel.x + s * vel.y, -s * vel.x + c * vel.y);
+
+        vel /= Mathf.Exp(confun(pos,metricNumber));
 
         float  dt  =  Time.deltaTime;
         float  da  =  0;
