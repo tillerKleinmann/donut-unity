@@ -11,11 +11,16 @@ struct Varyings
 };
 
 TEXTURE2D(_BaseMap);
-SAMPLER(sampler_BaseMap);
+TEXTURE2D(_VulTex);
 
 CBUFFER_START(UnityPerMaterial)
-    half4 _BaseColor;
+    half4  _BaseColor;
     float4 _BaseMap_ST;
+    float  _CamAng;
+    float  _VisRad;
+    float  _Accuracy;
+    float  _GSM;
+    float2 _CamPos;
 CBUFFER_END
 
 Varyings vert(Attributes IN)
@@ -25,12 +30,6 @@ Varyings vert(Attributes IN)
     OUT.uv = TRANSFORM_TEX(IN.uv, _BaseMap);
     return OUT;
 }
-
-Vector _CamPos;
-Float _CamAng;
-Float _VisRad;
-Float _Accuracy;
-Float _GSM;
 
 uniform float2 position;
 uniform float2 direction;

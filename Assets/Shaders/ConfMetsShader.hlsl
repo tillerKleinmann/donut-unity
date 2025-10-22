@@ -105,21 +105,23 @@ half4 frag( Varyings IN ) : SV_Target
         float2 pv_next[2];
         
         float dt  =  1 / float(itn);
-        
+
+        int i = 0;
+
         if( gsm == 1 )
-            for( int i = 0; i < itn; i++ )
+            for( ; i < itn; i++ )
             {
                 geodesic_step__RK4( pv, dt, pv_next );
                 pv  =  pv_next;
             }
         else if( gsm == 2 )
-            for( int i = 0; i < itn; i++ )
+            for( ; i < itn; i++ )
             {
                 geodesic_step__midpoint( pv, dt, pv_next );
                 pv  =  pv_next;
             }
         else
-            for( int i = 0; i < itn; i++ )
+            for( ; i < itn; i++ )
             {
                 geodesic_step__euler( pv, dt, pv_next );
                 pv  =  pv_next;
@@ -130,7 +132,7 @@ half4 frag( Varyings IN ) : SV_Target
         uv.x  +=  0.5;
         uv.y  +=  0.5;
         
-        float3 col  =  SAMPLE_TEXTURE2D( _BaseMap, sampler_BaseMap, uv ).xyz;
+        float3 col  =  SAMPLE_TEXTURE2D( _BaseMap, sampler_LinearRepeat, uv ).xyz;
         
         return float4( col, 1 );
     }

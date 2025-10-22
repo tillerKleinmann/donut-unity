@@ -9,6 +9,7 @@ Shader "Custom/Confmets/dromedar"
         [VisionRadius] _VisRad("Vision Radius", Float)  =  2
         [Accuracy] _Accuracy("Accuracy", Float)  =  64
         [GSM] _GSM("Geodesic Step Method", Float)  =  1
+        [VultureTexture] _VulTex("Vulture Texture", 2D) = "white"
     }
 
     SubShader
@@ -23,6 +24,7 @@ Shader "Custom/Confmets/dromedar"
             #pragma fragment frag
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+            #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/GlobalSamplers.hlsl"
 
             #include "ShaderPreamble.hlsl"
 
