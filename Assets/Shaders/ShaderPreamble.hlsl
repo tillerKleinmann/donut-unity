@@ -20,7 +20,7 @@ CBUFFER_START(UnityPerMaterial)
     float  _VisRad;
     float  _Accuracy;
     float  _GSM;
-    float2 _CamPos;
+    float4 _CamPos;
 CBUFFER_END
 
 Varyings vert(Attributes IN)

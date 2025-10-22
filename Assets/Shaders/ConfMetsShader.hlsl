@@ -98,9 +98,12 @@ half4 frag( Varyings IN ) : SV_Target
         float c = cos( camRad );
         float s = sin( camRad );
 
+        float2 camPos = float2( _CamPos.x, _CamPos.y );
+        float2 vulVec = float2( _CamPos.z, _CamPos.w );
+
         float2 pv[2];
-        pv[0]  =  float2( _CamPos.x, _CamPos.y );
-        pv[1]  =  mul( xy, float2x2( c, s, -s, c ) ) / confun_exp(pv[0]);
+        pv[0]  =  camPos;
+        pv[1]  =  mul( xy, float2x2( c, s, -s, c ) ) / confun_exp(camPos);
         
         float2 pv_next[2];
         
@@ -126,13 +129,31 @@ half4 frag( Varyings IN ) : SV_Target
                 geodesic_step__euler( pv, dt, pv_next );
                 pv  =  pv_next;
             }
+
+        float2 tarPos  =  pv[0];
         
-        float2 uv  =  pv_next[0] / ( 2*Pi );
+        float2 uv  =  tarPos / ( 2*Pi );
         
         uv.x  +=  0.5;
         uv.y  +=  0.5;
         
         float3 col  =  SAMPLE_TEXTURE2D( _BaseMap, sampler_LinearRepeat, uv ).xyz;
+
+        float2 cam2tar = tarPos - camPos;
+        
+        cam2tar.x  -=  round(cam2tar.x/(2*Pi))*2*Pi;
+        cam2tar.y  -=  round(cam2tar.y/(2*Pi))*2*Pi;
+
+        cam2tar *= confun_exp(camPos);
+
+        cam2tar  =  mul( cam2tar, float2x2( -vulVec.x, -vulVec.y, -vulVec.y, vulVec.x ) );
+
+        float2 vul_uv = cam2tar + float2(0.5,0.5);
+
+
+        float4 vulCol  =  SAMPLE_TEXTURE2D( _VulTex, sampler_LinearRepeat, vul_uv );
+
+        col  =  lerp( col, vulCol.xyz, vulCol.w );
         
         return float4( col, 1 );
     }

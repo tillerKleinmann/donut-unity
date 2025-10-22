@@ -255,7 +255,12 @@ public class ScreenScript : MonoBehaviour
         float    camAng  =  material.GetFloat(  "_CamAng" );
 
         Vector2  pos  =  new Vector2( camPos.x, camPos.y );
-        Vector2  vel  =  new Vector2( -moveVulture.x, -moveVulture.y ) * vultureMoveSpeed;
+        Vector2 vel = new Vector2(-moveVulture.x, -moveVulture.y) * vultureMoveSpeed;
+
+        Vector2 vulVec;
+
+        vulVec.x = camPos.z;
+        vulVec.y = camPos.w;
 
         float  a  =  -camAng * (2*Mathf.PI/360);
 
@@ -264,20 +269,29 @@ public class ScreenScript : MonoBehaviour
 
         vel = new Vector2(c * vel.x + s * vel.y, -s * vel.x + c * vel.y);
 
-        vel /= Mathf.Exp(confun(pos,metricNumber));
+        vel /= Mathf.Exp(confun(pos, metricNumber));
 
-        float  dt  =  Time.deltaTime;
+        if (vel.magnitude > 0)
+            vulVec = vel.normalized;
+
+        float dt = Time.deltaTime;
         float  da  =  0;
 
         Vector2  new_pos  =  pos + dt*vel;
         
         Vector2  accel  =  -christoffel( pos, vel, vel, metricNumber );
 
-        if( vel.magnitude > 0 )
-            da  =  dt * ( accel.x*vel.y - accel.y*vel.x ) / ( vel.x*vel.x + vel.y*vel.y );
+        if (vel.magnitude > 0)
+            da = dt * (accel.x * vel.y - accel.y * vel.x) / (vel.x * vel.x + vel.y * vel.y);
 
-        camPos.x  =  new_pos.x;
-        camPos.y  =  new_pos.y;
+        new_pos.x  =  new_pos.x - Mathf.RoundToInt(new_pos.x / (2*Mathf.PI)) * 2*Mathf.PI;
+        new_pos.y  =  new_pos.y - Mathf.RoundToInt(new_pos.y / (2*Mathf.PI)) * 2*Mathf.PI;
+
+        camPos.x = new_pos.x;
+        camPos.y = new_pos.y;
+
+        camPos.z = vulVec.x;
+        camPos.w = vulVec.y;
         
         camAng   =   camAng  -  da * (360/(2*Mathf.PI));
 
