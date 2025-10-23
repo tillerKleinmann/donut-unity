@@ -9,13 +9,17 @@ public class ScreenScript : MonoBehaviour
 
     public InputActionAsset InputActions;
 
-    public float vultureMoveSpeed = 2.0f, visionRadius = 2.0f*Mathf.PI;
+    public float vultureMoveSpeed = 2.0f, visionRadius = 2.0f*Mathf.PI, rocketSpeed = 11.0f, rocketInitialLive = 3.142f;
 
     public int accuracy = 16, metricNumber = 1, textureNumber = 1, gsmNumber = 1;
 
-    private InputAction moveAction, nextMetric, prevMetric, incrVisRad, decrVisRad, incrAccuracy, decrAccuracy, nextTexture, prevTexture, nextGSM, prevGSM;
+    private InputAction moveAction, nextMetric, prevMetric, incrVisRad, decrVisRad, incrAccuracy, decrAccuracy, nextTexture, prevTexture, nextGSM, prevGSM, shoot;
 
     private Vector2 moveVulture;
+
+    private Vector4[] rocketsState = new Vector4[16];
+    private float[] rocketsLive = new float[16];
+    private int nextRocket = 0;
 
     private string metricName;
 
@@ -46,6 +50,8 @@ public class ScreenScript : MonoBehaviour
 
         incrVisRad = InputSystem.actions.FindAction("Increase Vision Radius");
         decrVisRad = InputSystem.actions.FindAction("Decrease Vision Radius");
+
+        shoot = InputSystem.actions.FindAction("Attack");
     }
     
     private void Start()
@@ -103,78 +109,101 @@ public class ScreenScript : MonoBehaviour
     {
         return y - dt * christoffel(x, dx, y, n);
     }
-    
+
+    private void apply_geodesic_euler_step( ref Vector2 p, ref Vector2 v, float dt, int n )
+    {
+        Vector2  Ga  =  christoffel( p, v, v, n );
+
+        p  +=  dt * v;
+        v  -=  dt * Ga;
+    }
+
+    private void propagate_rocket( ref Vector4 rp, float dt, int n )
+    {
+        Vector2 rp_p = new Vector2(rp.x, rp.y);
+        Vector2 rp_v = new Vector2(rp.z, rp.w);
+
+        // Vector2 Ga = christoffel(rp_p, rp_v, rp_v, n);
+
+        // rp_p  =  rp_p + dt*rp_v;
+        // rp_v  =  rp_v - dt*Ga;
+
+        apply_geodesic_euler_step( ref rp_p, ref rp_v, dt, n );
+
+        rp = new Vector4( rp_p.x, rp_p.y, rp_v.x, rp_v.y );
+    }
+
     private void Update()
     {
         time += Time.deltaTime;
 
         frameCount++;
 
-        if( time > pollingTime )
+        if (time > pollingTime)
         {
-            int  frameRate  =  Mathf.RoundToInt( frameCount / time );
-            frameRateField.text  =  frameRate.ToString();
+            int frameRate = Mathf.RoundToInt(frameCount / time);
+            frameRateField.text = frameRate.ToString();
 
             time -= pollingTime;
             frameCount = 0;
         }
 
-        bool  metricChanged   =  false;
-        bool  textureChanged  =  false;
+        bool metricChanged = false;
+        bool textureChanged = false;
 
-        if( nextMetric.WasPressedThisFrame() )
+        if (nextMetric.WasPressedThisFrame())
         {
             metricNumber += 1;
-            if( metricNumber > 5 ) metricNumber = 1;
+            if (metricNumber > 5) metricNumber = 1;
             metricChanged = true;
         }
 
-        if( prevMetric.WasPressedThisFrame() )
+        if (prevMetric.WasPressedThisFrame())
         {
             metricNumber -= 1;
-            if( metricNumber < 1 ) metricNumber = 5;
+            if (metricNumber < 1) metricNumber = 5;
             metricChanged = true;
         }
 
-        if( nextTexture.WasPressedThisFrame() )
+        if (nextTexture.WasPressedThisFrame())
         {
             textureNumber += 1;
-            if( textureNumber > 4 ) textureNumber = 1;
+            if (textureNumber > 4) textureNumber = 1;
             textureChanged = true;
         }
 
-        if( prevTexture.WasPressedThisFrame() )
+        if (prevTexture.WasPressedThisFrame())
         {
             textureNumber -= 1;
             if (textureNumber < 1) textureNumber = 4;
             textureChanged = true;
         }
-        
-        if( nextGSM.WasPressedThisFrame() )
+
+        if (nextGSM.WasPressedThisFrame())
         {
             gsmNumber += 1;
-            if( gsmNumber > 3 ) gsmNumber = 1;
+            if (gsmNumber > 3) gsmNumber = 1;
         }
 
-        if( prevGSM.WasPressedThisFrame() )
+        if (prevGSM.WasPressedThisFrame())
         {
             gsmNumber -= 1;
-            if( gsmNumber < 1 ) gsmNumber = 3;
+            if (gsmNumber < 1) gsmNumber = 3;
         }
 
-        if( incrAccuracy.WasPressedThisFrame() )
+        if (incrAccuracy.WasPressedThisFrame())
             accuracy *= 2;
 
-        if( decrAccuracy.WasPressedThisFrame() )
-            if( accuracy > 1 )  accuracy /= 2;
+        if (decrAccuracy.WasPressedThisFrame())
+            if (accuracy > 1) accuracy /= 2;
 
-        if( incrVisRad.WasPressedThisFrame() )
-            visionRadius *= Mathf.Exp( Mathf.Log( 2 ) / 4 );
-            
-        if( decrVisRad.WasPressedThisFrame() )
-            visionRadius /= Mathf.Exp( Mathf.Log( 2 ) / 4 );
+        if (incrVisRad.WasPressedThisFrame())
+            visionRadius *= Mathf.Exp(Mathf.Log(2) / 4);
 
-        switch( metricNumber )
+        if (decrVisRad.WasPressedThisFrame())
+            visionRadius /= Mathf.Exp(Mathf.Log(2) / 4);
+
+        switch (metricNumber)
         {
             case 1:
                 metricName = "flat";
@@ -208,10 +237,10 @@ public class ScreenScript : MonoBehaviour
             textureField.text = textureNumber.ToString();
 
         accuracyField.text = accuracy.ToString();
-        
-        radiusField.text  =  string.Format( "{0:0.000}", visionRadius );
 
-        switch( gsmNumber )
+        radiusField.text = string.Format("{0:0.000}", visionRadius);
+
+        switch (gsmNumber)
         {
             case 1:
                 GSMField.text = "RK4";
@@ -223,10 +252,10 @@ public class ScreenScript : MonoBehaviour
                 GSMField.text = "euler";
                 break;
         }
-        
-        material.SetFloat( "_VisRad",   visionRadius );
-        material.SetFloat( "_Accuracy", accuracy     );
-        material.SetFloat( "_GSM",      gsmNumber    );
+
+        material.SetFloat("_VisRad", visionRadius);
+        material.SetFloat("_Accuracy", accuracy);
+        material.SetFloat("_GSM", gsmNumber);
 
         tilingTexture = AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/Textures/Tilings/" + metricName + "_" + textureNumber.ToString() + ".png");
 
@@ -244,10 +273,25 @@ public class ScreenScript : MonoBehaviour
         // spaceTexture.Apply();
 
         //material.SetTexture("_BaseMap", spaceTexture);
-        material.SetTexture( "_BaseMap", tilingTexture );
-    }
+        material.SetTexture("_BaseMap", tilingTexture);
 
-    private void FixedUpdate()
+        if (shoot.WasPressedThisFrame())
+        {
+            rocketsLive[nextRocket] = rocketInitialLive;
+            rocketsState[nextRocket] = material.GetVector("_CamPos");
+
+            float rsf = rocketSpeed * Mathf.Exp(-confun(new Vector2(rocketsState[nextRocket].x, rocketsState[nextRocket].y), metricNumber));
+
+            rocketsState[nextRocket].z *= rsf;
+            rocketsState[nextRocket].w *= rsf;
+
+            nextRocket++;
+            if (nextRocket > 15)
+                nextRocket = 0;
+        }
+    }
+    
+    private void move_vulture()
     {
         moveVulture = moveAction.ReadValue<Vector2>();
 
@@ -255,31 +299,27 @@ public class ScreenScript : MonoBehaviour
         float    camAng  =  material.GetFloat(  "_CamAng" );
 
         Vector2  pos  =  new Vector2( camPos.x, camPos.y );
-        Vector2 vel = new Vector2(-moveVulture.x, -moveVulture.y) * vultureMoveSpeed;
+        Vector2  vel  =  new Vector2( -moveVulture.x, -moveVulture.y ) * vultureMoveSpeed;
 
-        Vector2 vulVec;
-
-        vulVec.x = camPos.z;
-        vulVec.y = camPos.w;
+        Vector2  vulVec  =  new Vector2( camPos.z, camPos.w );
 
         float  a  =  -camAng * (2*Mathf.PI/360);
 
         float  c  =  Mathf.Cos(a);
         float  s  =  Mathf.Sin(a);
 
-        vel = new Vector2(c * vel.x + s * vel.y, -s * vel.x + c * vel.y);
+        vel  =  new Vector2(c * vel.x + s * vel.y, -s * vel.x + c * vel.y);
 
-        vel /= Mathf.Exp(confun(pos, metricNumber));
+        vel  *=  Mathf.Exp( -confun( pos, metricNumber ) );
 
         if (vel.magnitude > 0)
             vulVec = vel.normalized;
 
         float dt = Time.deltaTime;
-        float  da  =  0;
+        float da = 0;
 
         Vector2  new_pos  =  pos + dt*vel;
-        
-        Vector2  accel  =  -christoffel( pos, vel, vel, metricNumber );
+        Vector2  accel    =  -christoffel( pos, vel, vel, metricNumber );
 
         if (vel.magnitude > 0)
             da = dt * (accel.x * vel.y - accel.y * vel.x) / (vel.x * vel.x + vel.y * vel.y);
@@ -297,5 +337,20 @@ public class ScreenScript : MonoBehaviour
 
         material.SetVector( "_CamPos", camPos );
         material.SetFloat(  "_CamAng", camAng );
+    }
+
+    private void FixedUpdate()
+    {
+        move_vulture();
+
+        for (int k = 0; k < 16; k++)
+        {
+            propagate_rocket(ref rocketsState[k], Time.deltaTime, metricNumber);
+            if( rocketsLive[k] > 0 )
+            rocketsLive[k] -= Time.deltaTime;
+        }
+
+        material.SetVectorArray("_RocketsState", rocketsState);
+        material.SetFloatArray("_RocketsLive", rocketsLive);
     }
 }

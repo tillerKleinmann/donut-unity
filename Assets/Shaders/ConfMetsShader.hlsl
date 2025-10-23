@@ -81,6 +81,24 @@ void geodesic_step__RK4( float2 pv[2], float dt, out float2 pv_next[2] )
     pv_next[1]  =  pv[1] + (dt/6)*( k1[1] + 2*k2[1] + 2*k3[1] + k4[1] );
 }
 
+float3 draw_sprite_linear( float3 col, float2 camPos, float2 sprPos, float2 sprVec, Texture2D Tex, float sprScale )
+{
+    float2 cam2spr = camPos - sprPos;
+    
+    cam2spr.x  -=  round(cam2spr.x/(2*Pi))*2*Pi;
+    cam2spr.y  -=  round(cam2spr.y/(2*Pi))*2*Pi;
+
+    cam2spr *= confun_exp(camPos) / sprScale;
+
+    cam2spr  =  mul( cam2spr, float2x2( -sprVec.x, -sprVec.y, -sprVec.y, sprVec.x ) );
+
+    float2 spr_uv = cam2spr + float2(0.5,0.5);
+
+    float4 sprCol  =  SAMPLE_TEXTURE2D( Tex, sampler_LinearClamp, spr_uv );
+
+    return lerp( col, sprCol.xyz, sprCol.w );
+}
+
 half4 frag( Varyings IN ) : SV_Target
 {
     float2 xy  =  IN.uv;
@@ -138,23 +156,19 @@ half4 frag( Varyings IN ) : SV_Target
         uv.y  +=  0.5;
         
         float3 col  =  SAMPLE_TEXTURE2D( _BaseMap, sampler_LinearRepeat, uv ).xyz;
-
-        float2 cam2tar = tarPos - camPos;
         
-        cam2tar.x  -=  round(cam2tar.x/(2*Pi))*2*Pi;
-        cam2tar.y  -=  round(cam2tar.y/(2*Pi))*2*Pi;
+        col  =  draw_sprite_linear( col, tarPos, camPos, vulVec, _VulTex, 1.0 );
 
-        cam2tar *= confun_exp(camPos);
+        for( int k = 0; k < 16; k++ )
+            if( _RocketsLive[k] > 0 )
+            {
+                float2 rocPos  =  float2( _RocketsState[k].x, _RocketsState[k].y );
+                float2 rocVel  =  float2( _RocketsState[k].z, _RocketsState[k].w );
+                rocVel  /=  length( rocVel );
 
-        cam2tar  =  mul( cam2tar, float2x2( -vulVec.x, -vulVec.y, -vulVec.y, vulVec.x ) );
+                col  =  draw_sprite_linear( col, tarPos, rocPos, rocVel, _RocTex, 0.5 );
+            }
 
-        float2 vul_uv = cam2tar + float2(0.5,0.5);
-
-
-        float4 vulCol  =  SAMPLE_TEXTURE2D( _VulTex, sampler_LinearRepeat, vul_uv );
-
-        col  =  lerp( col, vulCol.xyz, vulCol.w );
-        
         return float4( col, 1 );
     }
     else

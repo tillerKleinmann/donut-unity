@@ -12,6 +12,7 @@ struct Varyings
 
 TEXTURE2D(_BaseMap);
 TEXTURE2D(_VulTex);
+TEXTURE2D(_RocTex);
 
 CBUFFER_START(UnityPerMaterial)
     half4  _BaseColor;
@@ -33,3 +34,6 @@ Varyings vert(Attributes IN)
 
 uniform float2 position;
 uniform float2 direction;
+
+float4 _RocketsState[16];
+float  _RocketsLive[16];

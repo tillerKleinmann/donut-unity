@@ -2,7 +2,10 @@ fileFormatVersion: 2
 guid: 2312a4a2c8edf7ca2805057cd0e3c656
 ShaderImporter:
   externalObjects: {}
-  defaultTextures: []
+  defaultTextures:
+  - _BaseMap: {instanceID: 0}
+  - _VulTex: {fileID: 2800000, guid: 377b51e8f0fb570189fff3f5ed58f4d1, type: 3}
+  - _RocTex: {fileID: 2800000, guid: 89f6814d46e12d792bf6827c145ed724, type: 3}
   nonModifiableTextures: []
   userData: 
   assetBundleName: 
