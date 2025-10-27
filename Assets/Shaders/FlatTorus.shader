@@ -27,13 +27,13 @@ Shader "Custom/Confmets/flat"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/GlobalSamplers.hlsl"
 
-            #include "ShaderPreamble.hlsl"
+            #include "Common/ShaderPreamble.hlsl"
 
             float      confun( float2 p ){ return 0; }
             float2   confun_d( float2 p ){ return float2( 0, 0 ); }
             float  confun_lap( float2 p ){ return 0; }
 
-            #include "ConfMetsShader.hlsl"
+            #include "Common/ConfMetsShader.hlsl"
 
             ENDHLSL
         }

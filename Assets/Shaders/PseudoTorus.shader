@@ -27,13 +27,13 @@ Shader "Custom/Confmets/pseudo"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/GlobalSamplers.hlsl"
 
-            #include "ShaderPreamble.hlsl"
+            #include "Common/ShaderPreamble.hlsl"
 
             float      confun( float2 p ){ return cos(p.x)/4; }
             float2   confun_d( float2 p ){ return float2( -sin(p.x)/4, 0 ); }
             float  confun_lap( float2 p ){ return -cos(p.x)/4; }
 
-            #include "ConfMetsShader.hlsl"
+            #include "Common/ConfMetsShader.hlsl"
 
             ENDHLSL
         }

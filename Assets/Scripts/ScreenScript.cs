@@ -72,9 +72,11 @@ public class ScreenScript : MonoBehaviour
             case 3:
                 return Mathf.Cos(p.x) * Mathf.Cos(p.y) / 4;
             case 4:
-                return (1-Mathf.Cos(p.x))*(1-Mathf.Cos(p.y)) / 4;
+                return (1 - Mathf.Cos(p.x)) * (1 - Mathf.Cos(p.y)) / 4;
+            case 5:
+                return (2 - (1 - Mathf.Cos(p.x)) * (1 - Mathf.Cos(p.y))) / 7;
             default:
-                return (2 - (1-Mathf.Cos(p.x))*(1-Mathf.Cos(p.y)) ) / 7;
+                return 1 + Mathf.Cos(p.x)*(3-Mathf.Pow(Mathf.Cos(p.x),2))/8;
         }
     }
 
@@ -90,8 +92,10 @@ public class ScreenScript : MonoBehaviour
                 return new Vector2(-Mathf.Sin(p.x) * Mathf.Cos(p.y) / 4, -Mathf.Cos(p.x) * Mathf.Sin(p.y) / 4);
             case 4:
                 return new Vector2(Mathf.Sin(p.x) * (1 - Mathf.Cos(p.y)) / 4, Mathf.Sin(p.y) * (1 - Mathf.Cos(p.x)) / 4);
+            case 5:
+                return new Vector2( Mathf.Sin(p.x) * (Mathf.Cos(p.y) - 1) / 7, Mathf.Sin(p.y) * (Mathf.Cos(p.x) - 1) / 7);
             default:
-                return new Vector2(Mathf.Sin(p.x) * (Mathf.Cos(p.y) - 1) / 7, Mathf.Sin(p.y) * (Mathf.Cos(p.x) - 1) / 7);
+                return new Vector2( -3*Mathf.Sin(p.x)*(1-Mathf.Pow(Mathf.Cos(p.x),2))/16, 0);
         }
     }
 
@@ -154,14 +158,14 @@ public class ScreenScript : MonoBehaviour
         if (nextMetric.WasPressedThisFrame())
         {
             metricNumber += 1;
-            if (metricNumber > 5) metricNumber = 1;
+            if (metricNumber > 6) metricNumber = 1;
             metricChanged = true;
         }
 
         if (prevMetric.WasPressedThisFrame())
         {
             metricNumber -= 1;
-            if (metricNumber < 1) metricNumber = 5;
+            if (metricNumber < 1) metricNumber = 6;
             metricChanged = true;
         }
 
@@ -219,6 +223,9 @@ public class ScreenScript : MonoBehaviour
                 break;
             case 5:
                 metricName = "rademord";
+                break;
+            case 6:
+                metricName = "pseudoPlateau";
                 break;
         }
 
