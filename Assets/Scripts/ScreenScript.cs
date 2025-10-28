@@ -75,12 +75,14 @@ public class ScreenScript : MonoBehaviour
                 return (1 - Mathf.Cos(p.x)) * (1 - Mathf.Cos(p.y)) / 4;
             case 5:
                 return (2 - (1 - Mathf.Cos(p.x)) * (1 - Mathf.Cos(p.y))) / 7;
+            case 6:
+                return 0.5f + Mathf.Cos(p.x)*(3-Mathf.Pow(Mathf.Cos(p.x),2))/8;
             default:
-                return 1 + Mathf.Cos(p.x)*(3-Mathf.Pow(Mathf.Cos(p.x),2))/8;
+                return 0.5f + Mathf.Cos(p.x)*(3-Mathf.Pow(Mathf.Cos(p.x),2))*Mathf.Cos(p.y)*(3-Mathf.Pow(Mathf.Cos(p.y),2))/8;
         }
     }
 
-    private Vector2 confun_d(Vector2 p, int n)
+    private Vector2 confun_grad(Vector2 p, int n)
     {
         switch (n)
         {
@@ -93,15 +95,17 @@ public class ScreenScript : MonoBehaviour
             case 4:
                 return new Vector2(Mathf.Sin(p.x) * (1 - Mathf.Cos(p.y)) / 4, Mathf.Sin(p.y) * (1 - Mathf.Cos(p.x)) / 4);
             case 5:
-                return new Vector2( Mathf.Sin(p.x) * (Mathf.Cos(p.y) - 1) / 7, Mathf.Sin(p.y) * (Mathf.Cos(p.x) - 1) / 7);
+                return new Vector2(Mathf.Sin(p.x) * (Mathf.Cos(p.y) - 1) / 7, Mathf.Sin(p.y) * (Mathf.Cos(p.x) - 1) / 7);
+            case 6:
+                return new Vector2( -3*Mathf.Sin(p.x)*(1-Mathf.Pow(Mathf.Cos(p.x),2))/8, 0 );
             default:
-                return new Vector2( -3*Mathf.Sin(p.x)*(1-Mathf.Pow(Mathf.Cos(p.x),2))/16, 0);
+                return new Vector2( -3*Mathf.Sin(p.x)*(1-Mathf.Pow(Mathf.Cos(p.x),2))*Mathf.Cos(p.y)*(3-Mathf.Pow(Mathf.Cos(p.y),2))/8, -3*Mathf.Sin(p.y)*(1-Mathf.Pow(Mathf.Cos(p.y),2))*Mathf.Cos(p.x)*(3-Mathf.Pow(Mathf.Cos(p.x),2))/8 );
         }
     }
 
     private Vector2 christoffel( Vector2 p, Vector2 u, Vector2 v, int n )
     {
-        Vector2 cfd  =  confun_d( p, n );
+        Vector2 cfd  =  confun_grad( p, n );
 
         float a   =   u.x * v.x  -  u.y * v.y;
         float b   =   u.x * v.y  +  u.y * v.x;
@@ -126,11 +130,6 @@ public class ScreenScript : MonoBehaviour
     {
         Vector2 rp_p = new Vector2(rp.x, rp.y);
         Vector2 rp_v = new Vector2(rp.z, rp.w);
-
-        // Vector2 Ga = christoffel(rp_p, rp_v, rp_v, n);
-
-        // rp_p  =  rp_p + dt*rp_v;
-        // rp_v  =  rp_v - dt*Ga;
 
         apply_geodesic_euler_step( ref rp_p, ref rp_v, dt, n );
 
@@ -158,14 +157,14 @@ public class ScreenScript : MonoBehaviour
         if (nextMetric.WasPressedThisFrame())
         {
             metricNumber += 1;
-            if (metricNumber > 6) metricNumber = 1;
+            if (metricNumber > 7) metricNumber = 1;
             metricChanged = true;
         }
 
         if (prevMetric.WasPressedThisFrame())
         {
             metricNumber -= 1;
-            if (metricNumber < 1) metricNumber = 6;
+            if (metricNumber < 1) metricNumber = 7;
             metricChanged = true;
         }
 
@@ -226,6 +225,9 @@ public class ScreenScript : MonoBehaviour
                 break;
             case 6:
                 metricName = "pseudoPlateau";
+                break;
+            case 7:
+                metricName = "camelPlateau";
                 break;
         }
 
@@ -303,24 +305,19 @@ public class ScreenScript : MonoBehaviour
         moveVulture = moveAction.ReadValue<Vector2>();
 
         Vector4  camPos  =  material.GetVector( "_CamPos" );
-        float    camAng  =  material.GetFloat(  "_CamAng" );
+        float    camAng  =  material.GetFloat("_CamAng");
+
+        float a = -camAng * (2 * Mathf.PI / 360);
+
+        float c = Mathf.Cos(a);
+        float s = Mathf.Sin(a);
 
         Vector2  pos  =  new Vector2( camPos.x, camPos.y );
-        Vector2  vel  =  new Vector2( -moveVulture.x, -moveVulture.y ) * vultureMoveSpeed;
-
-        Vector2  vulVec  =  new Vector2( camPos.z, camPos.w );
-
-        float  a  =  -camAng * (2*Mathf.PI/360);
-
-        float  c  =  Mathf.Cos(a);
-        float  s  =  Mathf.Sin(a);
+        Vector2  vel  =  -moveVulture * vultureMoveSpeed;
 
         vel  =  new Vector2(c * vel.x + s * vel.y, -s * vel.x + c * vel.y);
 
         vel  *=  Mathf.Exp( -confun( pos, metricNumber ) );
-
-        if (vel.magnitude > 0)
-            vulVec = vel.normalized;
 
         float dt = Time.deltaTime;
         float da = 0;
@@ -331,14 +328,19 @@ public class ScreenScript : MonoBehaviour
         if (vel.magnitude > 0)
             da = dt * (accel.x * vel.y - accel.y * vel.x) / (vel.x * vel.x + vel.y * vel.y);
 
-        new_pos.x  =  new_pos.x - Mathf.RoundToInt(new_pos.x / (2*Mathf.PI)) * 2*Mathf.PI;
-        new_pos.y  =  new_pos.y - Mathf.RoundToInt(new_pos.y / (2*Mathf.PI)) * 2*Mathf.PI;
+        new_pos.x = new_pos.x - Mathf.RoundToInt(new_pos.x / (2 * Mathf.PI)) * 2 * Mathf.PI;
+        new_pos.y = new_pos.y - Mathf.RoundToInt(new_pos.y / (2 * Mathf.PI)) * 2 * Mathf.PI;
 
         camPos.x = new_pos.x;
         camPos.y = new_pos.y;
 
-        camPos.z = vulVec.x;
-        camPos.w = vulVec.y;
+        //Vector2  vulVec  =  new Vector2( camPos.z, camPos.w );
+        if (vel.magnitude > 0)
+        {
+            Vector2 vulVec = vel.normalized;
+            camPos.z = vulVec.x;
+            camPos.w = vulVec.y;
+        }
         
         camAng   =   camAng  -  da * (360/(2*Mathf.PI));
 

@@ -29,9 +29,9 @@ Shader "Custom/Confmets/pseudoPlateau"
 
             #include "Common/ShaderPreamble.hlsl"
 
-            float      confun( float2 p ){ return 1 + cos(p.x)*(3-pow(cos(p.x),2))/8; }
-            float2   confun_d( float2 p ){ return float2( -3*sin(p.x)*(1-pow(cos(p.x),2))/8, 0 ); }
-            float  confun_lap( float2 p ){ return 9*cos(p.x)*(pow(cos(p.x),2)-1)/8; }
+            float  confun(      float2 p ){ return 0.5 + cos(p.x)*(3-pow(cos(p.x),2))/8; }
+            float2 confun_grad( float2 p ){ return float2( -3*sin(p.x)*(1-pow(cos(p.x),2))/8, 0 ); }
+            float  confun_lap(  float2 p ){ return 9*cos(p.x)*(pow(cos(p.x),2)-1)/8; }
 
             #include "Common/ConfMetsShader.hlsl"
 

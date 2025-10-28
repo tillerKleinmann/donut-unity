@@ -29,9 +29,9 @@ Shader "Custom/Confmets/camel"
 
             #include "Common/ShaderPreamble.hlsl"
 
-            float      confun( float2 p ){ return cos(p.x)*cos(p.y)/4; }
-            float2   confun_d( float2 p ){ return -float2( sin(p.x)*cos(p.y), cos(p.x)*sin(p.y) )/4; }
-            float  confun_lap( float2 p ){ return -cos(p.x)*cos(p.y)/2; }
+            float  confun(      float2 p ){ return cos(p.x)*cos(p.y)/4; }
+            float2 confun_grad( float2 p ){ return -float2( sin(p.x)*cos(p.y), cos(p.x)*sin(p.y) )/4; }
+            float  confun_lap(  float2 p ){ return -cos(p.x)*cos(p.y)/2; }
 
             #include "Common/ConfMetsShader.hlsl"
 

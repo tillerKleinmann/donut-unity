@@ -29,9 +29,9 @@ Shader "Custom/Confmets/dromedar"
 
             #include "Common/ShaderPreamble.hlsl"
 
-            float      confun( float2 p ){ return (1-cos(p.x))*(1-cos(p.y)) / 4; }
-            float2   confun_d( float2 p ){ return float2( sin(p.x)*(1-cos(p.y)), (1-cos(p.x))*sin(p.y) ) / 4; }
-            float  confun_lap( float2 p ){ return ( -2*cos(p.x)*cos(p.y) + cos(p.x) + cos(p.y) ) / 4; }
+            float  confun(      float2 p ){ return (1-cos(p.x))*(1-cos(p.y)) / 4; }
+            float2 confun_grad( float2 p ){ return float2( sin(p.x)*(1-cos(p.y)), (1-cos(p.x))*sin(p.y) ) / 4; }
+            float  confun_lap(  float2 p ){ return ( -2*cos(p.x)*cos(p.y) + cos(p.x) + cos(p.y) ) / 4; }
 
             #include "Common/ConfMetsShader.hlsl"
 

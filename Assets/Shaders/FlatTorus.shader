@@ -29,9 +29,9 @@ Shader "Custom/Confmets/flat"
 
             #include "Common/ShaderPreamble.hlsl"
 
-            float      confun( float2 p ){ return 0; }
-            float2   confun_d( float2 p ){ return float2( 0, 0 ); }
-            float  confun_lap( float2 p ){ return 0; }
+            float  confun(      float2 p ){ return 0; }
+            float2 confun_grad( float2 p ){ return float2( 0, 0 ); }
+            float  confun_lap(  float2 p ){ return 0; }
 
             #include "Common/ConfMetsShader.hlsl"
 

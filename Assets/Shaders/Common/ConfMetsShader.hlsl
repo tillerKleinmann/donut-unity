@@ -15,7 +15,7 @@ float confun_exp2( float2 p )
 
 float2 christoffel( float2 pv[2] )
 {
-    float2 cfd  =  confun_d( pv[0] );
+    float2 cfd  =  confun_grad( pv[0] );
 
     float a  =  pow( pv[1].x, 2 ) - pow( pv[1].y, 2 );
     float b  =  2 * pv[1].x * pv[1].y;
@@ -122,15 +122,18 @@ float3 draw_sprite_quadratic( float3 col, float2 camPos, float2 sprPos, float2 s
     cam2spr.y  -=  round( cam2spr.y / (2*Pi) ) * 2*Pi;
 
     float2  spr_pv[2]  =  { sprPos, cam2spr };
-    cam2spr  +=  0.5 * christoffel( spr_pv );
+    float2  cam2spr_q  =  cam2spr + 0.5 * christoffel( spr_pv );
 
-    cam2spr *= confun_exp(sprPos);
+    cam2spr_q *= confun_exp(sprPos);
 
-    cam2spr  =  mul( cam2spr, float2x2( -sprVec.x, -sprVec.y, -sprVec.y, sprVec.x ) ) / sprScale;
+    cam2spr_q  =  mul( cam2spr_q, float2x2( -sprVec.x, -sprVec.y, -sprVec.y, sprVec.x ) ) / sprScale;
 
-    float2 spr_uv  =  cam2spr + float2(0.5,0.5);
+    float2 spr_uv  =  cam2spr_q + float2(0.5,0.5);
 
     float4 sprCol  =  SAMPLE_TEXTURE2D( Tex, sampler_LinearClamp, spr_uv );
+
+    if( length(cam2spr) > 1.0 )
+        sprCol.w = 0;
 
     return lerp( col, sprCol.xyz, sprCol.w );
 }
@@ -200,7 +203,7 @@ half4 frag( Varyings IN ) : SV_Target
         // float4 vulCol  =  SAMPLE_TEXTURE2D( _VulTex, sampler_LinearClamp, vul_uv + float2(0.5,0.5) );
         // col  =  lerp( col, vulCol.xyz, vulCol.w );
         
-        // col  =  draw_sprite_linear( col, tarPos, camPos, vulVec, _VulTex, 1.0 );
+        //col  =  draw_sprite_linear( col, tarPos, camPos, vulVec, _VulTex, 1.0 );
         col  =  draw_sprite_quadratic(  col, tarPos, camPos, vulVec, _VulTex, 1.0 );
 
         for( int k = 0; k < 16; k++ )
@@ -212,6 +215,9 @@ half4 frag( Varyings IN ) : SV_Target
 
                 col  =  draw_sprite_linear( col, tarPos, rocPos, rocVel, _RocTex, 0.5 );
             }
+
+        if( pv1.x*vulVec.x + pv1.y*vulVec.y > length(pv1) * length(vulVec) * 255/256 )
+            col  =  0.5*col;
 
         return float4( col, 1 );
     }

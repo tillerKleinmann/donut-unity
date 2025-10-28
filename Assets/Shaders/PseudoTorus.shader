@@ -29,9 +29,9 @@ Shader "Custom/Confmets/pseudo"
 
             #include "Common/ShaderPreamble.hlsl"
 
-            float      confun( float2 p ){ return cos(p.x)/4; }
-            float2   confun_d( float2 p ){ return float2( -sin(p.x)/4, 0 ); }
-            float  confun_lap( float2 p ){ return -cos(p.x)/4; }
+            float  confun(      float2 p ){ return cos(p.x)/4; }
+            float2 confun_grad( float2 p ){ return float2( -sin(p.x)/4, 0 ); }
+            float  confun_lap(  float2 p ){ return -cos(p.x)/4; }
 
             #include "Common/ConfMetsShader.hlsl"
 
