@@ -113,17 +113,30 @@ public class ScreenScript : MonoBehaviour
         return new Vector2( cfd.x*a + cfd.y*b, -cfd.y*a + cfd.x*b );
     }
 
-    private Vector2 parallel_transport_euler_step(Vector2 x, Vector2 dx, Vector2 y, float dt, int n)
+    private Vector2 parallel_transport_step__euler(Vector2 x, Vector2 dx, Vector2 y, float dt, int n)
     {
         return y - dt * christoffel(x, dx, y, n);
     }
 
-    private void apply_geodesic_euler_step( ref Vector2 p, ref Vector2 v, float dt, int n )
+    private void apply_geodesic_step__euler(ref Vector2 p, ref Vector2 v, float dt, int n)
     {
-        Vector2  Ga  =  christoffel( p, v, v, n );
+        Vector2 Ga = christoffel(p, v, v, n);
 
-        p  +=  dt * v;
-        v  -=  dt * Ga;
+        p += dt * v;
+        v -= dt * Ga;
+    }
+    
+    private void apply_geodesic_step__midpoint( ref Vector2 p, ref Vector2 v, float dt, int n )
+    {
+        Vector2 Ga = christoffel(p, v, v, n);
+
+        Vector2 p_m = p + (dt / 2) * v;
+        Vector2 v_m = v - (dt / 2) * Ga;
+
+        Vector2 Ga_m = christoffel(p_m, v_m, v_m, n);
+
+        p  =  p + dt * v_m;
+        v  =  v - dt * Ga_m;
     }
 
     private void propagate_rocket( ref Vector4 rp, float dt, int n )
@@ -131,7 +144,8 @@ public class ScreenScript : MonoBehaviour
         Vector2 rp_p = new Vector2(rp.x, rp.y);
         Vector2 rp_v = new Vector2(rp.z, rp.w);
 
-        apply_geodesic_euler_step( ref rp_p, ref rp_v, dt, n );
+        //apply_geodesic_step__euler(ref rp_p, ref rp_v, dt, n);
+        apply_geodesic_step__midpoint( ref rp_p, ref rp_v, dt, n );
 
         rp = new Vector4( rp_p.x, rp_p.y, rp_v.x, rp_v.y );
     }

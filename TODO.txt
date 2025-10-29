@@ -5,5 +5,3 @@
 
 - Progagation von Raketen scheint ungenau zu sein
     -> midpoint oder RK4 für Bewegungen?
-
-- Quadratische Spriteabbildung erzeugt Artefakte -> Cutoff?

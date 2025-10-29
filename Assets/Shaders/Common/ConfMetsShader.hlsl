@@ -216,8 +216,8 @@ half4 frag( Varyings IN ) : SV_Target
                 col  =  draw_sprite_linear( col, tarPos, rocPos, rocVel, _RocTex, 0.5 );
             }
 
-        if( pv1.x*vulVec.x + pv1.y*vulVec.y > length(pv1) * length(vulVec) * 255/256 )
-            col  =  0.5*col;
+        if( pv1.x*vulVec.x + pv1.y*vulVec.y > length(pv1)*length(vulVec)*255/256 )
+            col  =  float3( sqrt(col.x), sqrt(col.y), sqrt(col.z) );
 
         return float4( col, 1 );
     }
