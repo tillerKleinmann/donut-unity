@@ -92,8 +92,10 @@ public class ScreenScript : MonoBehaviour
                 return 0.5f + Cos(p.x)*(3-Pow(Cos(p.x),2))/8;
             case 7:
                 return 0.5f + Cos(p.x) * (3 - Pow(Cos(p.x), 2)) * Cos(p.y) * (3 - Pow(Cos(p.y), 2)) / 8;
-            default:
+            case 8:
                 return 0f;
+            default:
+                return Log( ( 5f + 4f*Cos(p.y*Sqrt(3)) ) / ( 2f + Cos(p.y*Sqrt(3)) ) );
         }
     }
 
@@ -115,14 +117,16 @@ public class ScreenScript : MonoBehaviour
                 return new Vector2(-3 * Sin(p.x) * (1 - Pow(Cos(p.x), 2)) / 8, 0);
             case 7:
                 return new Vector2(-3 * Sin(p.x) * (1 - Pow(Cos(p.x), 2)) * Cos(p.y) * (3 - Pow(Cos(p.y), 2)) / 8, -3 * Sin(p.y) * (1 - Pow(Cos(p.y), 2)) * Cos(p.x) * (3 - Pow(Cos(p.x), 2)) / 8);
-            default:
+            case 8:
                 return new Vector2(0, 0);
+            default:
+                return new Vector2( 0, -Sqrt(3f)*Sin(p.y*Sqrt(3))*3f / ( ( 2f + Cos(p.y*Sqrt(3)) ) * ( 5f + 4f*Cos(p.y*Sqrt(3)) ) ) );
         }
     }
     
     private float distance( Vector2 p, Vector2 q, int n )
     {
-        Vector2 diff = reset_to_domain_square(p - q);
+        Vector2 diff = reset_to_fundamental_domain(p - q, domainParameters);
         return diff.magnitude * Exp(0.5f * (confun(p, n) + confun(q, n)));
     }
 
@@ -254,13 +258,13 @@ public class ScreenScript : MonoBehaviour
 
         if (nextMetric.WasPressedThisFrame())
         {
-            if (metricNumber < 8) metricNumber += 1; else metricNumber = 1;
+            if (metricNumber < 9) metricNumber += 1; else metricNumber = 1;
             metricChanged = true;
         }
 
         if (prevMetric.WasPressedThisFrame())
         {
-            if (metricNumber > 1) metricNumber -= 1; else metricNumber = 8;
+            if (metricNumber > 1) metricNumber -= 1; else metricNumber = 9;
             metricChanged = true;
         }
 
@@ -308,9 +312,13 @@ public class ScreenScript : MonoBehaviour
                     metricName = "camelPlateau";
                     domainParameters = make_domain_parameters(2 * PI, 2 * PI, 90);
                     break;
-                default:
+                case 8:
                     metricName = "hexFlat";
                     domainParameters = make_domain_parameters(2 * PI, 2 * PI, 60);
+                    break;
+                default:
+                    metricName = "torus";
+                    domainParameters = make_domain_parameters( 2 * PI, (2/Sqrt(3)) * PI, 90);
                     break;
             }
 
