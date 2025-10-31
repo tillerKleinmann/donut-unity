@@ -1,8 +1,3 @@
-static const float  Pi  =  3.14159;
-static const float   R  =  _VisRad;
-static const int   itn  =  int( _Accuracy );
-static const int   gsm  =  int( _GSM );
-
 float confun_exp( float2 p )
 {
     return exp( confun( p ) );
@@ -81,58 +76,70 @@ void geodesic_step__RK4( float2 pv[2], float dt, out float2 pv_next[2] )
     pv_next[1]  =  pv[1] + (dt/6)*( k1[1] + 2*k2[1] + 2*k3[1] + k4[1] );
 }
 
-float3 draw_sprite_centered( float3 col, float2 camPos, float2 sprPos, float2 sprVec, Texture2D Tex, float sprScale )
+float2 reset_to_unit_square( float2 p )
 {
-    float2 cam2spr = camPos - sprPos;
+    return float2( p.x - round(p.x), p.y - round(p.y) );
+}
 
-    cam2spr *= confun_exp(camPos) / sprScale;
+float2 reset_to_parallelogram( float2 p )
+{
+    p  =  mul( p, plg2usq );
+    p  =  reset_to_unit_square( p );
+    return mul( p, usq2plg );
+}
 
-    cam2spr  =  mul( cam2spr, float2x2( -sprVec.x, -sprVec.y, -sprVec.y, sprVec.x ) );
+float3 draw_sprite_centered( float3 col, float2 pixPos, float2 sprVec, Texture2D Tex, float sprScale )
+{
+    pixPos *= confun_exp(pixPos) / sprScale;
 
-    float2 spr_uv = cam2spr + float2(0.5,0.5);
+    pixPos  =  mul( pixPos, float2x2( -sprVec.x, -sprVec.y, -sprVec.y, sprVec.x ) );
+
+    float2 spr_uv = pixPos + float2(0.5,0.5);
 
     float4 sprCol  =  SAMPLE_TEXTURE2D( Tex, sampler_LinearClamp, spr_uv );
 
     return lerp( col, sprCol.xyz, sprCol.w );
 }
 
-float3 draw_sprite_linear( float3 col, float2 camPos, float2 sprPos, float2 sprVec, Texture2D Tex, float sprScale )
+float3 draw_sprite_linear( float3 col, float2 pixPos, float2 sprPos, float2 sprVec, Texture2D Tex, float sprScale )
 {
-    float2 cam2spr = camPos - sprPos;
+    float2 pix2spr = pixPos - sprPos;
     
-    cam2spr.x  -=  round(cam2spr.x/(2*Pi))*2*Pi;
-    cam2spr.y  -=  round(cam2spr.y/(2*Pi))*2*Pi;
+    // pix2spr.x  -=  round(pix2spr.x/(2*PI))*2*PI;
+    // pix2spr.y  -=  round(pix2spr.y/(2*PI))*2*PI;
+    pix2spr = reset_to_parallelogram( pix2spr );
 
-    cam2spr *= confun_exp(sprPos) / sprScale;
+    pix2spr *= confun_exp(sprPos) / sprScale;
 
-    cam2spr  =  mul( cam2spr, float2x2( -sprVec.x, -sprVec.y, -sprVec.y, sprVec.x ) );
+    pix2spr  =  mul( pix2spr, float2x2( -sprVec.x, -sprVec.y, -sprVec.y, sprVec.x ) );
 
-    float2 spr_uv = cam2spr + float2(0.5,0.5);
+    float2 spr_uv = pix2spr + float2(0.5,0.5);
 
     float4 sprCol  =  SAMPLE_TEXTURE2D( Tex, sampler_LinearClamp, spr_uv );
 
     return lerp( col, sprCol.xyz, sprCol.w );
 }
 
-float3 draw_sprite_quadratic( float3 col, float2 camPos, float2 sprPos, float2 sprVec, Texture2D Tex, float sprScale )
+float3 draw_sprite_quadratic( float3 col, float2 pixPos, float2 sprPos, float2 sprVec, Texture2D Tex, float sprScale )
 {
-    float2  cam2spr  =  camPos - sprPos;
+    float2  pix2spr  =  pixPos - sprPos;
     
-    cam2spr.x  -=  round( cam2spr.x / (2*Pi) ) * 2*Pi;
-    cam2spr.y  -=  round( cam2spr.y / (2*Pi) ) * 2*Pi;
+    // pix2spr.x  -=  round(pix2spr.x/(2*PI))*2*PI;
+    // pix2spr.y  -=  round(pix2spr.y/(2*PI))*2*PI;
+    pix2spr = reset_to_parallelogram( pix2spr );
 
-    float2  spr_pv[2]  =  { sprPos, cam2spr };
-    float2  cam2spr_q  =  cam2spr + 0.5 * christoffel( spr_pv );
+    float2  spr_pv[2]  =  { sprPos, pix2spr };
+    float2  pix2spr_q  =  pix2spr + 0.5 * christoffel( spr_pv );
 
-    cam2spr_q *= confun_exp(sprPos);
+    pix2spr_q *= confun_exp(sprPos);
 
-    cam2spr_q  =  mul( cam2spr_q, float2x2( -sprVec.x, -sprVec.y, -sprVec.y, sprVec.x ) ) / sprScale;
+    pix2spr_q  =  mul( pix2spr_q, float2x2( -sprVec.x, -sprVec.y, -sprVec.y, sprVec.x ) ) / sprScale;
 
-    float2 spr_uv  =  cam2spr_q + float2(0.5,0.5);
+    float2 spr_uv  =  pix2spr_q + float2(0.5,0.5);
 
     float4 sprCol  =  SAMPLE_TEXTURE2D( Tex, sampler_LinearClamp, spr_uv );
 
-    if( length(cam2spr) > 1.0 )
+    if( length(pix2spr) > 1.0 )
         sprCol.w = 0;
 
     return lerp( col, sprCol.xyz, sprCol.w );
@@ -150,13 +157,13 @@ half4 frag( Varyings IN ) : SV_Target
     {
         xy  =  xy * R;
 
-        float camRad  =  _CamAng * (2*Pi/360);
+        //float camRad  =  _CamAng * (PI/180);
 
         float c = cos( camRad );
         float s = sin( camRad );
 
-        float2 camPos = float2( _CamPos.x, _CamPos.y );
-        float2 vulVec = float2( _CamPos.z, _CamPos.w );
+        // float2 camPos = float2( _CamPos.x, _CamPos.y );
+        // float2 vulVec = float2( _CamPos.z, _CamPos.w );
 
         float2 pv1  =  mul( xy, float2x2( c, s, -s, c ) ) / confun_exp(camPos);
 
@@ -191,21 +198,15 @@ half4 frag( Varyings IN ) : SV_Target
 
         float2 tarPos  =  pv[0];
         
-        float2 uv  =  tarPos / ( 2*Pi );
+        //float2 uv  =  tarPos / ( 2*PI );
+        float2 uv  =  mul( tarPos, plg2usq );
         
-        uv.x  +=  0.5;
-        uv.y  +=  0.5;
+        uv  +=  float2( 0.5, 0.5 );
         
         float3 col  =  SAMPLE_TEXTURE2D( _BaseMap, sampler_LinearRepeat, uv ).xyz;
-
-        // test vulture
-        // float2 vul_uv  =  mul( pv1, float2x2( -vulVec.x, -vulVec.y, -vulVec.y, vulVec.x ) ) * confun_exp(camPos);
-        // float4 vulCol  =  SAMPLE_TEXTURE2D( _VulTex, sampler_LinearClamp, vul_uv + float2(0.5,0.5) );
-        // col  =  lerp( col, vulCol.xyz, vulCol.w );
         
-        //col  =  draw_sprite_linear( col, tarPos, camPos, vulVec, _VulTex, 1.0 );
         col  =  draw_sprite_quadratic(  col, tarPos, camPos, vulVec, _VulTex, 1.0 );
-
+        
         for( int k = 0; k < 16; k++ )
             if( _RocketsLive[k] > 0 )
             {
@@ -222,5 +223,5 @@ half4 frag( Varyings IN ) : SV_Target
         return float4( col, 1 );
     }
     else
-        return float4( 0, 0, 0, 1 );
+        return float4( 0, 0, 0, 0 );
 }

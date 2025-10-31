@@ -4,6 +4,7 @@ Shader "Custom/Confmets/pseudo"
     {
         [MainColor] _BaseColor("Base Color", Color) = (1, 1, 1, 1)
         [MainTexture] _BaseMap("Base Map", 2D) = "white"
+        [DomainMatrix] _DomMat( "Domain Matrix", Vector )  =  (6.2831853,0,0,6.2831853)
         [CameraPosition] _CamPos("Camera Position", Vector)  =  (0, 0, 0, 0)
         [CameraAngle] _CamAng("Camera Angle", Float)  =  0
         [VisionRadius] _VisRad("Vision Radius", Float)  =  2
@@ -15,10 +16,12 @@ Shader "Custom/Confmets/pseudo"
 
     SubShader
     {
-        Tags { "RenderType" = "Opaque" "RenderPipeline" = "UniversalPipeline" }
+        Tags { "RenderType" = "Transparent" "RenderPipeline" = "UniversalPipeline" }
 
         Pass
         {
+            Blend SrcAlpha OneMinusSrcAlpha
+            
             HLSLPROGRAM
 
             #pragma vertex vert

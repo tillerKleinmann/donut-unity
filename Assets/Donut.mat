@@ -63,6 +63,7 @@ Material:
     - _BaseColor: {r: 1, g: 0, b: 0, a: 1}
     - _CamPos: {r: 0, g: 0, b: 0, a: -1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _DomMat: {r: 6.28318, g: 0, b: 0, a: 6.28318}
     - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

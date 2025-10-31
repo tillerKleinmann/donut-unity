@@ -1,4 +1,4 @@
-Shader "Custom/Confmets/dromedar"
+Shader "Custom/Confmets/hexFlat"
 {
     Properties
     {
@@ -21,7 +21,7 @@ Shader "Custom/Confmets/dromedar"
         Pass
         {
             Blend SrcAlpha OneMinusSrcAlpha
-            
+
             HLSLPROGRAM
 
             #pragma vertex vert
@@ -32,9 +32,9 @@ Shader "Custom/Confmets/dromedar"
 
             #include "Common/ShaderPreamble.hlsl"
 
-            float  confun(      float2 p ){ return (1-cos(p.x))*(1-cos(p.y)) / 4; }
-            float2 confun_grad( float2 p ){ return float2( sin(p.x)*(1-cos(p.y)), (1-cos(p.x))*sin(p.y) ) / 4; }
-            float  confun_lap(  float2 p ){ return ( -2*cos(p.x)*cos(p.y) + cos(p.x) + cos(p.y) ) / 4; }
+            float  confun(      float2 p ){ return 0; }
+            float2 confun_grad( float2 p ){ return float2( 0, 0 ); }
+            float  confun_lap(  float2 p ){ return 0; }
 
             #include "Common/ConfMetsShader.hlsl"
 

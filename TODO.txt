@@ -1,7 +1,3 @@
 - Vector4 als Orthonormalen Rahmen für Sprites nutzen
-- Hexagonalen Torus implementieren
-- Quadratische Kleinsche Flasche
-- Hexagonale Kleinsche Flasche
-
-- Progagation von Raketen scheint ungenau zu sein
-    -> midpoint oder RK4 für Bewegungen?
+- Parallelogrammbereiche implementieren
+- Nichtorientierbare Parallelogrammbereiche implementieren
