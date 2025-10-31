@@ -95,7 +95,7 @@ public class ScreenScript : MonoBehaviour
             case 8:
                 return 0f;
             default:
-                return Log( ( 5f + 4f*Cos(p.y*Sqrt(3)) ) / ( 2f + Cos(p.y*Sqrt(3)) ) );
+                return Log( 3 ) - Log( 2 - Cos( p.y * Sqrt(3) ) );
         }
     }
 
@@ -120,7 +120,7 @@ public class ScreenScript : MonoBehaviour
             case 8:
                 return new Vector2(0, 0);
             default:
-                return new Vector2( 0, -Sqrt(3f)*Sin(p.y*Sqrt(3))*3f / ( ( 2f + Cos(p.y*Sqrt(3)) ) * ( 5f + 4f*Cos(p.y*Sqrt(3)) ) ) );
+                return new Vector2( 0, -Sqrt(3)*Sin(p.y*Sqrt(3)) / ( 2 - Cos(p.y*Sqrt(3)) ) );
         }
     }
     

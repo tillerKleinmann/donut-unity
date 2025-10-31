@@ -32,8 +32,8 @@ Shader "Custom/Confmets/torus"
 
             #include "Common/ShaderPreamble.hlsl"
 
-            float  confun(      float2 p ){ return log( ( 5 + 4*cos(p.y*sqrt(3)) ) / ( 2 + cos(p.y*sqrt(3)) ) ); }
-            float2 confun_grad( float2 p ){ return float2( 0, -sqrt(3)*sin(p.y*sqrt(3))*3 / ( ( 2 + cos(p.y*sqrt(3)) ) * ( 5 + 4*cos(p.y*sqrt(3)) ) ) ); }
+            float  confun(      float2 p ){ return log(3) - log( 2 - cos(p.y*sqrt(3)) ); }
+            float2 confun_grad( float2 p ){ return float2( 0, -sqrt(3)*sin(p.y*sqrt(3)) / ( 2 - cos(p.y*sqrt(3)) ) ); }
             float  confun_lap(  float2 p ){ return 0; }// not yet implemented...
 
             #include "Common/ConfMetsShader.hlsl"
