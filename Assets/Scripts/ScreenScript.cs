@@ -14,7 +14,7 @@ public class ScreenScript : MonoBehaviour
 
     public int accuracy = 16, metricNumber = 1, textureNumber = 1, gsmNumber = 1;
 
-    private InputAction moveAction, nextMetric, prevMetric, incrVisRad, decrVisRad, incrAccuracy, decrAccuracy, nextTexture, prevTexture, nextGSM, prevGSM, shoot;
+    private InputAction moveAction, nextMetric, prevMetric, incrVisRad, decrVisRad, incrAccuracy, decrAccuracy, nextTexture, prevTexture, nextGSM, prevGSM, shoot, toggleFullscreen;
 
     private Vector2 moveVulture;
 
@@ -33,6 +33,10 @@ public class ScreenScript : MonoBehaviour
 
     private float pollingTime = 1f, time = 0f;
     private int frameCount = 0;
+
+    private bool fullscreen = false;
+
+    private float fullscreenFloat = 0f;
 
     Material material;
 
@@ -230,9 +234,12 @@ public class ScreenScript : MonoBehaviour
         if (nextGSM.WasPressedThisFrame()) if (gsmNumber < 3) gsmNumber += 1;
         if (prevGSM.WasPressedThisFrame()) if (gsmNumber > 1) gsmNumber -= 1;
 
+        if (toggleFullscreen.WasPressedThisFrame()) { fullscreen = !fullscreen; if (fullscreen) fullscreenFloat = 1f; else fullscreenFloat = 0f; }
+
         material.SetFloat("_VisRad", visionRadius);
         material.SetFloat("_Accuracy", accuracy);
         material.SetFloat("_GSM", gsmNumber);
+        material.SetFloat("_FullScreen", fullscreenFloat);
 
         accuracyField.text = accuracy.ToString();
         radiusField.text = string.Format("{0:0.000}", visionRadius);
@@ -256,29 +263,10 @@ public class ScreenScript : MonoBehaviour
         bool metricChanged = false;
         bool textureChanged = false;
 
-        if (nextMetric.WasPressedThisFrame())
-        {
-            if (metricNumber < 9) metricNumber += 1; else metricNumber = 1;
-            metricChanged = true;
-        }
-
-        if (prevMetric.WasPressedThisFrame())
-        {
-            if (metricNumber > 1) metricNumber -= 1; else metricNumber = 9;
-            metricChanged = true;
-        }
-
-        if (nextTexture.WasPressedThisFrame())
-        {
-            if (textureNumber < 4) textureNumber += 1; else textureNumber = 1;
-            textureChanged = true;
-        }
-
-        if (prevTexture.WasPressedThisFrame())
-        {
-            if (textureNumber > 1) textureNumber -= 1; else textureNumber = 4;
-            textureChanged = true;
-        }
+        if (nextMetric.WasPressedThisFrame()) { if (metricNumber < 9) metricNumber += 1; else metricNumber = 1; metricChanged = true; }
+        if (prevMetric.WasPressedThisFrame()) { if (metricNumber > 1) metricNumber -= 1; else metricNumber = 9; metricChanged = true; }
+        if (nextTexture.WasPressedThisFrame()) { if (textureNumber < 4) textureNumber += 1; else textureNumber = 1; textureChanged = true; }
+        if (prevTexture.WasPressedThisFrame()) { if (textureNumber > 1) textureNumber -= 1; else textureNumber = 4; textureChanged = true; }
 
         if (metricChanged)
         {
@@ -329,8 +317,7 @@ public class ScreenScript : MonoBehaviour
             material.SetVector("_DomMat", domMat);
         }
 
-        if (textureChanged)
-            textureField.text = textureNumber.ToString();
+        if (textureChanged) textureField.text = textureNumber.ToString();
 
         if (metricChanged | textureChanged)
         {
@@ -443,6 +430,8 @@ public class ScreenScript : MonoBehaviour
         decrVisRad = InputSystem.actions.FindAction("Decrease Vision Radius");
 
         shoot = InputSystem.actions.FindAction("Attack");
+
+        toggleFullscreen = InputSystem.actions.FindAction("Toggle Fullscreen");
 
         domainParameters = make_domain_parameters(2 * PI, 2 * PI, 90);
 

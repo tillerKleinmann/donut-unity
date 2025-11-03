@@ -20,6 +20,7 @@ CBUFFER_START(UnityPerMaterial)
     float4 _DomMat;
     float  _CamAng;
     float  _VisRad;
+    float  _FullScreen;
     float  _Accuracy;
     float  _GSM;
     float4 _CamPos;
@@ -39,6 +40,8 @@ float  _RocketsLive[16];
 static const float   R  =  _VisRad;
 static const int   itn  =  int( _Accuracy );
 static const int   gsm  =  int( _GSM );
+
+static const bool   fullscreen  =  bool( _FullScreen );
 
 static const float4   u2p = float4( _DomMat.x, _DomMat.y, 0, _DomMat.w );
 static const float2x2 usq2plg = transpose( float2x2( u2p.x, u2p.y, 0, u2p.w ) );

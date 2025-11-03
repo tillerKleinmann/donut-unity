@@ -151,9 +151,11 @@ half4 frag( Varyings IN ) : SV_Target
     
     xy  =  2*xy - float2(1,1);
     
+    xy.x *= 2;
+    
     float ph0  =  _Time.y;
     
-    if( pow(xy.x,2) + pow(xy.y,2) < 1.0 )
+    if( ( pow(xy.x,2) + pow(xy.y,2) < 1.0 ) || fullscreen )
     {
         xy  =  xy * R;
 

@@ -8,6 +8,7 @@ Shader "Custom/Confmets/camelPlateau"
         [CameraPosition] _CamPos("Camera Position", Vector)  =  (0, 0, 0, 0)
         [CameraAngle] _CamAng("Camera Angle", Float)  =  0
         [VisionRadius] _VisRad("Vision Radius", Float)  =  2
+        [FullScreen] _FullScreen("Fullscreen", Float)  =  0
         [Accuracy] _Accuracy("Accuracy", Float)  =  64
         [GSM] _GSM("Geodesic Step Method", Float)  =  1
         [VultureTexture] _VulTex("Vulture Texture", 2D) = "white"
