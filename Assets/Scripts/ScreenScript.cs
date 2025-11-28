@@ -14,7 +14,7 @@ public class ScreenScript : MonoBehaviour
 
     public int accuracy = 16, metricNumber = 1, textureNumber = 1, gsmNumber = 1;
 
-    private InputAction moveAction, nextMetric, prevMetric, incrVisRad, decrVisRad, incrAccuracy, decrAccuracy, nextTexture, prevTexture, nextGSM, prevGSM, nextCT, prevCT, shoot, toggleFullscreen;
+    private InputAction moveAction, nextMetric, prevMetric, incrVisRad, decrVisRad, incrAccuracy, decrAccuracy, nextTexture, prevTexture, nextGSM, prevGSM, nextCT, prevCT, stopVul, shoot, toggleFullscreen;
 
     private Vector2 moveVulture;
 
@@ -364,8 +364,9 @@ public class ScreenScript : MonoBehaviour
         float dt = Time.deltaTime;
         float da = 0;
 
-        //Vector2 new_pos = reset_to_domain_square(pos + dt * vel);
-        Vector2 new_pos = reset_to_fundamental_domain(pos + dt * vel, domainParameters);
+        Vector2 new_pos = pos;
+        if (stopVul.ReadValue<float>() == 0)
+            new_pos = reset_to_fundamental_domain(pos + dt * vel, domainParameters);
 
         camPos.x = new_pos.x;
         camPos.y = new_pos.y;
@@ -381,7 +382,8 @@ public class ScreenScript : MonoBehaviour
         if (vel.magnitude > 0)
             da = dt * (accel.x * vel.y - accel.y * vel.x) / (vel.x * vel.x + vel.y * vel.y);
 
-        camAng = camAng - da * rad2deg;
+        if (stopVul.ReadValue<float>() == 0)
+            camAng = camAng - da * rad2deg;
 
         material.SetVector("_CamPos", camPos);
         material.SetFloat("_CamAng", camAng);
@@ -437,6 +439,8 @@ public class ScreenScript : MonoBehaviour
 
         incrVisRad = InputSystem.actions.FindAction("Increase Vision Radius");
         decrVisRad = InputSystem.actions.FindAction("Decrease Vision Radius");
+
+        stopVul = InputSystem.actions.FindAction("Stop");
 
         shoot = InputSystem.actions.FindAction("Attack");
 

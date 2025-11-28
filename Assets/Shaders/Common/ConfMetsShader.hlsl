@@ -177,6 +177,8 @@ half4 frag( Varyings IN ) : SV_Target
     
     if( ( pow(xy.x,2) + pow(xy.y,2) < 1.0 ) || fullscreen )
     {
+        float xy_rl  =  length( xy );
+
         xy  =  xy * R;
 
         float c = cos(camRad);
@@ -190,11 +192,11 @@ half4 frag( Varyings IN ) : SV_Target
 
         float2 pv_next[2];
         
-        float dt  =  1 / float(itn);
-
         if( chartType == 1 )
         {
-            geodesic_propagation( pv, dt, gsm, itn, pv_next );
+            int itn_exp = floor( itn*xy_rl ) + 1;
+            float dt  =  1 / float(itn_exp);
+            geodesic_propagation( pv, dt, gsm, itn_exp, pv_next );
             pv  =  pv_next;
         }
         else
@@ -202,21 +204,29 @@ half4 frag( Varyings IN ) : SV_Target
             float a  =  vulVec.x*pv1.x + vulVec.y*pv1.y;
             float b  = -vulVec.y*pv1.x + vulVec.x*pv1.y;
 
+            float ra = abs(a) / R;
+            float rb = abs(b) / R;
+
+            int itn_exp_a = floor(itn*ra) + 1;
+            int itn_exp_b = floor(itn*rb) + 1;
+
+            float dta  =  1 / float(itn_exp_a);
+            float dtb  =  1 / float(itn_exp_b);
+
             float2 aVec  =  vulVec * a;
 
             pv[1]  =  aVec;
-            geodesic_propagation( pv, dt, gsm, itn, pv_next );
+            geodesic_propagation( pv, dta, gsm, itn_exp_a, pv_next );
             pv  =  pv_next;
 
             pv[1]  =  float2( -pv[1].y, pv[1].x ) * (b/a);
 
-            geodesic_propagation( pv, dt, gsm, itn, pv_next );
+            geodesic_propagation( pv, dtb, gsm, itn_exp_b, pv_next );
             pv  =  pv_next;
         }
 
         float2 tarPos  =  pv[0];
         
-        //float2 uv  =  tarPos / ( 2*PI );
         float2 uv  =  mul( tarPos, plg2usq );
         
         uv  +=  float2( 0.5, 0.5 );
