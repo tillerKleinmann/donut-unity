@@ -53,6 +53,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _: 2
     - _Accuracy: 16
     - _CamAng: 0
     - _EnableExternalAlpha: 0

@@ -11,6 +11,7 @@ Shader "Custom/Confmets/flat"
         [FullScreen] _FullScreen("Fullscreen", Float)  =  0
         [Accuracy] _Accuracy("Accuracy", Float)  =  64
         [GSM] _GSM("Geodesic Step Method", Float)  =  1
+        [ChartType] _("Chart Type", Float)  =  1
         [VultureTexture] _VulTex("Vulture Texture", 2D) = "white"
         [RocketTexture] _RocTex("Rocket Texture", 2D) = "white"
     }

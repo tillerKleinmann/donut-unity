@@ -23,6 +23,7 @@ CBUFFER_START(UnityPerMaterial)
     float  _FullScreen;
     float  _Accuracy;
     float  _GSM;
+    float  _ChartType;
     float4 _CamPos;
 CBUFFER_END
 
@@ -40,6 +41,7 @@ float  _RocketsLive[16];
 static const float   R  =  _VisRad;
 static const int   itn  =  int( _Accuracy );
 static const int   gsm  =  int( _GSM );
+static const int   chartType  =  int( _ChartType );
 
 static const bool   fullscreen  =  bool( _FullScreen );
 

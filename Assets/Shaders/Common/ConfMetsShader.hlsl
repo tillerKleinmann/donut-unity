@@ -76,6 +76,30 @@ void geodesic_step__RK4( float2 pv[2], float dt, out float2 pv_next[2] )
     pv_next[1]  =  pv[1] + (dt/6)*( k1[1] + 2*k2[1] + 2*k3[1] + k4[1] );
 }
 
+void geodesic_propagation( float2 pv[2], float dt, int gsmVar, int itn, out float2 pv_next[2] )
+{
+    int i = 0;
+
+    if( gsmVar == 1 )
+        for( ; i < itn; i++ )
+        {
+            geodesic_step__RK4( pv, dt, pv_next );
+            pv  =  pv_next;
+        }
+    else if( gsmVar == 2 )
+        for( ; i < itn; i++ )
+        {
+            geodesic_step__midpoint( pv, dt, pv_next );
+            pv  =  pv_next;
+        }
+    else
+        for( ; i < itn; i++ )
+        {
+            geodesic_step__euler( pv, dt, pv_next );
+            pv  =  pv_next;
+        }
+}
+
 float2 reset_to_unit_square( float2 p )
 {
     return float2( p.x - round(p.x), p.y - round(p.y) );
@@ -105,8 +129,6 @@ float3 draw_sprite_linear( float3 col, float2 pixPos, float2 sprPos, float2 sprV
 {
     float2 pix2spr = pixPos - sprPos;
     
-    // pix2spr.x  -=  round(pix2spr.x/(2*PI))*2*PI;
-    // pix2spr.y  -=  round(pix2spr.y/(2*PI))*2*PI;
     pix2spr = reset_to_parallelogram( pix2spr );
 
     pix2spr *= confun_exp(sprPos) / sprScale;
@@ -124,8 +146,6 @@ float3 draw_sprite_quadratic( float3 col, float2 pixPos, float2 sprPos, float2 s
 {
     float2  pix2spr  =  pixPos - sprPos;
     
-    // pix2spr.x  -=  round(pix2spr.x/(2*PI))*2*PI;
-    // pix2spr.y  -=  round(pix2spr.y/(2*PI))*2*PI;
     pix2spr = reset_to_parallelogram( pix2spr );
 
     float2  spr_pv[2]  =  { sprPos, pix2spr };
@@ -159,44 +179,40 @@ half4 frag( Varyings IN ) : SV_Target
     {
         xy  =  xy * R;
 
-        //float camRad  =  _CamAng * (PI/180);
-
-        float c = cos( camRad );
-        float s = sin( camRad );
-
-        // float2 camPos = float2( _CamPos.x, _CamPos.y );
-        // float2 vulVec = float2( _CamPos.z, _CamPos.w );
+        float c = cos(camRad);
+        float s = sin(camRad);
 
         float2 pv1  =  mul( xy, float2x2( c, s, -s, c ) ) / confun_exp(camPos);
 
         float2 pv[2];
         pv[0]  =  camPos;
         pv[1]  =  pv1;
-        
+
         float2 pv_next[2];
         
         float dt  =  1 / float(itn);
 
-        int i = 0;
-
-        if( gsm == 1 )
-            for( ; i < itn; i++ )
-            {
-                geodesic_step__RK4( pv, dt, pv_next );
-                pv  =  pv_next;
-            }
-        else if( gsm == 2 )
-            for( ; i < itn; i++ )
-            {
-                geodesic_step__midpoint( pv, dt, pv_next );
-                pv  =  pv_next;
-            }
+        if( chartType == 1 )
+        {
+            geodesic_propagation( pv, dt, gsm, itn, pv_next );
+            pv  =  pv_next;
+        }
         else
-            for( ; i < itn; i++ )
-            {
-                geodesic_step__euler( pv, dt, pv_next );
-                pv  =  pv_next;
-            }
+        {
+            float a  =  vulVec.x*pv1.x + vulVec.y*pv1.y;
+            float b  = -vulVec.y*pv1.x + vulVec.x*pv1.y;
+
+            float2 aVec  =  vulVec * a;
+
+            pv[1]  =  aVec;
+            geodesic_propagation( pv, dt, gsm, itn, pv_next );
+            pv  =  pv_next;
+
+            pv[1]  =  float2( -pv[1].y, pv[1].x ) * (b/a);
+
+            geodesic_propagation( pv, dt, gsm, itn, pv_next );
+            pv  =  pv_next;
+        }
 
         float2 tarPos  =  pv[0];
         
