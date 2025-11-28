@@ -167,6 +167,24 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Next Chart Type",
+                    "type": "Button",
+                    "id": "4ffae396-ebe0-443a-a223-42a134706bec",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Previous Chart Type",
+                    "type": "Button",
+                    "id": "b0de001a-9663-4412-b5e0-1fdcca130eef",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -651,6 +669,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "Toggle Fullscreen",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "38f2932a-7bb3-4093-98e0-7f4fa40f7e14",
+                    "path": "<Keyboard>/numpad5",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Next Chart Type",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "89ebeed7-21eb-421e-bec6-ed727b7814c1",
+                    "path": "<Keyboard>/numpad4",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Previous Chart Type",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

@@ -14,13 +14,15 @@ public class ScreenScript : MonoBehaviour
 
     public int accuracy = 16, metricNumber = 1, textureNumber = 1, gsmNumber = 1;
 
-    private InputAction moveAction, nextMetric, prevMetric, incrVisRad, decrVisRad, incrAccuracy, decrAccuracy, nextTexture, prevTexture, nextGSM, prevGSM, shoot, toggleFullscreen;
+    private InputAction moveAction, nextMetric, prevMetric, incrVisRad, decrVisRad, incrAccuracy, decrAccuracy, nextTexture, prevTexture, nextGSM, prevGSM, nextCT, prevCT, shoot, toggleFullscreen;
 
     private Vector2 moveVulture;
 
     private Vector4[] rocketsState = new Vector4[16];
     private float[] rocketsLive = new float[16];
     private int nextRocket = 0;
+
+    private int ctNumber = 1;
 
 
     private static float rad2deg = 180/PI;
@@ -234,11 +236,15 @@ public class ScreenScript : MonoBehaviour
         if (nextGSM.WasPressedThisFrame()) if (gsmNumber < 3) gsmNumber += 1;
         if (prevGSM.WasPressedThisFrame()) if (gsmNumber > 1) gsmNumber -= 1;
 
+        if (nextCT.WasPressedThisFrame()) if (ctNumber < 2) ctNumber += 1;
+        if (prevCT.WasPressedThisFrame()) if (ctNumber > 1) ctNumber -= 1;
+
         if (toggleFullscreen.WasPressedThisFrame()) { fullscreen = !fullscreen; if (fullscreen) fullscreenFloat = 1f; else fullscreenFloat = 0f; }
 
         material.SetFloat("_VisRad", visionRadius);
         material.SetFloat("_Accuracy", accuracy);
         material.SetFloat("_GSM", gsmNumber);
+        material.SetFloat("_ChartType", ctNumber);
         material.SetFloat("_FullScreen", fullscreenFloat);
 
         accuracyField.text = accuracy.ToString();
@@ -422,6 +428,9 @@ public class ScreenScript : MonoBehaviour
 
         nextGSM = InputSystem.actions.FindAction("Next GSM");
         prevGSM = InputSystem.actions.FindAction("Previous GSM");
+
+        nextCT = InputSystem.actions.FindAction("Next Chart Type");
+        prevCT = InputSystem.actions.FindAction("Previous Chart Type");
 
         incrAccuracy = InputSystem.actions.FindAction("Increase Accuracy");
         decrAccuracy = InputSystem.actions.FindAction("Decrease Accuracy");
