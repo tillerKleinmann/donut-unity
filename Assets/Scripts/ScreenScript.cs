@@ -100,8 +100,10 @@ public class ScreenScript : MonoBehaviour
                 return 0.5f + Cos(p.x) * (3 - Pow(Cos(p.x), 2)) * Cos(p.y) * (3 - Pow(Cos(p.y), 2)) / 8;
             case 8:
                 return 0f;
-            default:
+            case 9:
                 return Log( 3 ) - Log( 2 - Cos( p.y * Sqrt(3) ) );
+            default:
+                return -Log( 1 + 3/7*Cos(p.x) + 2/7*Cos(p.y) );
         }
     }
 
@@ -125,8 +127,10 @@ public class ScreenScript : MonoBehaviour
                 return new Vector2(-3 * Sin(p.x) * (1 - Pow(Cos(p.x), 2)) * Cos(p.y) * (3 - Pow(Cos(p.y), 2)) / 8, -3 * Sin(p.y) * (1 - Pow(Cos(p.y), 2)) * Cos(p.x) * (3 - Pow(Cos(p.x), 2)) / 8);
             case 8:
                 return new Vector2(0, 0);
-            default:
+            case 9:
                 return new Vector2( 0, -Sqrt(3)*Sin(p.y*Sqrt(3)) / ( 2 - Cos(p.y*Sqrt(3)) ) );
+            default:
+                return new Vector2( 3/7*Sin(p.x), 2/7*Sin(p.y) ) / ( 1 + 3/7*Cos(p.x) + 2/7*Cos(p.y) );
         }
     }
     
@@ -236,7 +240,7 @@ public class ScreenScript : MonoBehaviour
         if (nextGSM.WasPressedThisFrame()) if (gsmNumber < 3) gsmNumber += 1;
         if (prevGSM.WasPressedThisFrame()) if (gsmNumber > 1) gsmNumber -= 1;
 
-        if (nextCT.WasPressedThisFrame()) if (ctNumber < 2) ctNumber += 1;
+        if (nextCT.WasPressedThisFrame()) if (ctNumber < 3) ctNumber += 1;
         if (prevCT.WasPressedThisFrame()) if (ctNumber > 1) ctNumber -= 1;
 
         if (toggleFullscreen.WasPressedThisFrame()) { fullscreen = !fullscreen; if (fullscreen) fullscreenFloat = 1f; else fullscreenFloat = 0f; }
@@ -269,8 +273,8 @@ public class ScreenScript : MonoBehaviour
         bool metricChanged = false;
         bool textureChanged = false;
 
-        if (nextMetric.WasPressedThisFrame()) { if (metricNumber < 9) metricNumber += 1; else metricNumber = 1; metricChanged = true; }
-        if (prevMetric.WasPressedThisFrame()) { if (metricNumber > 1) metricNumber -= 1; else metricNumber = 9; metricChanged = true; }
+        if (nextMetric.WasPressedThisFrame()) { if (metricNumber < 10) metricNumber += 1; else metricNumber = 1; metricChanged = true; }
+        if (prevMetric.WasPressedThisFrame()) { if (metricNumber > 1) metricNumber -= 1; else metricNumber = 10; metricChanged = true; }
         if (nextTexture.WasPressedThisFrame()) { if (textureNumber < 4) textureNumber += 1; else textureNumber = 1; textureChanged = true; }
         if (prevTexture.WasPressedThisFrame()) { if (textureNumber > 1) textureNumber -= 1; else textureNumber = 4; textureChanged = true; }
 
@@ -310,9 +314,13 @@ public class ScreenScript : MonoBehaviour
                     metricName = "hexFlat";
                     domainParameters = make_domain_parameters(2 * PI, 2 * PI, 60);
                     break;
-                default:
+                case 9:
                     metricName = "torus";
                     domainParameters = make_domain_parameters( 2 * PI, (2/Sqrt(3)) * PI, 90);
+                    break;
+                default:
+                    metricName = "dupin";
+                    domainParameters = make_domain_parameters( 2 * PI, 2 * PI, 90);
                     break;
             }
 

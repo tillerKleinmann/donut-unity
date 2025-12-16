@@ -199,7 +199,7 @@ half4 frag( Varyings IN ) : SV_Target
             geodesic_propagation( pv, dt, gsm, itn_exp, pv_next );
             pv  =  pv_next;
         }
-        else
+        else if( chartType == 2 )
         {
             float a  =  vulVec.x*pv1.x + vulVec.y*pv1.y;
             float b  = -vulVec.y*pv1.x + vulVec.x*pv1.y;
@@ -224,6 +224,10 @@ half4 frag( Varyings IN ) : SV_Target
             geodesic_propagation( pv, dtb, gsm, itn_exp_b, pv_next );
             pv  =  pv_next;
         }
+        else
+        {
+            pv[0]  +=  pv[1];
+        }
 
         float2 tarPos  =  pv[0];
         
@@ -233,7 +237,7 @@ half4 frag( Varyings IN ) : SV_Target
         
         float3 col  =  SAMPLE_TEXTURE2D( _BaseMap, sampler_LinearRepeat, uv ).xyz;
         
-        col  =  draw_sprite_quadratic(  col, tarPos, camPos, vulVec, _VulTex, 1.0 );
+        col  =  draw_sprite_quadratic( col, tarPos, camPos, vulVec, _VulTex, 1.0 );
         
         for( int k = 0; k < 16; k++ )
             if( _RocketsLive[k] > 0 )
