@@ -190,15 +190,9 @@ float3 add_main_roads_rectangle( float3 col, float2 tarPos )
     float roadbr = 0.3;
     float linebr = 0.03;
 
-    if( dRx < roadbr )
+    if( dRx < roadbr | drx < roadbr | dRy < roadbr | drx < roadbr )
         col  =  float3(0,0,0);
-    if( drx < roadbr )
-        col  =  float3(0,0,0);
-    if( dRy < roadbr )
-        col  =  float3(0,0,0);
-    if( dry < roadbr )
-        col  =  float3(0,0,0);
-    if( dRx < linebr & dRy > roadbr & dry > roadbr  )
+    if( dRx < linebr & dRy > roadbr & dry > roadbr )
         col  =  float3(1,0,0);
     if( drx < linebr & dRy > roadbr & dry > roadbr  )
         col  =  float3(0,1,0);
@@ -215,43 +209,29 @@ float3 add_main_roads_rectangle2( float3 col, float2 tarPos )
     float2 tarPos1  =  reset_to_parallelogram( tarPos );
     float2 tarPos2  =  reset_to_parallelogram_shifted( tarPos );
 
-    float dRx  =  confun_exp( float2(  0, tarPos1.y ) ) * abs( tarPos1.x );
-    float drx  =  confun_exp( float2( PI, tarPos2.y ) ) * abs( tarPos2.x - PI );
-    float dRy  =  confun_exp( float2( tarPos1.x, 0  ) ) * abs( tarPos1.y );
-    float dry  =  confun_exp( float2( tarPos2.x, PI ) ) * abs( tarPos2.y - PI );
+    float dRx  =  confun_exp( float2(0,tarPos1.y) )  * abs(tarPos1.x);
+    float drx  =  confun_exp( float2(PI,tarPos2.y) ) * abs(tarPos2.x-PI);
+    float dRy  =  confun_exp( float2(tarPos1.x,0) )  * abs(tarPos1.y);
+    float dry  =  confun_exp( float2(tarPos2.x,PI) ) * abs(tarPos2.y-PI);
 
-    float dmx  =  confun_exp( float2(  PI/2, tarPos2.y ) ) * abs( tarPos2.x - PI/2 );
-    float dnx  =  confun_exp( float2( -PI/2, tarPos1.y ) ) * abs( tarPos1.x + PI/2 );
-    float dmy  =  confun_exp( float2( tarPos2.x,  PI/2 ) ) * abs( tarPos2.y - PI/2 );
-    float dny  =  confun_exp( float2( tarPos1.x, -PI/2 ) ) * abs( tarPos1.y + PI/2 );
+    float dmx  =  confun_exp( float2(PI/2,tarPos1.y) )  * abs(tarPos1.x-PI/2);
+    float dnx  =  confun_exp( float2(-PI/2,tarPos2.y) ) * abs(tarPos1.x+PI/2);
+    float dmy  =  confun_exp( float2(tarPos1.x,PI/2) )  * abs(tarPos1.y-PI/2);
+    float dny  =  confun_exp( float2(tarPos2.x,-PI/2) ) * abs(tarPos1.y+PI/2);
 
     float roadbr = 0.3;
     float linebr = 0.03;
 
-    if( dRx < roadbr | drx < roadbr | dRy < roadbr | dry < roadbr | dmx < roadbr | dnx < roadbr | dmy < roadbr | dny < roadbr )
-        col  =  float3(1,1,1)*0.05;
-    if( dRy > roadbr & dry > roadbr & dmy > roadbr & dny > roadbr )
-    {
-        if( dRx < linebr  )
-            col  =  float3(0,0,0);
-        if( drx < linebr )
-            col  =  float3(1,0,0);
-        if( dmx < linebr  )
-            col  =  float3(0,1,0);
-        if( dnx < linebr )
-            col  =  float3(0,0,1);
-    }
-    if( dRx > roadbr & drx > roadbr & dmx > roadbr & dnx > roadbr )
-    {
-        if( dRy < linebr  )
-            col  =  float3(1,1,1);
-        if( dry < linebr )
-            col  =  float3(0,1,1);
-        if( dmy < linebr  )
-            col  =  float3(1,0,1);
-        if( dny < linebr )
-            col  =  float3(1,1,0);
-    }
+    if( dRx < roadbr | drx < roadbr | dRy < roadbr | drx < roadbr | dmx < roadbr | dnx < roadbr | dmy < roadbr | dny < roadbr )
+        col  =  float3(0,0,0);
+    if( dRx < linebr & dRy > roadbr & dry > roadbr )
+        col  =  float3(1,0,0);
+    if( drx < linebr & dRy > roadbr & dry > roadbr  )
+        col  =  float3(0,1,0);
+    if( dRy < linebr & dRx > roadbr & drx > roadbr  )
+        col  =  float3(0,0,1);
+    if( dry < linebr & dRx > roadbr & drx > roadbr  )
+        col  =  float3(1,1,0);
 
     return col;
 }

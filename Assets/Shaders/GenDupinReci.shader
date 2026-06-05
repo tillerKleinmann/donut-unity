@@ -35,11 +35,11 @@ Shader "Custom/Confmets/gendupin"
 
             #include "Common/ShaderPreamble.hlsl"
 
-            float  confun(      float2 p ){ return -log( 1 + dupinPar.x*cos(p.x/dupinPar.z) + dupinPar.y*cos(p.y/dupinPar.w) ); }
-            float2 confun_grad( float2 p ){ return float2( (dupinPar.x/dupinPar.z)*sin(p.x/dupinPar.z), dupinPar.y*sin(p.y/dupinPar.w) ) / ( (dupinPar.x/dupinPar.w)*cos(p.x/dupinPar.z) + dupinPar.y*cos(p.y/dupinPar.w) ); }
-            float  confun_lap(  float2 p ){ return 0; }// not yet implemented...
+            float  mu(      float2 p ){ return 1 + dupinPar.x*cos(p.x/dupinPar.z) + dupinPar.y*cos(p.y/dupinPar.w); }
+            float2 mu_grad( float2 p ){ return float2( (dupinPar.x/dupinPar.z)*sin(p.x/dupinPar.z), (dupinPar.y/dupinPar.w)*sin(p.y/dupinPar.w) ); }
+            float  mu_lap(  float2 p ){ return 0; }// not yet implemented...
 
-            #include "Common/ConfMetsShaderDupin.hlsl"
+            #include "Common/ConfMetsShaderReci.hlsl"
 
             ENDHLSL
         }

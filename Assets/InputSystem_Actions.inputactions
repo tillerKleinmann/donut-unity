@@ -617,6 +617,17 @@
                 },
                 {
                     "name": "",
+                    "id": "0f112a83-ada6-42ab-be5f-c65c511f5d3b",
+                    "path": "<Gamepad>/dpad/up",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Increase Vision Radius",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "df47e6fa-587b-48a9-a671-92130c250866",
                     "path": "<Keyboard>/delete",
                     "interactions": "",
@@ -628,12 +639,45 @@
                 },
                 {
                     "name": "",
+                    "id": "dd64cb5f-dd71-4219-84f7-02a03d020307",
+                    "path": "<Gamepad>/dpad/down",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Decrease Vision Radius",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "26322612-5253-4d20-846c-674dff69ed82",
+                    "path": "<Gamepad>/rightShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Next Texture",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "118224aa-23a0-4ca9-bb54-95de64941246",
                     "path": "<Keyboard>/numpadPlus",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
                     "action": "Next Texture",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "c24dbc2c-f348-4ae5-85a2-9ff65a16c75e",
+                    "path": "<Gamepad>/leftShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Previous Texture",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
