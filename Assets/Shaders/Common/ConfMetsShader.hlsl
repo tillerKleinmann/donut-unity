@@ -235,25 +235,25 @@ float3 add_main_roads_rectangle2( float3 col, float2 tarPos )
         col  =  float3(1,1,1)*0.05;
     if( inRy == false )
     {
-        if( dRx < linebr  )
+        if( dRx < linebr )
             col  =  float3(0,0,0);
         else if( drx < linebr )
-            col  =  float3(1,0,0);
-        else if( dmx < linebr  )
-            col  =  float3(0,1,0);
+            col  =  float3(1,0,1);
+        else if( dmx < linebr )
+            col  =  float3(0,1,1);
         else if( dnx < linebr )
-            col  =  float3(0,0,1);
+            col  =  float3(1,1,0);
     }
     if( inRx == false )
     {
-        if( dRy < linebr  )
+        if( dRy < linebr )
             col  =  float3(1,1,1);
         else if( dry < linebr )
-            col  =  float3(0,1,1);
-        else if( dmy < linebr  )
-            col  =  float3(1,0,1);
+            col  =  float3(0,1,0);
+        else if( dmy < linebr )
+            col  =  float3(0,0,1);
         else if( dny < linebr )
-            col  =  float3(1,1,0);
+            col  =  float3(1,0,0);
     }
 
     return col;

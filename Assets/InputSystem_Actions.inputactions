@@ -595,8 +595,30 @@
                 },
                 {
                     "name": "",
+                    "id": "ac443b9b-a0e5-4176-a768-3d290fb96cb2",
+                    "path": "<Gamepad>/dpad/right",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "Increase Accuracy",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "fb16d32a-161e-4ff8-8ef1-9dcdf100f4cb",
                     "path": "<Keyboard>/end",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Decrease Accuracy",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f72d78b7-fff4-4e42-90be-4524d688e264",
+                    "path": "<Gamepad>/dpad/left",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
