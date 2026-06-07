@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class FullscreenHotkeyHandler : MonoBehaviour
 {
-    bool makeFullscreenAtStart = true;
+    bool makeFullscreenAtStart = false;
 	
 	// Enable fullscreen when starting game
     void Start() { if (makeFullscreenAtStart) { FullscreenGameView.Toggle(); } }

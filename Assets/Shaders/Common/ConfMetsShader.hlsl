@@ -228,28 +228,31 @@ float3 add_main_roads_rectangle2( float3 col, float2 tarPos )
     float roadbr = 0.3;
     float linebr = 0.03;
 
-    if( dRx < roadbr | drx < roadbr | dRy < roadbr | dry < roadbr | dmx < roadbr | dnx < roadbr | dmy < roadbr | dny < roadbr )
+    bool inRx = ( dRx < roadbr | drx < roadbr | dmx < roadbr | dnx < roadbr );
+    bool inRy = ( dRy < roadbr | dry < roadbr | dmy < roadbr | dny < roadbr );
+
+    if( inRx | inRy )
         col  =  float3(1,1,1)*0.05;
-    if( dRy > roadbr & dry > roadbr & dmy > roadbr & dny > roadbr )
+    if( inRy == false )
     {
         if( dRx < linebr  )
             col  =  float3(0,0,0);
-        if( drx < linebr )
+        else if( drx < linebr )
             col  =  float3(1,0,0);
-        if( dmx < linebr  )
+        else if( dmx < linebr  )
             col  =  float3(0,1,0);
-        if( dnx < linebr )
+        else if( dnx < linebr )
             col  =  float3(0,0,1);
     }
-    if( dRx > roadbr & drx > roadbr & dmx > roadbr & dnx > roadbr )
+    if( inRx == false )
     {
         if( dRy < linebr  )
             col  =  float3(1,1,1);
-        if( dry < linebr )
+        else if( dry < linebr )
             col  =  float3(0,1,1);
-        if( dmy < linebr  )
+        else if( dmy < linebr  )
             col  =  float3(1,0,1);
-        if( dny < linebr )
+        else if( dny < linebr )
             col  =  float3(1,1,0);
     }
 
