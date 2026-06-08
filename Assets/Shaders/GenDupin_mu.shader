@@ -1,4 +1,4 @@
-Shader "Custom/Confmets/gendupin"
+Shader "Custom/Confmets/gendupin_mu"
 {
     Properties
     {
@@ -11,7 +11,7 @@ Shader "Custom/Confmets/gendupin"
         [FullScreen] _FullScreen("Fullscreen", Float)  =  0
         [Accuracy] _Accuracy("Accuracy", Float)  =  64
         [GSM] _GSM("Geodesic Step Method", Float)  =  1
-        [DupinParameters] _DupinPar("Dupin Parameters", Vector)  =  (0.5, 0.5, 1.0, 1.0) // ( a, b, al , be )
+        [DupinParameters] _DupinPar("Dupin Parameters", Vector)  =  (0.333, 0.333, 1.0, 1.0) // ( a, b, al , be )
         [ChartType] _ChartType("Chart Type", Float)  =  1
         [VultureTexture] _VulTex("Vulture Texture", 2D) = "white"
         [RocketTexture] _RocTex("Rocket Texture", 2D) = "white"
@@ -33,13 +33,18 @@ Shader "Custom/Confmets/gendupin"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/GlobalSamplers.hlsl"
 
-            #include "Common/ShaderPreamble.hlsl"
+            #include "Common/DupinShaderPreamble.hlsl"
 
-            float  mu(      float2 p ){ return 1 + dupinPar.x*cos(p.x/dupinPar.z) + dupinPar.y*cos(p.y/dupinPar.w); }
-            float2 mu_grad( float2 p ){ return float2( (dupinPar.x/dupinPar.z)*sin(p.x/dupinPar.z), (dupinPar.y/dupinPar.w)*sin(p.y/dupinPar.w) ); }
-            float  mu_lap(  float2 p ){ return 0; }// not yet implemented...
+            float  mu(      float2 p ){ return 1 + dpa*cos(p.x/dpal) + dpb*cos(p.y/dpbe); }
+            float2 mu_grad( float2 p ){ return float2( (dpa/dpal)*sin(p.x/dpal), (dpb/dpbe)*sin(p.y/dpbe) ); }
 
-            #include "Common/ConfMetsShaderReci.hlsl"
+            #include "Common/ConfMets_mu.hlsl"
+            #include "Common/GeoProp.hlsl"
+            #include "Common/FunDom.hlsl"
+            #include "Common/SpriteRendering.hlsl"
+            #include "Common/RenderRoads.hlsl"
+            #include "Common/Coloring.hlsl"
+            #include "Common/ConfMetsShaderDupin_mu.hlsl"
 
             ENDHLSL
         }

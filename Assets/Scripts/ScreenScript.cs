@@ -103,7 +103,8 @@ public class ScreenScript : MonoBehaviour
             case 9:
                 return Log( 3 ) - Log( 2 - Cos( p.y * Sqrt(3) ) );
             default:
-                return -Log( 1 + 3*Cos(p.x)/7 + 2*Cos(p.y)/7 );
+                return -Log( 1 + Cos(p.x)/3 + Cos(p.y)/3 );
+                // return -Log( 1 + 3*Cos(p.x)/7 + 2*Cos(p.y)/7 );
         }
     }
 
@@ -130,7 +131,8 @@ public class ScreenScript : MonoBehaviour
             case 9:
                 return new Vector2( 0, -Sqrt(3)*Sin(p.y*Sqrt(3)) / ( 2 - Cos(p.y*Sqrt(3)) ) );
             default:
-                return new Vector2( 3*Sin(p.x)/7, 2*Sin(p.y)/7 ) / ( 1 + 3*Cos(p.x)/7 + 2*Cos(p.y)/7 );
+                return new Vector2( Sin(p.x)/3, Sin(p.y)/3 ) / ( 1 + Cos(p.x)/3 + Cos(p.y)/3 );
+                // return new Vector2( 3*Sin(p.x)/7, 2*Sin(p.y)/7 ) / ( 1 + 3*Cos(p.x)/7 + 2*Cos(p.y)/7 );
         }
     }
     
@@ -319,7 +321,8 @@ public class ScreenScript : MonoBehaviour
                     domainParameters = make_domain_parameters( 2 * PI, (2/Sqrt(3)) * PI, 90);
                     break;
                 default:
-                    metricName = "dupin";
+                    // metricName = "dupin";
+                    metricName = "gendupin_mu";
                     domainParameters = make_domain_parameters( 2 * PI, 2 * PI, 90);
                     break;
             }

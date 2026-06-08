@@ -18,11 +18,6 @@ float2 christoffel( float2 pv[2] )
     return float2( cfd.x*a + cfd.y*b, -cfd.y*a + cfd.x*b );
 }
 
-float curvature( float2 p )
-{
-    return -confun_lap( p ) / confun_exp2( p );
-}
-
 void geodesic_step__euler( float2 pv[2], float dt, out float2 pv_next[2] )
 {
     pv_next[0]  =  pv[0] + dt*pv[1];

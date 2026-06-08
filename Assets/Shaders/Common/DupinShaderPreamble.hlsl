@@ -55,3 +55,8 @@ static const float2 camPos = float2( _CamPos.x, _CamPos.y );
 static const float2 vulVec = float2( _CamPos.z, _CamPos.w );
 
 static const float camRad  =  _CamAng * (PI/180);
+
+static const float dpa  = dupinPar.x;
+static const float dpb  = dupinPar.y;
+static const float dpal = dupinPar.z;
+static const float dpbe = dupinPar.w;

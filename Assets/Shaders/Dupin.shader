@@ -34,8 +34,10 @@ Shader "Custom/Confmets/dupin"
 
             #include "Common/ShaderPreamble.hlsl"
 
-            float  confun(      float2 p ){ return -log( 1 + 3*cos(p.x)/7 + 2*cos(p.y)/7 ); }
-            float2 confun_grad( float2 p ){ return float2( 3*sin(p.x)/7, 2*sin(p.y)/7 ) / ( 1 + 3*cos(p.x)/7 + 2*cos(p.y)/7 ); }
+            // float  confun(      float2 p ){ return -log( 1 + 3*cos(p.x)/7 + 2*cos(p.y)/7 ); }
+            // float2 confun_grad( float2 p ){ return float2( 3*sin(p.x)/7, 2*sin(p.y)/7 ) / ( 1 + 3*cos(p.x)/7 + 2*cos(p.y)/7 ); }
+            float  confun(      float2 p ){ return -log( 1 + cos(p.x)/3 + cos(p.y)/3 ); }
+            float2 confun_grad( float2 p ){ return float2( sin(p.x)/3, sin(p.y)/3 ) / ( 1 + cos(p.x)/3 + cos(p.y)/3 ); }
             float  confun_lap(  float2 p ){ return 0; }// not yet implemented...
 
             #include "Common/ConfMetsShader.hlsl"
