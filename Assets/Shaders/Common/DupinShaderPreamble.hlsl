@@ -60,3 +60,5 @@ static const float dpa  = dupinPar.x;
 static const float dpb  = dupinPar.y;
 static const float dpal = dupinPar.z;
 static const float dpbe = dupinPar.w;
+static const float dpAl = 2*PI*dpal;
+static const float dpBe = 2*PI*dpbe;
