@@ -1,4 +1,4 @@
-Shader "Custom/Confmets/gendupin_mu"
+Shader "Custom/Confmets/torus_mu"
 {
     Properties
     {
@@ -11,7 +11,6 @@ Shader "Custom/Confmets/gendupin_mu"
         [FullScreen] _FullScreen("Fullscreen", Float)  =  0
         [Accuracy] _Accuracy("Accuracy", Float)  =  64
         [GSM] _GSM("Geodesic Step Method", Float)  =  1
-        [DupinParameters] _DupinPar("Dupin Parameters", Vector)  =  (0.333, 0.333, 1.0, 1.0) // ( a, b, al , be )
         [ChartType] _ChartType("Chart Type", Float)  =  1
         [VultureTexture] _VulTex("Vulture Texture", 2D) = "white"
         [RocketTexture] _RocTex("Rocket Texture", 2D) = "white"
@@ -35,13 +34,14 @@ Shader "Custom/Confmets/gendupin_mu"
 
             #include "Common/DupinShaderPreamble.hlsl"
 
-            float  mu(      float2 p ){ return 1 + dpa*cos(p.x/dpal) + dpb*cos(p.y/dpbe); }
-            float2 mu_grad( float2 p ){ return float2( -(dpa/dpal)*sin(p.x/dpal), -(dpb/dpbe)*sin(p.y/dpbe) ); }
+            //float  mu(      float2 p ){ return 1 - cos(p.y*2/sqrt(3))/2; }
+            //float2 mu_grad( float2 p ){ return float2( 0, sin(p.y*2/sqrt(3))/sqrt(3) ); }
+            float  mu(      float2 p ){ return ( 2 - cos(p.y*sqrt(3)) ) / 3; }
+            float2 mu_grad( float2 p ){ return float2( 0, -sin(p.y*sqrt(3)) / sqrt(3) ); }
 
             #include "Common/ConfMets_mu.hlsl"
             #include "Common/GeoProp.hlsl"
             #include "Common/FunDom.hlsl"
-            #include "Common/tandil.hlsl"
             #include "Common/SpriteRendering.hlsl"
             #include "Common/RenderRoads.hlsl"
             #include "Common/Coloring.hlsl"

@@ -177,53 +177,20 @@ float3 draw_sprite_quadratic( float3 col, float2 pixPos, float2 sprPos, float2 s
     return lerp( col, sprCol.xyz, sprCol.w );
 }
 
-float3 add_main_roads_rectangle( float3 col, float2 tarPos )
-{
-    float2 tarPos1  =  reset_to_parallelogram( tarPos );
-    float2 tarPos2  =  reset_to_parallelogram_shifted( tarPos );
-
-    float dRx  =  confun_exp( float2(0,tarPos1.y) )  * abs(tarPos1.x);
-    float drx  =  confun_exp( float2(PI,tarPos2.y) ) * abs(tarPos2.x-PI);
-    float dRy  =  confun_exp( float2(tarPos1.x,0) )  * abs(tarPos1.y);
-    float dry  =  confun_exp( float2(tarPos2.x,PI) ) * abs(tarPos2.y-PI);
-
-    float roadbr = 0.3;
-    float linebr = 0.03;
-
-    if( dRx < roadbr )
-        col  =  float3(0,0,0);
-    if( drx < roadbr )
-        col  =  float3(0,0,0);
-    if( dRy < roadbr )
-        col  =  float3(0,0,0);
-    if( dry < roadbr )
-        col  =  float3(0,0,0);
-    if( dRx < linebr & dRy > roadbr & dry > roadbr  )
-        col  =  float3(1,0,0);
-    if( drx < linebr & dRy > roadbr & dry > roadbr  )
-        col  =  float3(0,1,0);
-    if( dRy < linebr & dRx > roadbr & drx > roadbr  )
-        col  =  float3(0,0,1);
-    if( dry < linebr & dRx > roadbr & drx > roadbr  )
-        col  =  float3(1,1,0);
-
-    return col;
-}
-
 float3 add_main_roads_rectangle2( float3 col, float2 tarPos )
 {
     float2 tarPos1  =  reset_to_parallelogram( tarPos );
     float2 tarPos2  =  reset_to_parallelogram_shifted( tarPos );
 
     float dRx  =  confun_exp( float2(  0, tarPos1.y ) ) * abs( tarPos1.x );
-    float drx  =  confun_exp( float2( PI, tarPos2.y ) ) * abs( tarPos2.x - PI );
+    float drx  =  confun_exp( float2(  0.5*u2p.x, tarPos2.y ) ) * abs( tarPos2.x - 0.5*u2p.x );
     float dRy  =  confun_exp( float2( tarPos1.x, 0  ) ) * abs( tarPos1.y );
-    float dry  =  confun_exp( float2( tarPos2.x, PI ) ) * abs( tarPos2.y - PI );
+    float dry  =  confun_exp( float2( tarPos2.x, 0.5*u2p.w ) ) * abs( tarPos2.y - 0.5*u2p.w );
 
-    float dmx  =  confun_exp( float2(  PI/2, tarPos2.y ) ) * abs( tarPos2.x - PI/2 );
-    float dnx  =  confun_exp( float2( -PI/2, tarPos1.y ) ) * abs( tarPos1.x + PI/2 );
-    float dmy  =  confun_exp( float2( tarPos2.x,  PI/2 ) ) * abs( tarPos2.y - PI/2 );
-    float dny  =  confun_exp( float2( tarPos1.x, -PI/2 ) ) * abs( tarPos1.y + PI/2 );
+    float dmx  =  confun_exp( float2(  0.25*u2p.x, tarPos1.y ) ) * abs( tarPos1.x - 0.25*u2p.x );
+    float dnx  =  confun_exp( float2( -0.25*u2p.x, tarPos1.y ) ) * abs( tarPos1.x + 0.25*u2p.x );
+    float dmy  =  confun_exp( float2( tarPos1.x,  0.25*u2p.w ) ) * abs( tarPos1.y - 0.25*u2p.w );
+    float dny  =  confun_exp( float2( tarPos1.x, -0.25*u2p.w ) ) * abs( tarPos1.y + 0.25*u2p.w );
 
     float roadbr = 0.3;
     float linebr = 0.03;
@@ -341,7 +308,8 @@ half4 frag( Varyings IN ) : SV_Target
         
         float3 col  =  SAMPLE_TEXTURE2D( _BaseMap, sampler_LinearRepeat, uv ).xyz;
 
-        col  =  add_main_roads_rectangle2( col, tarPos );
+        if( abs(u2p.y) < 0.01*abs(u2p.w) )
+            col  =  add_main_roads_rectangle2( col, tarPos );
 
         col  =  draw_sprite_quadratic( col, tarPos, camPos, vulVec, _VulTex, 1.0 );
         
