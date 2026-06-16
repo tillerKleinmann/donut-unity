@@ -22,39 +22,17 @@ half4 frag( Varyings IN ) : SV_Target
         float2 pv[2];
         pv[0]  =  camPos;
         pv[1]  =  pv1;
-
-        float2 pv_next[2];
         
         if( chartType == 1 )
         {
-            int itn_exp = floor( itn*xy_rl ) + 1;
-            float dt  =  1 / float(itn_exp);
-            geodesic_propagation( pv, dt, gsm, itn_exp, pv_next );
+            float2 pv_next[2];
+            geodesic_exp( pv, gsm, R, pv_next );
             pv  =  pv_next;
         }
         else if( chartType == 2 )
         {
-            float a  =  vulVec.x*pv1.x + vulVec.y*pv1.y;
-            float b  = -vulVec.y*pv1.x + vulVec.x*pv1.y;
-
-            float ra = abs(a) / R;
-            float rb = abs(b) / R;
-
-            int itn_exp_a = floor(itn*ra) + 1;
-            int itn_exp_b = floor(itn*rb) + 1;
-
-            float dta  =  1 / float(itn_exp_a);
-            float dtb  =  1 / float(itn_exp_b);
-
-            float2 aVec  =  vulVec * a;
-
-            pv[1]  =  aVec;
-            geodesic_propagation( pv, dta, gsm, itn_exp_a, pv_next );
-            pv  =  pv_next;
-
-            pv[1]  =  float2( -pv[1].y, pv[1].x ) * (b/a);
-
-            geodesic_propagation( pv, dtb, gsm, itn_exp_b, pv_next );
+            float2 pv_next[2];
+            fermi_coordinates( pv, gsm, R, vulVec, pv_next );
             pv  =  pv_next;
         }
         else

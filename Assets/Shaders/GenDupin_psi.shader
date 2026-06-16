@@ -47,6 +47,7 @@ Shader "Custom/Confmets/gendupin_psi"
 
             #include "Common/ConfMets_psi.hlsl"
             #include "Common/GeoProp.hlsl"
+            #include "Common/ChartComp.hlsl"
             #include "Common/FunDom.hlsl"
             #include "Common/tandil.hlsl"
             #include "Common/SpriteRendering.hlsl"

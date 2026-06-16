@@ -40,6 +40,7 @@ Shader "Custom/Confmets/gendupin_mu"
 
             #include "Common/ConfMets_mu.hlsl"
             #include "Common/GeoProp.hlsl"
+            #include "Common/ChartComp.hlsl"
             #include "Common/FunDom.hlsl"
             #include "Common/tandil.hlsl"
             #include "Common/SpriteRendering.hlsl"

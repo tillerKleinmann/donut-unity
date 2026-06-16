@@ -40,6 +40,7 @@ Shader "Custom/Confmets/torus_mu"
 
             #include "Common/ConfMets_mu.hlsl"
             #include "Common/GeoProp.hlsl"
+            #include "Common/ChartComp.hlsl"
             #include "Common/FunDom.hlsl"
             #include "Common/SpriteRendering.hlsl"
             #include "Common/RenderRoads.hlsl"
