@@ -79,6 +79,25 @@ public class ScreenScript : MonoBehaviour
         return DP;
     }
 
+    private float psqueeze3( float x )
+    {
+        return x * ( 3 - x*x ) / 2;
+    }
+
+    private float psqueeze3_d( float x )
+    {
+        return ( 1 - x*x ) * 3/2;
+    }
+
+    private float psqueeze5( float x )
+    {
+        return x * ( 15 - 10*x*x + 3*Pow(x,4) ) / 8;
+    }
+
+    private float psqueeze5_d( float x )
+    {
+        return ( 1 - 2*x*x + Pow(x,4) ) * 15/8;
+    }
 
     private float confun(Vector2 p, int n)
     {
@@ -104,8 +123,9 @@ public class ScreenScript : MonoBehaviour
                 return Log( 3 ) - Log( 2 - Cos( p.y * Sqrt(3) ) );
                 //return -Log( 1 - Cos(p.y*2/Sqrt(3))/2 );
             default:
-                return -Log( 1 + Cos(p.x)/3 + Cos(p.y)/3 );
+                // return -Log( 1 + Cos(p.x)/3 + Cos(p.y)/3 );
                 // return -Log( 1 + 3*Cos(p.x)/7 + 2*Cos(p.y)/7 );
+                return -Log( 1 + psqueeze5(Cos(p.x))/3 + psqueeze5(Cos(p.y))/3 );
         }
     }
 
@@ -133,8 +153,9 @@ public class ScreenScript : MonoBehaviour
                 return new Vector2( 0, -Sqrt(3)*Sin(p.y*Sqrt(3)) / ( 2 - Cos(p.y*Sqrt(3)) ) );
                 //return new Vector2( 0, -Sin(p.y*2/Sqrt(3))/Sqrt(3) ) / ( 1 - Cos(p.y*2/Sqrt(3))/2 );
             default:
-                return new Vector2( Sin(p.x)/3, Sin(p.y)/3 ) / ( 1 + Cos(p.x)/3 + Cos(p.y)/3 );
+                // return new Vector2( Sin(p.x)/3, Sin(p.y)/3 ) / ( 1 + Cos(p.x)/3 + Cos(p.y)/3 );
                 // return new Vector2( 3*Sin(p.x)/7, 2*Sin(p.y)/7 ) / ( 1 + 3*Cos(p.x)/7 + 2*Cos(p.y)/7 );
+                return new Vector2( Sin(p.x) * psqueeze5_d(Cos(p.x))/3, Sin(p.y) * psqueeze5_d(Cos(p.y))/3 ) / ( 1 + psqueeze5(Cos(p.x))/3 + psqueeze5(Cos(p.y))/3 );
         }
     }
     
@@ -326,7 +347,9 @@ public class ScreenScript : MonoBehaviour
                     break;
                 default:
                     // metricName = "dupin";
-                    metricName = "gendupin_mu";
+                    // metricName = "gendupin_mu";
+                    // metricName = "gendupin3_mu";
+                    metricName = "gendupin5_mu";
                     domainParameters = make_domain_parameters( 2 * PI, 2 * PI, 90);
                     break;
             }

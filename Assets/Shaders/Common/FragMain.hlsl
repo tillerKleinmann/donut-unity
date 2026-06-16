@@ -6,7 +6,7 @@ half4 frag( Varyings IN ) : SV_Target
     
     xy.x *= 2;
     
-    float ph0  =  _Time.y;
+    //float ph0  =  _Time.y;
     
     if( ( pow(xy.x,2) + pow(xy.y,2) < 1.0 ) || fullscreen )
     {
