@@ -14,7 +14,7 @@ public class ScreenScript : MonoBehaviour
 
     public int accuracy = 16, metricNumber = 1, textureNumber = 1, gsmNumber = 1;
 
-    private InputAction moveAction, nextMetric, prevMetric, incrVisRad, decrVisRad, incrAccuracy, decrAccuracy, nextTexture, prevTexture, nextGSM, prevGSM, nextCT, prevCT, stopVul, shoot, toggleFullscreen;
+    private InputAction moveAction, nextMetric, prevMetric, incrVisRad, decrVisRad, incrAccuracy, decrAccuracy, nextTexture, prevTexture, nextGSM, prevGSM, nextCT, prevCT, stopVul, shoot, toggleFullscreenRendering;
 
     private Vector2 moveVulture;
 
@@ -247,7 +247,7 @@ public class ScreenScript : MonoBehaviour
         if (nextCT.WasPressedThisFrame()) if (ctNumber < 3) ctNumber += 1;
         if (prevCT.WasPressedThisFrame()) if (ctNumber > 1) ctNumber -= 1;
 
-        if (toggleFullscreen.WasPressedThisFrame()) { fullscreen = !fullscreen; if (fullscreen) fullscreenFloat = 1f; else fullscreenFloat = 0f; }
+        if (toggleFullscreenRendering.WasPressedThisFrame()) { fullscreen = !fullscreen; if (fullscreen) fullscreenFloat = 1f; else fullscreenFloat = 0f; }
 
         material.SetFloat("_VisRad", visionRadius);
         material.SetFloat("_Accuracy", accuracy);
@@ -459,7 +459,7 @@ public class ScreenScript : MonoBehaviour
 
         shoot = InputSystem.actions.FindAction("Attack");
 
-        toggleFullscreen = InputSystem.actions.FindAction("Toggle Fullscreen");
+        toggleFullscreenRendering = InputSystem.actions.FindAction("Toggle Fullscreen Rendering");
 
         domainParameters = make_domain_parameters(2 * PI, 2 * PI, 90);
 

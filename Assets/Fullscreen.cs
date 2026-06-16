@@ -4,21 +4,29 @@ using System;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class FullscreenHotkeyHandler : MonoBehaviour
 {
+    private InputAction toggleFullscreenWindow;
+
     bool makeFullscreenAtStart = false;
 	
 	// Enable fullscreen when starting game
-    void Start() { if (makeFullscreenAtStart) { FullscreenGameView.Toggle(); } }
+    void Start()
+    {
+        if (makeFullscreenAtStart) { FullscreenGameView.Toggle(); }
+
+        toggleFullscreenWindow = InputSystem.actions.FindAction("Toggle Fullscreen Window");
+    }
 
     void Update()
     {
 		// Toggle fullscreen when hotkey pressed
-        // if (Input.GetKeyDown(KeyCode.Backslash))
-        // {
-        //     FullscreenGameView.Toggle();
-        // }
+        if( toggleFullscreenWindow.WasPressedThisFrame() )
+        {
+            FullscreenGameView.Toggle();
+        }
     }
 }
 

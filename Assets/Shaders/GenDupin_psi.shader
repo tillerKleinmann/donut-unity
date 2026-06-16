@@ -1,4 +1,4 @@
-Shader "Custom/Confmets/torus_mu"
+Shader "Custom/Confmets/gendupin_psi"
 {
     Properties
     {
@@ -35,12 +35,20 @@ Shader "Custom/Confmets/torus_mu"
 
             #include "Common/DupinShaderPreamble.hlsl"
 
-            float  mu(      float2 p ){ return 1 - cos(p.y/sqrt(3))/2; }
-            float2 mu_grad( float2 p ){ return float2( 0, sin(p.y/sqrt(3))/(2*sqrt(3)) ); }
+            float psi( float2 p )
+            {
+                return -log( 1 + dpa*cos(p.x/dpal) + dpb*cos(p.y/dpbe) );
+            }
 
-            #include "Common/ConfMets_mu.hlsl"
+            float2 psi_grad( float2 p )
+            {
+                return float2( (dpa/dpal)*sin(p.x/dpal), (dpb/dpbe)*sin(p.y/dpbe) ) / ( 1 + dpa*cos(p.x/dpal) + dpb*cos(p.y/dpbe) );
+            }
+
+            #include "Common/ConfMets_psi.hlsl"
             #include "Common/GeoProp.hlsl"
             #include "Common/FunDom.hlsl"
+            #include "Common/tandil.hlsl"
             #include "Common/SpriteRendering.hlsl"
             #include "Common/RenderRoads.hlsl"
             #include "Common/Coloring.hlsl"

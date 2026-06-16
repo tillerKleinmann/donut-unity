@@ -160,9 +160,18 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Toggle Fullscreen",
+                    "name": "Toggle Fullscreen Rendering",
                     "type": "Button",
                     "id": "3f95dc53-8a31-43e1-b448-2300f51c0c54",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Toggle Fullscreen Window",
+                    "type": "Button",
+                    "id": "e5338af3-0833-49f5-8666-e10629f939b4",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -743,7 +752,18 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Toggle Fullscreen",
+                    "action": "Toggle Fullscreen Rendering",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5ab602f6-e6e3-4b51-aa4e-8aaf253e7a80",
+                    "path": "<Gamepad>/leftStickPress",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "Toggle Fullscreen Rendering",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -777,6 +797,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "Stop",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e1c17776-3b39-4f12-926c-4564728c7ec7",
+                    "path": "<Gamepad>/select",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "Toggle Fullscreen Window",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ea534bbf-abfb-4c2a-a4d7-fde5ce398b90",
+                    "path": "<Keyboard>/numpad6",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Toggle Fullscreen Window",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
