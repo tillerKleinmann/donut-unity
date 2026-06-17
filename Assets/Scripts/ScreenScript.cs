@@ -130,9 +130,10 @@ public class ScreenScript : MonoBehaviour
             case 7:
                 return 0.5f + Cos(p.x) * (3 - Pow(Cos(p.x), 2)) * Cos(p.y) * (3 - Pow(Cos(p.y), 2)) / 8;
             case 8:
-                // return 0f;
-                return Log( 5 ) - Log( 5 + cop(p,k0) + cop(p,k1) + cop(p,k2) );
+                return 0f;
             case 9:
+                return Log( 5 ) - Log( 5 + cop(p,k0) + cop(p,k1) + cop(p,k2) );
+            case 10:
                 return Log( 3 ) - Log( 2 - Cos( p.y * Sqrt(3) ) );
                 //return -Log( 1 - Cos(p.y*2/Sqrt(3))/2 );
             default:
@@ -161,9 +162,10 @@ public class ScreenScript : MonoBehaviour
             case 7:
                 return new Vector2(-3 * Sin(p.x) * (1 - Pow(Cos(p.x), 2)) * Cos(p.y) * (3 - Pow(Cos(p.y), 2)) / 8, -3 * Sin(p.y) * (1 - Pow(Cos(p.y), 2)) * Cos(p.x) * (3 - Pow(Cos(p.x), 2)) / 8);
             case 8:
-                //return new Vector2(0, 0);
-                return new Vector2( k0.x*sip(p,k0) + k1.x*sip(p,k1) + k2.x*sip(p,k2), k0.y*sip(p,k0) + k1.y*sip(p,k1) + k2.y*sip(p,k2) ) / ( 5 + cop(p,k0) + cop(p,k1) + cop(p,k2) );
+                return new Vector2(0, 0);
             case 9:
+                return new Vector2( k0.x*sip(p,k0) + k1.x*sip(p,k1) + k2.x*sip(p,k2), k0.y*sip(p,k0) + k1.y*sip(p,k1) + k2.y*sip(p,k2) ) / ( 5 + cop(p,k0) + cop(p,k1) + cop(p,k2) );
+            case 10:
                 return new Vector2( 0, -Sqrt(3)*Sin(p.y*Sqrt(3)) / ( 2 - Cos(p.y*Sqrt(3)) ) );
                 //return new Vector2( 0, -Sin(p.y*2/Sqrt(3))/Sqrt(3) ) / ( 1 - Cos(p.y*2/Sqrt(3))/2 );
             default:
@@ -307,8 +309,8 @@ public class ScreenScript : MonoBehaviour
         bool metricChanged = false;
         bool textureChanged = false;
 
-        if (nextMetric.WasPressedThisFrame()) { if (metricNumber < 10) metricNumber += 1; else metricNumber = 1; metricChanged = true; }
-        if (prevMetric.WasPressedThisFrame()) { if (metricNumber > 1) metricNumber -= 1; else metricNumber = 10; metricChanged = true; }
+        if (nextMetric.WasPressedThisFrame()) { if (metricNumber < 11) metricNumber += 1; else metricNumber = 1; metricChanged = true; }
+        if (prevMetric.WasPressedThisFrame()) { if (metricNumber > 1) metricNumber -= 1; else metricNumber = 11; metricChanged = true; }
         if (nextTexture.WasPressedThisFrame()) { if (textureNumber < 4) textureNumber += 1; else textureNumber = 1; textureChanged = true; }
         if (prevTexture.WasPressedThisFrame()) { if (textureNumber > 1) textureNumber -= 1; else textureNumber = 4; textureChanged = true; }
 
@@ -345,12 +347,13 @@ public class ScreenScript : MonoBehaviour
                     domainParameters = make_domain_parameters(2 * PI, 2 * PI, 90);
                     break;
                 case 8:
-                    //metricName = "hexFlat";
-                    //domainParameters = make_domain_parameters(2 * PI, 2 * PI, 60);
+                    metricName = "hexFlat";
+                    domainParameters = make_domain_parameters(2 * PI, 2 * PI, 60);
+                case 9:
                     metricName = "hexBump";
                     domainParameters = make_domain_parameters(2 * PI, 2 * PI, 60);
                     break;
-                case 9:
+                case 10:
                     metricName = "torus";
                     domainParameters = make_domain_parameters( 2 * PI, 2/Sqrt(3) * PI, 90);
                     //metricName = "torus_mu";
