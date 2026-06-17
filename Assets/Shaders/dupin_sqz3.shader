@@ -1,4 +1,4 @@
-Shader "Custom/Confmets/pseudo"
+Shader "Custom/Confmets/dupin_sqz3"
 {
     Properties
     {
@@ -24,7 +24,7 @@ Shader "Custom/Confmets/pseudo"
         Pass
         {
             Blend SrcAlpha OneMinusSrcAlpha
-            
+
             HLSLPROGRAM
 
             #pragma vertex vert
@@ -35,10 +35,27 @@ Shader "Custom/Confmets/pseudo"
 
             #include "Common/DupinShaderPreamble.hlsl"
 
-            float  psi(      float2 p ){ return cos(p.x)/4; }
-            float2 psi_grad( float2 p ){ return float2( -sin(p.x)/4, 0 ); }
+            float psqueeze3( float x )
+            {
+                return x*(3-x*x)/2;
+            }
 
-            #include "Common/ConfMets_psi.hlsl"
+            float psqueeze3_d( float x )
+            {
+                return (1-x*x)*3/2;
+            }
+
+            float mu( float2 p )
+            {
+                return 1 + dpa*psqueeze3(cos(p.x/dpal)) + dpb*psqueeze3(cos(p.y/dpbe));
+            }
+            float2 mu_grad( float2 p )
+            {
+                return float2(  -(dpa/dpal)*sin(p.x/dpal)*psqueeze3_d(cos(p.x/dpal)),
+                                -(dpb/dpbe)*sin(p.y/dpbe)*psqueeze3_d(cos(p.y/dpbe))    );
+            }
+
+            #include "Common/ConfMets_mu.hlsl"
             #include "Common/ConfMetsIncludes.hlsl"
             #include "Common/FragMain.hlsl"
 

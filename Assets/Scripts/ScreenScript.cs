@@ -43,6 +43,18 @@ public class ScreenScript : MonoBehaviour
     Material material;
 
 
+    private static float htri = 2/Sqrt(3);
+
+    private static Vector2 k0 = new Vector2( 0, htri );
+    private static Vector2 k1 = new Vector2( +Sqrt(3), -1 ) * htri/2;
+    private static Vector2 k2 = new Vector2( -Sqrt(3), -1 ) * htri/2;
+
+    private float skap( Vector2 p, Vector2 k ){ return p.x*k.x + p.y*k.y; }
+
+    private float cop( Vector2 p, Vector2 k ){ return Cos(skap(k,p)); }
+    private float sip( Vector2 p, Vector2 k ){ return Sin(skap(k,p)); }
+
+
     private struct DomainParameters
     {
         public float a;
@@ -118,7 +130,8 @@ public class ScreenScript : MonoBehaviour
             case 7:
                 return 0.5f + Cos(p.x) * (3 - Pow(Cos(p.x), 2)) * Cos(p.y) * (3 - Pow(Cos(p.y), 2)) / 8;
             case 8:
-                return 0f;
+                // return 0f;
+                return Log( 5 ) - Log( 5 + cop(p,k0) + cop(p,k1) + cop(p,k2) );
             case 9:
                 return Log( 3 ) - Log( 2 - Cos( p.y * Sqrt(3) ) );
                 //return -Log( 1 - Cos(p.y*2/Sqrt(3))/2 );
@@ -148,7 +161,8 @@ public class ScreenScript : MonoBehaviour
             case 7:
                 return new Vector2(-3 * Sin(p.x) * (1 - Pow(Cos(p.x), 2)) * Cos(p.y) * (3 - Pow(Cos(p.y), 2)) / 8, -3 * Sin(p.y) * (1 - Pow(Cos(p.y), 2)) * Cos(p.x) * (3 - Pow(Cos(p.x), 2)) / 8);
             case 8:
-                return new Vector2(0, 0);
+                //return new Vector2(0, 0);
+                return new Vector2( k0.x*sip(p,k0) + k1.x*sip(p,k1) + k2.x*sip(p,k2), k0.y*sip(p,k0) + k1.y*sip(p,k1) + k2.y*sip(p,k2) ) / ( 5 + cop(p,k0) + cop(p,k1) + cop(p,k2) );
             case 9:
                 return new Vector2( 0, -Sqrt(3)*Sin(p.y*Sqrt(3)) / ( 2 - Cos(p.y*Sqrt(3)) ) );
                 //return new Vector2( 0, -Sin(p.y*2/Sqrt(3))/Sqrt(3) ) / ( 1 - Cos(p.y*2/Sqrt(3))/2 );
@@ -307,7 +321,7 @@ public class ScreenScript : MonoBehaviour
                     domainParameters = make_domain_parameters(2 * PI, 2 * PI, 90);
                     break;
                 case 2:
-                    metricName = "pseudo";
+                    metricName = "torus_psi";
                     domainParameters = make_domain_parameters(2 * PI, 2 * PI, 90);
                     break;
                 case 3:
@@ -331,7 +345,9 @@ public class ScreenScript : MonoBehaviour
                     domainParameters = make_domain_parameters(2 * PI, 2 * PI, 90);
                     break;
                 case 8:
-                    metricName = "hexFlat";
+                    //metricName = "hexFlat";
+                    //domainParameters = make_domain_parameters(2 * PI, 2 * PI, 60);
+                    metricName = "hexBump";
                     domainParameters = make_domain_parameters(2 * PI, 2 * PI, 60);
                     break;
                 case 9:
@@ -341,10 +357,9 @@ public class ScreenScript : MonoBehaviour
                     //domainParameters = make_domain_parameters( 3 * PI, Sqrt(3) * PI, 90);
                     break;
                 default:
-                    // metricName = "dupin";
-                    metricName = "gendupin_mu";
-                    // metricName = "gendupin3_mu";
-                    // metricName = "gendupin5_mu";
+                    metricName = "dupin";
+                    // metricName = "dupin_sqz3";
+                    // metricName = "dupin_sqz5";
                     domainParameters = make_domain_parameters( 2 * PI, 2 * PI, 90);
                     break;
             }

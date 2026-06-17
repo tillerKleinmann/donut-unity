@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: a3bb01c38aebc52d7910ed16d81700e4
+guid: 572e1452a3d3546ae9db0964ea3e7f12
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -3425959540755975316
-    second: texture_torus_2025-09-07_13-24-26_0
+      213: 6532602980994129471
+    second: torus_psi_4_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -24,7 +24,7 @@ TextureImporter:
     heightScale: 0.25
     normalMapFilter: 0
     flipGreenChannel: 0
-  isReadable: 1
+  isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
   vTOnly: 0
@@ -74,7 +74,7 @@ TextureImporter:
     buildTarget: DefaultTexturePlatform
     maxTextureSize: 2048
     resizeAlgorithm: 0
-    textureFormat: 4
+    textureFormat: -1
     textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
@@ -113,7 +113,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: texture_torus_2025-09-07_13-24-26_0
+      name: torus_psi_4_0
       rect:
         serializedVersion: 2
         x: 0
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: c63316ef2fb8470d0800000000000000
-      internalID: -3425959540755975316
+      spriteID: f3e10dcccc778aa50800000000000000
+      internalID: 6532602980994129471
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      texture_torus_2025-09-07_13-24-26_0: -3425959540755975316
+      torus_psi_4_0: 6532602980994129471
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 6d0e88203a47c5465bcc495d87d3aff0
+guid: 33cbec8abb482a79d89cd7e0476f3b8f
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 1716624721939178799
-    second: torus_mv_1_0
+      213: 5655408891018194785
+    second: torus_psi_3_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,7 +113,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: torus_mv_1_0
+      name: torus_psi_3_0
       rect:
         serializedVersion: 2
         x: 0
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: f25a6dbe61da2d710800000000000000
-      internalID: 1716624721939178799
+      spriteID: 16fa9b83c6c0c7e40800000000000000
+      internalID: 5655408891018194785
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      torus_mv_1_0: 1716624721939178799
+      torus_psi_3_0: 5655408891018194785
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

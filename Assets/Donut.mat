@@ -48,7 +48,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _VulTex:
-        m_Texture: {fileID: 2800000, guid: d65a9ce5bf649f88c9889b312230c758, type: 3}
+        m_Texture: {fileID: 2800000, guid: 77b1e3b57a158e2d592c4977400d9c4b, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Ints: []
@@ -67,6 +67,7 @@ Material:
     - _CamPos: {r: 0, g: 0, b: 0, a: -1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _DomMat: {r: 6.28318, g: 0, b: 0, a: 6.28318}
+    - _DupinPar: {r: 0.333, g: 0.333, b: 1, a: 1}
     - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

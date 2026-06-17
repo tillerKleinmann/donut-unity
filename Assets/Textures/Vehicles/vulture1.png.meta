@@ -1,10 +1,16 @@
 fileFormatVersion: 2
-guid: 56396b363fd4159e6a4860897627a490
+guid: 77b1e3b57a158e2d592c4977400d9c4b
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -2178617134943629718
-    second: gendupin_mu_2_0
+      213: 3545403056643360381
+    second: vulture1_0
+  - first:
+      213: -2472116306253903965
+    second: vulture1_1
+  - first:
+      213: -941221623852044427
+    second: vulture1_2
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -40,9 +46,9 @@ TextureImporter:
     filterMode: 1
     aniso: 1
     mipBias: 0
-    wrapU: 0
-    wrapV: 0
-    wrapW: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
@@ -113,13 +119,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: gendupin_mu_2_0
+      name: vulture1_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 0
-        width: 128
-        height: 128
+        y: 43
+        width: 208
+        height: 127
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +134,52 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: a6e0b12324ff3c1e0800000000000000
-      internalID: -2178617134943629718
+      spriteID: d76cfc0bb4dc33130800000000000000
+      internalID: 3545403056643360381
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: vulture1_1
+      rect:
+        serializedVersion: 2
+        x: 202
+        y: 73
+        width: 6
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3a7094a315741bdd0800000000000000
+      internalID: -2472116306253903965
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: vulture1_2
+      rect:
+        serializedVersion: 2
+        x: 139
+        y: 39
+        width: 14
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 57fe16f7beb10f2f0800000000000000
+      internalID: -941221623852044427
       vertices: []
       indices: 
       edges: []
@@ -148,7 +198,9 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      gendupin_mu_2_0: -2178617134943629718
+      vulture1_0: 3545403056643360381
+      vulture1_1: -2472116306253903965
+      vulture1_2: -941221623852044427
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

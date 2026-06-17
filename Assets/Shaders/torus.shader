@@ -1,4 +1,4 @@
-Shader "Custom/Confmets/hexFlat"
+Shader "Custom/Confmets/torus"
 {
     Properties
     {
@@ -35,10 +35,10 @@ Shader "Custom/Confmets/hexFlat"
 
             #include "Common/DupinShaderPreamble.hlsl"
 
-            float  mu(      float2 p ){ return 1; }
-            float2 mu_grad( float2 p ){ return float2(0,0); }
+            float  psi(      float2 p ){ return log( 3 ) - log( 2 - cos(p.y*sqrt(3)) ); }
+            float2 psi_grad( float2 p ){ return float2( 0, -sqrt(3)*sin(p.y*sqrt(3)) ) / ( 2 - cos(p.y*sqrt(3)) ); }
 
-            #include "Common/ConfMets_mu.hlsl"
+            #include "Common/ConfMets_psi.hlsl"
             #include "Common/ConfMetsIncludes.hlsl"
             #include "Common/FragMain.hlsl"
 

@@ -1,4 +1,4 @@
-Shader "Custom/Confmets/gendupin3_mu"
+Shader "Custom/Confmets/dupin_sqz5"
 {
     Properties
     {
@@ -35,24 +35,24 @@ Shader "Custom/Confmets/gendupin3_mu"
 
             #include "Common/DupinShaderPreamble.hlsl"
 
-            float psqueeze3( float x )
+            float psqueeze5( float x )
             {
-                return x*(3-x*x)/2;
+                return x * ( 15 - 10*x*x + 3*pow(x,4) ) / 8;
             }
 
-            float psqueeze3_d( float x )
+            float psqueeze5_d( float x )
             {
-                return (1-x*x)*3/2;
+                return ( 1 - 2*x*x + pow(x,4) ) * 15/8;
             }
 
             float mu( float2 p )
             {
-                return 1 + dpa*psqueeze3(cos(p.x/dpal)) + dpb*psqueeze3(cos(p.y/dpbe));
+                return 1 + dpa*psqueeze5(cos(p.x/dpal)) + dpb*psqueeze5(cos(p.y/dpbe));
             }
             float2 mu_grad( float2 p )
             {
-                return float2(  -(dpa/dpal)*sin(p.x/dpal)*psqueeze3_d(cos(p.x/dpal)),
-                                -(dpb/dpbe)*sin(p.y/dpbe)*psqueeze3_d(cos(p.y/dpbe))    );
+                return float2(  -(dpa/dpal)*sin(p.x/dpal)*psqueeze5_d(cos(p.x/dpal)),
+                                -(dpb/dpbe)*sin(p.y/dpbe)*psqueeze5_d(cos(p.y/dpbe))    );
             }
 
             #include "Common/ConfMets_mu.hlsl"

@@ -1,4 +1,4 @@
-Shader "Custom/Confmets/torus_mu"
+Shader "Custom/Confmets/dupin"
 {
     Properties
     {
@@ -35,8 +35,8 @@ Shader "Custom/Confmets/torus_mu"
 
             #include "Common/DupinShaderPreamble.hlsl"
 
-            float  mu(      float2 p ){ return 1 - cos(p.y/sqrt(3))/2; }
-            float2 mu_grad( float2 p ){ return float2( 0, sin(p.y/sqrt(3))/(2*sqrt(3)) ); }
+            float  mu(      float2 p ){ return 1 + dpa*cos(p.x/dpal) + dpb*cos(p.y/dpbe); }
+            float2 mu_grad( float2 p ){ return float2( -(dpa/dpal)*sin(p.x/dpal), -(dpb/dpbe)*sin(p.y/dpbe) ); }
 
             #include "Common/ConfMets_mu.hlsl"
             #include "Common/ConfMetsIncludes.hlsl"

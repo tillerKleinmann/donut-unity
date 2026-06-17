@@ -1,4 +1,4 @@
-Shader "Custom/Confmets/gendupin5_mu"
+Shader "Custom/Confmets/hexBump"
 {
     Properties
     {
@@ -35,25 +35,19 @@ Shader "Custom/Confmets/gendupin5_mu"
 
             #include "Common/DupinShaderPreamble.hlsl"
 
-            float psqueeze5( float x )
-            {
-                return x * ( 15 - 10*x*x + 3*pow(x,4) ) / 8;
-            }
+            static const float htri = 2/sqrt(3);
 
-            float psqueeze5_d( float x )
-            {
-                return ( 1 - 2*x*x + pow(x,4) ) * 15/8;
-            }
+            static const float2 k0 = float2( 0, 1 ) * htri;
+            static const float2 k1 = float2( +sqrt(3), -1 ) * htri/2;
+            static const float2 k2 = float2( -sqrt(3), -1 ) * htri/2;
 
-            float mu( float2 p )
-            {
-                return 1 + dpa*psqueeze5(cos(p.x/dpal)) + dpb*psqueeze5(cos(p.y/dpbe));
-            }
-            float2 mu_grad( float2 p )
-            {
-                return float2(  -(dpa/dpal)*sin(p.x/dpal)*psqueeze5_d(cos(p.x/dpal)),
-                                -(dpb/dpbe)*sin(p.y/dpbe)*psqueeze5_d(cos(p.y/dpbe))    );
-            }
+            float skap( float2 p, float2 k ){ return p.x*k.x + p.y*k.y; }
+
+            float cop( float2 p, float2 k ){ return cos(skap(k,p)); }
+            float sip( float2 p, float2 k ){ return sin(skap(k,p)); }
+
+            float  mu(      float2 p ){ return ( 5 + cop(p,k0) + cop(p,k1) + cop(p,k2) ) / 5; }
+            float2 mu_grad( float2 p ){ return float2( k0.x*sip(p,k0) + k1.x*sip(p,k1) + k2.x*sip(p,k2), k0.y*sip(p,k0) + k1.y*sip(p,k1) + k2.y*sip(p,k2) ) * ( -1.0 / 5 ); }
 
             #include "Common/ConfMets_mu.hlsl"
             #include "Common/ConfMetsIncludes.hlsl"

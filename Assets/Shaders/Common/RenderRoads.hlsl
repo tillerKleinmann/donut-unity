@@ -36,7 +36,7 @@ float3 add_main_roads_rectangle2( float3 col, float2 tarPos )
 {
     float roadbr = 0.3;
     float linebr = 0.03;
-    float roadfadebr = 0.05;
+    float roadfadebr = 0.04;
 
     float dRx  =  x_distance_estimate_to_y_parameter_line( tarPos, 0 );
     float dmx  =  x_distance_estimate_to_y_parameter_line( tarPos, 0.25*u2p.x );
@@ -89,17 +89,17 @@ float3 add_main_roads_hexagon( float3 col, float2 tarPos )
 {
     float roadbr = 0.3;
     float linebr = 0.03;
-    float roadfadebr = 0.05;
+    float roadfadebr = 0.04;
 
     tarPos  =  reset_to_parallelogram( tarPos );
 
-    float2 n0  =  float2( 0.0, sqrt(3) * PI );
-    float2 n1  =  float2( +sqrt(3)/2, -0.5 ) * sqrt(3) * PI;
-    float2 n2  =  float2( -sqrt(3)/2, -0.5 ) * sqrt(3) * PI;
+    float2 k0  =  float2( 0.0, sqrt(3) * PI );
+    float2 k1  =  float2( +sqrt(3), -1 ) * sqrt(3) * PI / 2;
+    float2 k2  =  float2( -sqrt(3), -1 ) * sqrt(3) * PI / 2;
 
-    float dRx    =  distance_from_parameter_line( tarPos, float2(0,0), n0 );
-    float dR1  =  distance_from_parameter_line( tarPos, float2(0,0), n1 );
-    float dR2  =  distance_from_parameter_line( tarPos, float2(0,0), n2 );
+    float dRx  =  distance_from_parameter_line( tarPos, float2(0,0), k0 );
+    float dR1  =  distance_from_parameter_line( tarPos, float2(0,0), k1 );
+    float dR2  =  distance_from_parameter_line( tarPos, float2(0,0), k2 );
 
     float dRoad  =  min( dRx, min( dR1, dR2 ) );
 
@@ -118,21 +118,21 @@ float3 add_main_roads_hexagon2( float3 col, float2 tarPos )
 {
     float roadbr = 0.3;
     float linebr = 0.03;
-    float roadfadebr = 0.05;
+    float roadfadebr = 0.04;
 
     tarPos  =  reset_to_parallelogram( tarPos );
 
-    float2 n0  =  float2( 0.0, sqrt(3) * PI );
-    float2 n1  =  float2( +sqrt(3)/2, -0.5 ) * sqrt(3) * PI;
-    float2 n2  =  float2( -sqrt(3)/2, -0.5 ) * sqrt(3) * PI;
+    float2 k0  =  float2( 0.0, sqrt(3) * PI );
+    float2 k1  =  float2( +sqrt(3)/2, -0.5 ) * sqrt(3) * PI;
+    float2 k2  =  float2( -sqrt(3)/2, -0.5 ) * sqrt(3) * PI;
 
-    float dR0  =  distance_from_parameter_line( tarPos, float2(0,0), n0 );
-    float dR1  =  distance_from_parameter_line( tarPos, float2(0,0), n1 );
-    float dR2  =  distance_from_parameter_line( tarPos, float2(0,0), n2 );
+    float dR0  =  distance_from_parameter_line( tarPos, float2(0,0), k0 );
+    float dR1  =  distance_from_parameter_line( tarPos, float2(0,0), k1 );
+    float dR2  =  distance_from_parameter_line( tarPos, float2(0,0), k2 );
 
-    float dr0  =  distance_from_parameter_line( tarPos, n0/2, n0 );
-    float dr1  =  distance_from_parameter_line( tarPos, n1/2, n1 );
-    float dr2  =  distance_from_parameter_line( tarPos, n2/2, n2 );
+    float dr0  =  distance_from_parameter_line( tarPos, k0/2, k0 );
+    float dr1  =  distance_from_parameter_line( tarPos, k1/2, k1 );
+    float dr2  =  distance_from_parameter_line( tarPos, k2/2, k2 );
 
     float dR =  min( dR0, min( dR1, dR2 ) );
     float dr =  min( dr0, min( dr1, dr2 ) );

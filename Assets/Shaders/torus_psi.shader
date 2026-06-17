@@ -1,4 +1,4 @@
-Shader "Custom/Confmets/gendupin_mu"
+Shader "Custom/Confmets/torus_psi"
 {
     Properties
     {
@@ -24,7 +24,7 @@ Shader "Custom/Confmets/gendupin_mu"
         Pass
         {
             Blend SrcAlpha OneMinusSrcAlpha
-
+            
             HLSLPROGRAM
 
             #pragma vertex vert
@@ -35,10 +35,10 @@ Shader "Custom/Confmets/gendupin_mu"
 
             #include "Common/DupinShaderPreamble.hlsl"
 
-            float  mu(      float2 p ){ return 1 + dpa*cos(p.x/dpal) + dpb*cos(p.y/dpbe); }
-            float2 mu_grad( float2 p ){ return float2( -(dpa/dpal)*sin(p.x/dpal), -(dpb/dpbe)*sin(p.y/dpbe) ); }
+            float  psi(      float2 p ){ return cos(p.x)/4; }
+            float2 psi_grad( float2 p ){ return float2( -sin(p.x)/4, 0 ); }
 
-            #include "Common/ConfMets_mu.hlsl"
+            #include "Common/ConfMets_psi.hlsl"
             #include "Common/ConfMetsIncludes.hlsl"
             #include "Common/FragMain.hlsl"
 

@@ -65,11 +65,14 @@ half4 frag( Varyings IN ) : SV_Target
                 col  =  draw_sprite_linear( col, tarPos, rocPos, rocVel, _RocTex, 0.5 );
             }
 
-        if( pv1.x*vulVec.x + pv1.y*vulVec.y > length(pv1)*length(vulVec)*255/256 )
-            col  =  brighter( col );
+        // if( pv1.x*vulVec.x + pv1.y*vulVec.y > length(pv1)*length(vulVec)*255/256 )
+        //     col  =  brighter( col );
+
+        if( fullscreen == false )
+            col  =  lerp( float3(0,0,0), col, clamp( ( 1.0 - xy_rl ) * 16, 0, 1 ) );
 
         return float4( col, 1 );
     }
     else
-        return float4( 0, 0, 0, 0 );
+        return float4( 0.0, 0.0, 0.0, 1.0 );
 }

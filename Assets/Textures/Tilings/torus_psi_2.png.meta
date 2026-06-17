@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 1c1da2db6e6dc4f22a1b7aab8831c839
+guid: a1801babfe6046f1b91cc4ff0b68d0a9
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 8763389635537095921
-    second: gendupin_mu_3_0
+      213: 6331373828445888876
+    second: torus_psi_2_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: gendupin_mu_3_0
+      name: torus_psi_2_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 256
-        height: 256
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 1fc478e6170dd9970800000000000000
-      internalID: 8763389635537095921
+      spriteID: c61e8b0b3fe8dd750800000000000000
+      internalID: 6331373828445888876
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      gendupin_mu_3_0: 8763389635537095921
+      torus_psi_2_0: 6331373828445888876
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

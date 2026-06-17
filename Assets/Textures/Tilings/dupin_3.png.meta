@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: f59263b7e0e8e85bf93086f89f32d8ea
+guid: fdeac701b070b66f3a27662d8a77cbf0
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 2391117754036677393
-    second: gendupin_mu_1_0
+      213: 3817513353059713914
+    second: dupin_3_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: gendupin_mu_1_0
+      name: dupin_3_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 1024
-        height: 1024
+        width: 256
+        height: 256
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 11b6c79bde4fe2120800000000000000
-      internalID: 2391117754036677393
+      spriteID: a734f662b288af430800000000000000
+      internalID: 3817513353059713914
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      gendupin_mu_1_0: 2391117754036677393
+      dupin_3_0: 3817513353059713914
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
