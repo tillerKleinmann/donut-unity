@@ -123,9 +123,9 @@ public class ScreenScript : MonoBehaviour
                 return Log( 3 ) - Log( 2 - Cos( p.y * Sqrt(3) ) );
                 //return -Log( 1 - Cos(p.y*2/Sqrt(3))/2 );
             default:
-                // return -Log( 1 + Cos(p.x)/3 + Cos(p.y)/3 );
+                return -Log( 1 + Cos(p.x)/3 + Cos(p.y)/3 );
                 // return -Log( 1 + 3*Cos(p.x)/7 + 2*Cos(p.y)/7 );
-                return -Log( 1 + psqueeze5(Cos(p.x))/3 + psqueeze5(Cos(p.y))/3 );
+                // return -Log( 1 + psqueeze5(Cos(p.x))/3 + psqueeze5(Cos(p.y))/3 );
         }
     }
 
@@ -153,9 +153,9 @@ public class ScreenScript : MonoBehaviour
                 return new Vector2( 0, -Sqrt(3)*Sin(p.y*Sqrt(3)) / ( 2 - Cos(p.y*Sqrt(3)) ) );
                 //return new Vector2( 0, -Sin(p.y*2/Sqrt(3))/Sqrt(3) ) / ( 1 - Cos(p.y*2/Sqrt(3))/2 );
             default:
-                // return new Vector2( Sin(p.x)/3, Sin(p.y)/3 ) / ( 1 + Cos(p.x)/3 + Cos(p.y)/3 );
+                return new Vector2( Sin(p.x)/3, Sin(p.y)/3 ) / ( 1 + Cos(p.x)/3 + Cos(p.y)/3 );
                 // return new Vector2( 3*Sin(p.x)/7, 2*Sin(p.y)/7 ) / ( 1 + 3*Cos(p.x)/7 + 2*Cos(p.y)/7 );
-                return new Vector2( Sin(p.x) * psqueeze5_d(Cos(p.x))/3, Sin(p.y) * psqueeze5_d(Cos(p.y))/3 ) / ( 1 + psqueeze5(Cos(p.x))/3 + psqueeze5(Cos(p.y))/3 );
+                // return new Vector2( Sin(p.x) * psqueeze5_d(Cos(p.x))/3, Sin(p.y) * psqueeze5_d(Cos(p.y))/3 ) / ( 1 + psqueeze5(Cos(p.x))/3 + psqueeze5(Cos(p.y))/3 );
         }
     }
     
@@ -207,7 +207,7 @@ public class ScreenScript : MonoBehaviour
         Vector2 rp_v = new Vector2(rp.z, rp.w);
 
         //apply_geodesic_step__euler(ref rp_p, ref rp_v, dt, n);
-        apply_geodesic_step__midpoint(ref rp_p, ref rp_v, dt, n);
+        apply_geodesic_step__midpoint( ref rp_p, ref rp_v, dt, n );
 
         rp = new Vector4(rp_p.x, rp_p.y, rp_v.x, rp_v.y);
     }
@@ -220,11 +220,6 @@ public class ScreenScript : MonoBehaviour
         float s = Sin(a);
 
         return new Vector2(c * moveVec.x + s * moveVec.y, -s * moveVec.x + c * moveVec.y) * (Exp(-confun(pos, metricNumber)) * (-speed));
-    }
-
-    private Vector2 reset_to_domain_square(Vector2 p)
-    {
-        return new Vector2(p.x - RoundToInt(p.x / (2 * PI)) * 2 * PI, p.y - RoundToInt(p.y / (2 * PI)) * 2 * PI);
     }
 
     private Vector2 reset_to_domain_unit_square(Vector2 p)
@@ -347,9 +342,9 @@ public class ScreenScript : MonoBehaviour
                     break;
                 default:
                     // metricName = "dupin";
-                    // metricName = "gendupin_mu";
+                    metricName = "gendupin_mu";
                     // metricName = "gendupin3_mu";
-                    metricName = "gendupin5_mu";
+                    // metricName = "gendupin5_mu";
                     domainParameters = make_domain_parameters( 2 * PI, 2 * PI, 90);
                     break;
             }

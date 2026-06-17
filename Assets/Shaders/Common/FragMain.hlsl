@@ -50,6 +50,8 @@ half4 frag( Varyings IN ) : SV_Target
 
         if( abs(u2p.y) < 0.01*abs(u2p.w) )
             col  =  add_main_roads_rectangle2( col, tarPos );
+        else
+            col  =  add_main_roads_hexagon( col, tarPos );
 
         col  =  draw_sprite_quadratic( col, tarPos, camPos, vulVec, _VulTex, 1.0 );
         

@@ -56,13 +56,7 @@ Shader "Custom/Confmets/gendupin5_mu"
             }
 
             #include "Common/ConfMets_mu.hlsl"
-            #include "Common/GeoProp.hlsl"
-            #include "Common/ChartComp.hlsl"
-            #include "Common/FunDom.hlsl"
-            #include "Common/tandil.hlsl"
-            #include "Common/SpriteRendering.hlsl"
-            #include "Common/RenderRoads.hlsl"
-            #include "Common/Coloring.hlsl"
+            #include "Common/ConfMetsIncludes.hlsl"
             #include "Common/FragMain.hlsl"
 
             ENDHLSL

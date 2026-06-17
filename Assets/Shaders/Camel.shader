@@ -32,13 +32,14 @@ Shader "Custom/Confmets/camel"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/GlobalSamplers.hlsl"
 
-            #include "Common/ShaderPreamble.hlsl"
+            #include "Common/DupinShaderPreamble.hlsl"
 
-            float  confun(      float2 p ){ return cos(p.x)*cos(p.y)/4; }
-            float2 confun_grad( float2 p ){ return -float2( sin(p.x)*cos(p.y), cos(p.x)*sin(p.y) )/4; }
-            float  confun_lap(  float2 p ){ return -cos(p.x)*cos(p.y)/2; }
+            float  psi(      float2 p ){ return cos(p.x)*cos(p.y)/4; }
+            float2 psi_grad( float2 p ){ return -float2( sin(p.x)*cos(p.y), cos(p.x)*sin(p.y) )/4; }
 
-            #include "Common/ConfMetsShader.hlsl"
+            #include "Common/ConfMets_psi.hlsl"
+            #include "Common/ConfMetsIncludes.hlsl"
+            #include "Common/FragMain.hlsl"
 
             ENDHLSL
         }

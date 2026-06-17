@@ -39,12 +39,7 @@ Shader "Custom/Confmets/torus_mu"
             float2 mu_grad( float2 p ){ return float2( 0, sin(p.y/sqrt(3))/(2*sqrt(3)) ); }
 
             #include "Common/ConfMets_mu.hlsl"
-            #include "Common/GeoProp.hlsl"
-            #include "Common/ChartComp.hlsl"
-            #include "Common/FunDom.hlsl"
-            #include "Common/SpriteRendering.hlsl"
-            #include "Common/RenderRoads.hlsl"
-            #include "Common/Coloring.hlsl"
+            #include "Common/ConfMetsIncludes.hlsl"
             #include "Common/FragMain.hlsl"
 
             ENDHLSL

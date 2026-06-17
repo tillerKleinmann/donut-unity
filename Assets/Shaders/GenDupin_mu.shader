@@ -39,13 +39,7 @@ Shader "Custom/Confmets/gendupin_mu"
             float2 mu_grad( float2 p ){ return float2( -(dpa/dpal)*sin(p.x/dpal), -(dpb/dpbe)*sin(p.y/dpbe) ); }
 
             #include "Common/ConfMets_mu.hlsl"
-            #include "Common/GeoProp.hlsl"
-            #include "Common/ChartComp.hlsl"
-            #include "Common/FunDom.hlsl"
-            #include "Common/tandil.hlsl"
-            #include "Common/SpriteRendering.hlsl"
-            #include "Common/RenderRoads.hlsl"
-            #include "Common/Coloring.hlsl"
+            #include "Common/ConfMetsIncludes.hlsl"
             #include "Common/FragMain.hlsl"
 
             ENDHLSL
