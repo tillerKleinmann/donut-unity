@@ -93,14 +93,15 @@ float3 add_main_roads_hexagon( float3 col, float2 tarPos )
 
     tarPos  =  reset_to_parallelogram( tarPos );
 
-    float dRx    =  distance_from_parameter_line( tarPos, float2(0,0), float2(        0.0,  1.0 ) * sqrt(3) * PI );
-    float dRxyy  =  distance_from_parameter_line( tarPos, float2(0,0), float2( +sqrt(3)/2, -0.5 ) * sqrt(3) * PI );
-    float dRyyx  =  distance_from_parameter_line( tarPos, float2(0,0), float2( -sqrt(3)/2, -0.5 ) * sqrt(3) * PI );
+    float2 n0  =  float2( 0.0, sqrt(3) * PI );
+    float2 n1  =  float2( +sqrt(3)/2, -0.5 ) * sqrt(3) * PI;
+    float2 n2  =  float2( -sqrt(3)/2, -0.5 ) * sqrt(3) * PI;
 
-    float dRoad  =  min( dRx, min( dRxyy, dRyyx ) );
-    //float dRoad = dRx;
-    //float dRoad = dRxyy;
-    //float dRoad = dRyyx;
+    float dRx    =  distance_from_parameter_line( tarPos, float2(0,0), n0 );
+    float dR1  =  distance_from_parameter_line( tarPos, float2(0,0), n1 );
+    float dR2  =  distance_from_parameter_line( tarPos, float2(0,0), n2 );
+
+    float dRoad  =  min( dRx, min( dR1, dR2 ) );
 
     if( dRoad < roadbr )
         col  =  0.05*float3(1,1,1);
@@ -109,6 +110,72 @@ float3 add_main_roads_hexagon( float3 col, float2 tarPos )
 
     if( dRoad < linebr )
         col  =  float3(1,1,1);
+
+    return col;
+}
+
+float3 add_main_roads_hexagon2( float3 col, float2 tarPos )
+{
+    float roadbr = 0.3;
+    float linebr = 0.03;
+    float roadfadebr = 0.05;
+
+    tarPos  =  reset_to_parallelogram( tarPos );
+
+    float2 n0  =  float2( 0.0, sqrt(3) * PI );
+    float2 n1  =  float2( +sqrt(3)/2, -0.5 ) * sqrt(3) * PI;
+    float2 n2  =  float2( -sqrt(3)/2, -0.5 ) * sqrt(3) * PI;
+
+    float dR0  =  distance_from_parameter_line( tarPos, float2(0,0), n0 );
+    float dR1  =  distance_from_parameter_line( tarPos, float2(0,0), n1 );
+    float dR2  =  distance_from_parameter_line( tarPos, float2(0,0), n2 );
+
+    float dr0  =  distance_from_parameter_line( tarPos, n0/2, n0 );
+    float dr1  =  distance_from_parameter_line( tarPos, n1/2, n1 );
+    float dr2  =  distance_from_parameter_line( tarPos, n2/2, n2 );
+
+    float dR =  min( dR0, min( dR1, dR2 ) );
+    float dr =  min( dr0, min( dr1, dr2 ) );
+    float dRoad  =  min( dr, dR );
+
+    bool in0 = ( dR0 < roadbr | dr0 < roadbr );
+    bool in1 = ( dR1 < roadbr | dr1 < roadbr );
+    bool in2 = ( dR2 < roadbr | dr2 < roadbr );
+
+    if( dRoad < roadbr )
+        col  =  0.05*float3(1,1,1);
+    else
+        col  =  lerp( 0.5*float3(1,1,1), col, clamp( ( dRoad - roadbr ) / roadfadebr, 0, 1 ) );
+    
+    if( in1 == false & in2 == false )
+    {
+        if( dR0 < linebr )
+            //col  =  float3(1,0,0);
+            col  =  float3(1,0.5,0.5);
+        else if( dr0 < linebr )
+            //col  =  float3(0,1,1);
+            col  =  float3(0,0.5,0.5);
+    }
+
+    if( in2 == false & in0 == false )
+    {
+        if( dR1 < linebr )
+        //col  =  float3(0,1,0);
+        col  =  float3(0.5,1,0.5);
+        else if( dr1 < linebr )
+            //col  =  float3(1,0,1);
+            col  =  float3(0.5,0,0.5);
+    }
+
+    if( in0 == false & in1 == false )
+    {
+        if( dR2 < linebr )
+            //col  =  float3(0,0,1);
+            col  =  float3(0.5,0.5,1);
+        else if( dr2 < linebr )
+            //col  =  float3(1,1,0);
+            col  =  float3(0.5,0.5,0);
+    }
 
     return col;
 }

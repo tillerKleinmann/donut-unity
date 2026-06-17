@@ -11,6 +11,7 @@ Shader "Custom/Confmets/dromedar"
         [FullScreen] _FullScreen("Fullscreen", Float)  =  0
         [Accuracy] _Accuracy("Accuracy", Float)  =  64
         [GSM] _GSM("Geodesic Step Method", Float)  =  1
+        [DupinParameters] _DupinPar("Dupin Parameters", Vector)  =  (0.333, 0.333, 1.0, 1.0) // ( a, b, al , be )
         [ChartType] _ChartType("Chart Type", Float)  =  1
         [VultureTexture] _VulTex("Vulture Texture", 2D) = "white"
         [RocketTexture] _RocTex("Rocket Texture", 2D) = "white"
@@ -32,13 +33,14 @@ Shader "Custom/Confmets/dromedar"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/GlobalSamplers.hlsl"
 
-            #include "Common/ShaderPreamble.hlsl"
+            #include "Common/DupinShaderPreamble.hlsl"
 
-            float  confun(      float2 p ){ return (1-cos(p.x))*(1-cos(p.y)) / 4; }
-            float2 confun_grad( float2 p ){ return float2( sin(p.x)*(1-cos(p.y)), (1-cos(p.x))*sin(p.y) ) / 4; }
-            float  confun_lap(  float2 p ){ return ( -2*cos(p.x)*cos(p.y) + cos(p.x) + cos(p.y) ) / 4; }
+            float  psi(      float2 p ){ return (1-cos(p.x))*(1-cos(p.y)) / 4; }
+            float2 psi_grad( float2 p ){ return float2( sin(p.x)*(1-cos(p.y)), (1-cos(p.x))*sin(p.y) ) / 4; }
 
-            #include "Common/ConfMetsShader.hlsl"
+            #include "Common/ConfMets_psi.hlsl"
+            #include "Common/ConfMetsIncludes.hlsl"
+            #include "Common/FragMain.hlsl"
 
             ENDHLSL
         }
