@@ -135,11 +135,12 @@ public class ScreenScript : MonoBehaviour
                 return Log( 5 ) - Log( 5 + cop(p,k0) + cop(p,k1) + cop(p,k2) );
             case 10:
                 return Log( 3 ) - Log( 2 - Cos( p.y * Sqrt(3) ) );
-                //return -Log( 1 - Cos(p.y*2/Sqrt(3))/2 );
-            default:
+            case 11:
                 return -Log( 1 + Cos(p.x)/3 + Cos(p.y)/3 );
-                // return -Log( 1 + 3*Cos(p.x)/7 + 2*Cos(p.y)/7 );
-                // return -Log( 1 + psqueeze5(Cos(p.x))/3 + psqueeze5(Cos(p.y))/3 );
+            case 12:
+                return -Log( 1 + psqueeze3(Cos(p.x))/3 + psqueeze3(Cos(p.y))/3 );
+            default:
+                return -Log( 1 + psqueeze3(Cos(p.x))/3 + psqueeze3(Cos(p.y))/3 );
         }
     }
 
@@ -167,11 +168,12 @@ public class ScreenScript : MonoBehaviour
                 return new Vector2( k0.x*sip(p,k0) + k1.x*sip(p,k1) + k2.x*sip(p,k2), k0.y*sip(p,k0) + k1.y*sip(p,k1) + k2.y*sip(p,k2) ) / ( 5 + cop(p,k0) + cop(p,k1) + cop(p,k2) );
             case 10:
                 return new Vector2( 0, -Sqrt(3)*Sin(p.y*Sqrt(3)) / ( 2 - Cos(p.y*Sqrt(3)) ) );
-                //return new Vector2( 0, -Sin(p.y*2/Sqrt(3))/Sqrt(3) ) / ( 1 - Cos(p.y*2/Sqrt(3))/2 );
-            default:
+            case 11:
                 return new Vector2( Sin(p.x)/3, Sin(p.y)/3 ) / ( 1 + Cos(p.x)/3 + Cos(p.y)/3 );
-                // return new Vector2( 3*Sin(p.x)/7, 2*Sin(p.y)/7 ) / ( 1 + 3*Cos(p.x)/7 + 2*Cos(p.y)/7 );
-                // return new Vector2( Sin(p.x) * psqueeze5_d(Cos(p.x))/3, Sin(p.y) * psqueeze5_d(Cos(p.y))/3 ) / ( 1 + psqueeze5(Cos(p.x))/3 + psqueeze5(Cos(p.y))/3 );
+            case 12:
+                return new Vector2( Sin(p.x) * psqueeze3_d(Cos(p.x))/3, Sin(p.y) * psqueeze3_d(Cos(p.y))/3 ) / ( 1 + psqueeze3(Cos(p.x))/3 + psqueeze3(Cos(p.y))/3 );
+            default:
+                return new Vector2( Sin(p.x) * psqueeze5_d(Cos(p.x))/3, Sin(p.y) * psqueeze5_d(Cos(p.y))/3 ) / ( 1 + psqueeze5(Cos(p.x))/3 + psqueeze5(Cos(p.y))/3 );
         }
     }
     
@@ -309,8 +311,8 @@ public class ScreenScript : MonoBehaviour
         bool metricChanged = false;
         bool textureChanged = false;
 
-        if (nextMetric.WasPressedThisFrame()) { if (metricNumber < 11) metricNumber += 1; else metricNumber = 1; metricChanged = true; }
-        if (prevMetric.WasPressedThisFrame()) { if (metricNumber > 1) metricNumber -= 1; else metricNumber = 11; metricChanged = true; }
+        if (nextMetric.WasPressedThisFrame()) { if (metricNumber < 13) metricNumber += 1; else metricNumber = 1; metricChanged = true; }
+        if (prevMetric.WasPressedThisFrame()) { if (metricNumber > 1) metricNumber -= 1; else metricNumber = 13; metricChanged = true; }
         if (nextTexture.WasPressedThisFrame()) { if (textureNumber < 4) textureNumber += 1; else textureNumber = 1; textureChanged = true; }
         if (prevTexture.WasPressedThisFrame()) { if (textureNumber > 1) textureNumber -= 1; else textureNumber = 4; textureChanged = true; }
 
@@ -357,13 +359,17 @@ public class ScreenScript : MonoBehaviour
                 case 10:
                     metricName = "torus";
                     domainParameters = make_domain_parameters( 2 * PI, 2/Sqrt(3) * PI, 90);
-                    //metricName = "torus_mu";
-                    //domainParameters = make_domain_parameters( 3 * PI, Sqrt(3) * PI, 90);
+                    break;
+                case 11:
+                    metricName = "dupin";
+                    domainParameters = make_domain_parameters( 2 * PI, 2 * PI, 90);
+                    break;
+                case 12:
+                    metricName = "dupin_sqz3";
+                    domainParameters = make_domain_parameters( 2 * PI, 2 * PI, 90);
                     break;
                 default:
-                    metricName = "dupin";
-                    // metricName = "dupin_sqz3";
-                    // metricName = "dupin_sqz5";
+                    metricName = "dupin_sqz5";
                     domainParameters = make_domain_parameters( 2 * PI, 2 * PI, 90);
                     break;
             }
