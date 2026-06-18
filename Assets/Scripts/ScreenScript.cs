@@ -349,6 +349,7 @@ public class ScreenScript : MonoBehaviour
                 case 8:
                     metricName = "hexFlat";
                     domainParameters = make_domain_parameters(2 * PI, 2 * PI, 60);
+                    break;
                 case 9:
                     metricName = "hexBump";
                     domainParameters = make_domain_parameters(2 * PI, 2 * PI, 60);

@@ -69,7 +69,7 @@ half4 frag( Varyings IN ) : SV_Target
         //     col  =  brighter( col );
 
         if( fullscreen == false )
-            col  =  lerp( float3(0,0,0), col, clamp( ( 1.0 - xy_rl ) * 16, 0, 1 ) );
+            col  =  lerp( float3(0,0,0), col, pow( clamp( ( 1.0 - xy_rl ) * 32, 0, 1 ), 2 ) );
 
         return float4( col, 1 );
     }
