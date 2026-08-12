@@ -203,6 +203,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "Toggle Display Roads",
+                    "type": "Button",
+                    "id": "0e130564-fe9e-4be8-a676-47890648ee37",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -780,8 +789,30 @@
                 },
                 {
                     "name": "",
+                    "id": "c5f1e4fc-f363-4228-93f7-150a05893e3c",
+                    "path": "<Gamepad>/rightStick/right",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Next Chart Type",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "89ebeed7-21eb-421e-bec6-ed727b7814c1",
                     "path": "<Keyboard>/numpad4",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Previous Chart Type",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "c27beafb-d8d4-4b5c-8245-e85ae043d062",
+                    "path": "<Gamepad>/rightStick/left",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -819,6 +850,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "Toggle Fullscreen Window",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "1877b75d-025e-4621-8113-3da60d2a312a",
+                    "path": "<Keyboard>/numpad7",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Toggle Display Roads",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a6908243-cc5e-4af2-b687-6bbef9006e99",
+                    "path": "<Gamepad>/rightStickPress",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Toggle Display Roads",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

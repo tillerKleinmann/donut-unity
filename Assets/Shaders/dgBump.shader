@@ -1,4 +1,4 @@
-Shader "Custom/Confmets/dupin"
+Shader "Custom/Confmets/dgBump"
 {
     Properties
     {
@@ -11,7 +11,6 @@ Shader "Custom/Confmets/dupin"
         [FullScreen] _FullScreen("Fullscreen", Float)  =  0
         [Accuracy] _Accuracy("Accuracy", Float)  =  64
         [GSM] _GSM("Geodesic Step Method", Float)  =  1
-        [DupinParameters] _DupinPar("Dupin Parameters", Vector)  =  (0.333, 0.333, 1.0, 1.0) // ( a, b, al , be )
         [ChartType] _ChartType("Chart Type", Float)  =  1
         [VultureTexture] _VulTex("Vulture Texture", 2D) = "white"
         [RocketTexture] _RocTex("Rocket Texture", 2D) = "white"
@@ -24,7 +23,7 @@ Shader "Custom/Confmets/dupin"
         Pass
         {
             Blend SrcAlpha OneMinusSrcAlpha
-
+            
             HLSLPROGRAM
 
             #pragma vertex vert
@@ -35,10 +34,10 @@ Shader "Custom/Confmets/dupin"
 
             #include "Common/ConfMetsShaderPreamble.hlsl"
 
-            float  mu(      float2 p ){ return 1 + dpa*cos(p.x/dpal) + dpb*cos(p.y/dpbe); }
-            float2 mu_grad( float2 p ){ return float2( -(dpa/dpal)*sin(p.x/dpal), -(dpb/dpbe)*sin(p.y/dpbe) ); }
+            float  psi(      float2 p ){ return cos(p.x)*cos(p.y)/4; }
+            float2 psi_grad( float2 p ){ return -float2( sin(p.x)*cos(p.y), cos(p.x)*sin(p.y) )/4; }
 
-            #include "Common/ConfMets_mu.hlsl"
+            #include "Common/ConfMets_psi.hlsl"
             #include "Common/ConfMetsIncludes.hlsl"
             #include "Common/FragMain.hlsl"
 

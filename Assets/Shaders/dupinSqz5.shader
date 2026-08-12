@@ -1,4 +1,4 @@
-Shader "Custom/Confmets/flat"
+Shader "Custom/Confmets/dupinSqz5"
 {
     Properties
     {
@@ -33,10 +33,27 @@ Shader "Custom/Confmets/flat"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/GlobalSamplers.hlsl"
 
-            #include "Common/DupinShaderPreamble.hlsl"
+            #include "Common/ConfMetsShaderPreamble.hlsl"
 
-            float  mu     ( float2 p ){ return 1; }
-            float2 mu_grad( float2 p ){ return float2(0,0); }
+            float psqueeze5( float x )
+            {
+                return x * ( 15 - 10*x*x + 3*pow(x,4) ) / 8;
+            }
+
+            float psqueeze5_d( float x )
+            {
+                return ( 1 - 2*x*x + pow(x,4) ) * 15/8;
+            }
+
+            float mu( float2 p )
+            {
+                return 1 + dpa*psqueeze5(cos(p.x/dpal)) + dpb*psqueeze5(cos(p.y/dpbe));
+            }
+            float2 mu_grad( float2 p )
+            {
+                return float2(  -(dpa/dpal)*sin(p.x/dpal)*psqueeze5_d(cos(p.x/dpal)),
+                                -(dpb/dpbe)*sin(p.y/dpbe)*psqueeze5_d(cos(p.y/dpbe))    );
+            }
 
             #include "Common/ConfMets_mu.hlsl"
             #include "Common/ConfMetsIncludes.hlsl"

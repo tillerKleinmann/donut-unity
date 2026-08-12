@@ -33,7 +33,7 @@ Shader "Custom/Confmets/hexFlat"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/GlobalSamplers.hlsl"
 
-            #include "Common/DupinShaderPreamble.hlsl"
+            #include "Common/ConfMetsShaderPreamble.hlsl"
 
             float  mu(      float2 p ){ return 1; }
             float2 mu_grad( float2 p ){ return float2(0,0); }

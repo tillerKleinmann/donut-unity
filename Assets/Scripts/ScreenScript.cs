@@ -14,7 +14,7 @@ public class ScreenScript : MonoBehaviour
 
     public int accuracy = 16, metricNumber = 1, textureNumber = 1, gsmNumber = 1;
 
-    private InputAction moveAction, nextMetric, prevMetric, incrVisRad, decrVisRad, incrAccuracy, decrAccuracy, nextTexture, prevTexture, nextGSM, prevGSM, nextCT, prevCT, stopVul, shoot, toggleFullscreenRendering;
+    private InputAction moveAction, nextMetric, prevMetric, incrVisRad, decrVisRad, incrAccuracy, decrAccuracy, nextTexture, prevTexture, nextGSM, prevGSM, nextCT, prevCT, stopVul, shoot, toggleFullscreenRendering, toggleDisplayRoads;
 
     private Vector2 moveVulture;
 
@@ -29,7 +29,8 @@ public class ScreenScript : MonoBehaviour
     private static float deg2rad = PI/180;
 
 
-    private string metricName = "flat";
+    private string metricName = "sqFlat";
+    private string domainName = "square";
 
     public TextMeshProUGUI domainField, metricField, textureField, radiusField, GSMField, accuracyField, frameRateField;
 
@@ -37,17 +38,25 @@ public class ScreenScript : MonoBehaviour
     private int frameCount = 0;
 
     private bool fullscreen = false;
+    private bool displayRoads = false;
 
     private float fullscreenFloat = 0f;
+    private float displayRoadsFloat = 0f;
 
     Material material;
 
 
     private static float htri = 2/Sqrt(3);
 
-    private static Vector2 k0 = new Vector2( 0, htri );
-    private static Vector2 k1 = new Vector2( +Sqrt(3), -1 ) * htri/2;
-    private static Vector2 k2 = new Vector2( -Sqrt(3), -1 ) * htri/2;
+    private static Vector2 k0 = new Vector2( 0, 1 ) * htri;
+    private static Vector2 k1 = new Vector2( +Sqrt(3)*0.5f, -0.5f ) * htri;
+    private static Vector2 k2 = new Vector2( -Sqrt(3)*0.5f, -0.5f ) * htri;
+    private static Vector2 k3 = new Vector2( 0, 2 ) * htri/2;
+    private static Vector2 k4 = new Vector2( +Sqrt(3), -1 ) * htri/2;
+    private static Vector2 k5 = new Vector2( -Sqrt(3), -1 ) * htri/2;
+    private static Vector2 k6 = new Vector2( Sqrt(3), 0 ) * htri/2;
+    private static Vector2 k7 = new Vector2( -Sqrt(3)*0.5f, -1.5f ) * htri/2;
+    private static Vector2 k8 = new Vector2( -Sqrt(3)*0.5f, +1.5f ) * htri/2;
 
     private float skap( Vector2 p, Vector2 k ){ return p.x*k.x + p.y*k.y; }
 
@@ -134,13 +143,17 @@ public class ScreenScript : MonoBehaviour
             case 9:
                 return Log( 5 ) - Log( 5 + cop(p,k0) + cop(p,k1) + cop(p,k2) );
             case 10:
-                return Log( 3 ) - Log( 2 - Cos( p.y * Sqrt(3) ) );
+                return Log( 5 ) - Log( 5 + sip(p,k0) + sip(p,k1) + sip(p,k2) );
             case 11:
-                return -Log( 1 + Cos(p.x)/3 + Cos(p.y)/3 );
+                return Log( 7 ) - Log( 7 + sip(p,k3) + sip(p,k4) + sip(p,k5) + sip(p,k6) + sip(p,k7) + sip(p,k8) );
             case 12:
+                return Log( 3 ) - Log( 2 - Cos( p.y * Sqrt(3) ) );
+            case 13:
+                return -Log( 1 + Cos(p.x)/3 + Cos(p.y)/3 );
+            case 14:
                 return -Log( 1 + psqueeze3(Cos(p.x))/3 + psqueeze3(Cos(p.y))/3 );
             default:
-                return -Log( 1 + psqueeze3(Cos(p.x))/3 + psqueeze3(Cos(p.y))/3 );
+                return -Log( 1 + psqueeze5(Cos(p.x))/3 + psqueeze5(Cos(p.y))/3 );
         }
     }
 
@@ -167,10 +180,17 @@ public class ScreenScript : MonoBehaviour
             case 9:
                 return new Vector2( k0.x*sip(p,k0) + k1.x*sip(p,k1) + k2.x*sip(p,k2), k0.y*sip(p,k0) + k1.y*sip(p,k1) + k2.y*sip(p,k2) ) / ( 5 + cop(p,k0) + cop(p,k1) + cop(p,k2) );
             case 10:
-                return new Vector2( 0, -Sqrt(3)*Sin(p.y*Sqrt(3)) / ( 2 - Cos(p.y*Sqrt(3)) ) );
+                return new Vector2( k0.x*cop(p,k0) + k1.x*cop(p,k1) + k2.x*cop(p,k2), k0.y*cop(p,k0) + k1.y*cop(p,k1) + k2.y*cop(p,k2) ) / ( sip(p,k0) + sip(p,k1) + sip(p,k2) - 5 );
             case 11:
-                return new Vector2( Sin(p.x)/3, Sin(p.y)/3 ) / ( 1 + Cos(p.x)/3 + Cos(p.y)/3 );
+                return new Vector2( k3.x*cop(p,k3) + k4.x*cop(p,k4) + k5.x*cop(p,k5) + k6.x*cop(p,k6) + k7.x*cop(p,k7) + k8.x*cop(p,k8),
+                                    k3.y*cop(p,k3) + k4.y*cop(p,k4) + k5.y*cop(p,k5) + k6.y*cop(p,k6) + k7.y*cop(p,k7) + k8.y*cop(p,k8)  )
+                                        /
+                                    ( sip(p,k3) + sip(p,k4) + sip(p,k5) + sip(p,k6) + sip(p,k7) + sip(p,k8) - 7 );
             case 12:
+                return new Vector2( 0, -Sqrt(3)*Sin(p.y*Sqrt(3)) / ( 2 - Cos(p.y*Sqrt(3)) ) );
+            case 13:
+                return new Vector2( Sin(p.x)/3, Sin(p.y)/3 ) / ( 1 + Cos(p.x)/3 + Cos(p.y)/3 );
+            case 14:
                 return new Vector2( Sin(p.x) * psqueeze3_d(Cos(p.x))/3, Sin(p.y) * psqueeze3_d(Cos(p.y))/3 ) / ( 1 + psqueeze3(Cos(p.x))/3 + psqueeze3(Cos(p.y))/3 );
             default:
                 return new Vector2( Sin(p.x) * psqueeze5_d(Cos(p.x))/3, Sin(p.y) * psqueeze5_d(Cos(p.y))/3 ) / ( 1 + psqueeze5(Cos(p.x))/3 + psqueeze5(Cos(p.y))/3 );
@@ -282,12 +302,14 @@ public class ScreenScript : MonoBehaviour
         if (prevCT.WasPressedThisFrame()) if (ctNumber > 1) ctNumber -= 1;
 
         if (toggleFullscreenRendering.WasPressedThisFrame()) { fullscreen = !fullscreen; if (fullscreen) fullscreenFloat = 1f; else fullscreenFloat = 0f; }
+        if (toggleDisplayRoads.WasPressedThisFrame()) { displayRoads = !displayRoads; if (displayRoads) displayRoadsFloat = 1f; else displayRoadsFloat = 0f; }
 
         material.SetFloat("_VisRad", visionRadius);
         material.SetFloat("_Accuracy", accuracy);
         material.SetFloat("_GSM", gsmNumber);
         material.SetFloat("_ChartType", ctNumber);
         material.SetFloat("_FullScreen", fullscreenFloat);
+        material.SetFloat("_Roads", displayRoadsFloat);
 
         accuracyField.text = accuracy.ToString();
         radiusField.text = string.Format("{0:0.000}", visionRadius);
@@ -311,71 +333,95 @@ public class ScreenScript : MonoBehaviour
         bool metricChanged = false;
         bool textureChanged = false;
 
-        if (nextMetric.WasPressedThisFrame()) { if (metricNumber < 13) metricNumber += 1; else metricNumber = 1; metricChanged = true; }
-        if (prevMetric.WasPressedThisFrame()) { if (metricNumber > 1) metricNumber -= 1; else metricNumber = 13; metricChanged = true; }
-        if (nextTexture.WasPressedThisFrame()) { if (textureNumber < 4) textureNumber += 1; else textureNumber = 1; textureChanged = true; }
-        if (prevTexture.WasPressedThisFrame()) { if (textureNumber > 1) textureNumber -= 1; else textureNumber = 4; textureChanged = true; }
+        if( nextMetric.WasPressedThisFrame()  ) { if( metricNumber  < 13 )  metricNumber += 1; else  metricNumber =  1;  metricChanged = true; }
+        if( prevMetric.WasPressedThisFrame()  ) { if( metricNumber  >  1 )  metricNumber -= 1; else  metricNumber = 13;  metricChanged = true; }
+        if( nextTexture.WasPressedThisFrame() ) { if( textureNumber <  4 ) textureNumber += 1; else textureNumber =  1; textureChanged = true; }
+        if( prevTexture.WasPressedThisFrame() ) { if( textureNumber >  1 ) textureNumber -= 1; else textureNumber =  4; textureChanged = true; }
 
         if (metricChanged)
         {
             switch (metricNumber)
             {
                 case 1:
-                    metricName = "flat";
-                    domainParameters = make_domain_parameters(2 * PI, 2 * PI, 90);
+                    metricName  =  "sqFlat";
+                    domainName  =  "square";
+                    domainParameters  =  make_domain_parameters( 2*PI, 2*PI, 90 );
                     break;
                 case 2:
-                    metricName = "torus_psi";
-                    domainParameters = make_domain_parameters(2 * PI, 2 * PI, 90);
+                    metricName  =  "torusPsi";
+                    domainName  =  "square";
+                    domainParameters  =  make_domain_parameters( 2*PI, 2*PI, 90 );
                     break;
                 case 3:
-                    metricName = "camel";
-                    domainParameters = make_domain_parameters(2 * PI, 2 * PI, 90);
+                    metricName  =  "dgBump";
+                    domainName  =  "square";
+                    domainParameters  =  make_domain_parameters( 2*PI, 2*PI, 90 );
                     break;
                 case 4:
-                    metricName = "dromedar";
-                    domainParameters = make_domain_parameters(2 * PI, 2 * PI, 90);
+                    metricName  =  "sqBump";
+                    domainName  =  "square";
+                    domainParameters  =  make_domain_parameters( 2*PI, 2*PI, 90 );
                     break;
                 case 5:
-                    metricName = "rademord";
+                    metricName = "sqAntiBump";
+                    domainName = "square";
                     domainParameters = make_domain_parameters(2 * PI, 2 * PI, 90);
                     break;
                 case 6:
-                    metricName = "pseudoPlateau";
-                    domainParameters = make_domain_parameters(2 * PI, 2 * PI, 90);
+                    metricName  =  "torusPsiSqz";
+                    domainName  =  "square";
+                    domainParameters  =  make_domain_parameters( 2*PI, 2*PI, 90 );
                     break;
                 case 7:
-                    metricName = "camelPlateau";
-                    domainParameters = make_domain_parameters(2 * PI, 2 * PI, 90);
+                    metricName  =  "dgBumpSqz";
+                    domainName  =  "square";
+                    domainParameters  =  make_domain_parameters( 2*PI, 2*PI, 90 );
                     break;
                 case 8:
-                    metricName = "hexFlat";
-                    domainParameters = make_domain_parameters(2 * PI, 2 * PI, 60);
+                    metricName  =  "hexFlat";
+                    domainName  =  "hexagon";
+                    domainParameters  =  make_domain_parameters( 2*PI, 2*PI, 60 );
                     break;
                 case 9:
-                    metricName = "hexBump";
-                    domainParameters = make_domain_parameters(2 * PI, 2 * PI, 60);
+                    metricName  =  "hexBump";
+                    domainName  =  "hexagon";
+                    domainParameters  =  make_domain_parameters( 2*PI, 2*PI, 60 );
                     break;
                 case 10:
-                    metricName = "torus";
-                    domainParameters = make_domain_parameters( 2 * PI, 2/Sqrt(3) * PI, 90);
+                    metricName  =  "hexRump";
+                    domainName  =  "hexagon";
+                    domainParameters  =  make_domain_parameters( 2*PI, 2*PI, 60 );
                     break;
                 case 11:
-                    metricName = "dupin";
-                    domainParameters = make_domain_parameters( 2 * PI, 2 * PI, 90);
+                    metricName  =  "hexp3";
+                    domainName  =  "hexagon";
+                    domainParameters  =  make_domain_parameters( 4*PI, 4*PI, 60 );
                     break;
                 case 12:
-                    metricName = "dupin_sqz3";
-                    domainParameters = make_domain_parameters( 2 * PI, 2 * PI, 90);
+                    metricName  =  "torus";
+                    domainName  =  "rectangle";
+                    domainParameters  =  make_domain_parameters( 2*PI, 2*PI/Sqrt(3), 90 );
+                    break;
+                case 13:
+                    metricName  =  "dupin";
+                    domainName  =  "square";
+                    domainParameters  =  make_domain_parameters( 2*PI, 2*PI, 90 );
+                    break;
+                case 14:
+                    metricName  =  "dupinSqz3";
+                    domainName  =  "square";
+                    domainParameters  =  make_domain_parameters( 2*PI, 2*PI, 90 );
                     break;
                 default:
-                    metricName = "dupin_sqz5";
-                    domainParameters = make_domain_parameters( 2 * PI, 2 * PI, 90);
+                    metricName  =  "dupinSqz5";
+                    domainName  =  "square";
+                    domainParameters  =  make_domain_parameters( 2*PI, 2*PI, 90 );
                     break;
             }
 
             material.shader = Shader.Find("Custom/Confmets/" + metricName);
             metricField.text = metricName;
+            domainField.text = domainName;
 
             Vector4 domMat = new Vector4(domainParameters.va.x, domainParameters.vb.x, domainParameters.va.y, domainParameters.vb.y);
             material.SetVector("_DomMat", domMat);
@@ -503,6 +549,7 @@ public class ScreenScript : MonoBehaviour
         shoot = InputSystem.actions.FindAction("Attack");
 
         toggleFullscreenRendering = InputSystem.actions.FindAction("Toggle Fullscreen Rendering");
+        toggleDisplayRoads = InputSystem.actions.FindAction("Toggle Display Roads");
 
         domainParameters = make_domain_parameters(2 * PI, 2 * PI, 90);
 

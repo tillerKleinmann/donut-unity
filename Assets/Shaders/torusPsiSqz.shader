@@ -1,4 +1,4 @@
-Shader "Custom/Confmets/pseudoPlateau"
+Shader "Custom/Confmets/torusPsiSqz"
 {
     Properties
     {
@@ -33,7 +33,7 @@ Shader "Custom/Confmets/pseudoPlateau"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/GlobalSamplers.hlsl"
 
-            #include "Common/DupinShaderPreamble.hlsl"
+            #include "Common/ConfMetsShaderPreamble.hlsl"
 
             float  psi(      float2 p ){ return 0.5 + cos(p.x)*(3-pow(cos(p.x),2))/8; }
             float2 psi_grad( float2 p ){ return float2( -3*sin(p.x)*(1-pow(cos(p.x),2))/8, 0 ); }

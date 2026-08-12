@@ -22,6 +22,7 @@ CBUFFER_START(UnityPerMaterial)
     float  _CamAng;
     float  _VisRad;
     float  _FullScreen;
+    float  _Roads;
     float  _Accuracy;
     float  _GSM;
     float  _ChartType;
@@ -45,6 +46,8 @@ static const int   gsm  =  int( _GSM );
 static const int   chartType  =  int( _ChartType );
 
 static const bool   fullscreen  =  bool( _FullScreen );
+
+static const bool   display_roads  =  bool( _Roads );
 
 static const float4   u2p = float4( _DomMat.x, _DomMat.y, 0, _DomMat.w );
 static const float4   dupinPar = float4( _DupinPar );

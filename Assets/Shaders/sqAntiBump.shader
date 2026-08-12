@@ -1,4 +1,4 @@
-Shader "Custom/Confmets/dupin_sqz5"
+Shader "Custom/Confmets/sqAntiBump"
 {
     Properties
     {
@@ -24,7 +24,7 @@ Shader "Custom/Confmets/dupin_sqz5"
         Pass
         {
             Blend SrcAlpha OneMinusSrcAlpha
-
+            
             HLSLPROGRAM
 
             #pragma vertex vert
@@ -33,29 +33,12 @@ Shader "Custom/Confmets/dupin_sqz5"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/GlobalSamplers.hlsl"
 
-            #include "Common/DupinShaderPreamble.hlsl"
+            #include "Common/ConfMetsShaderPreamble.hlsl"
 
-            float psqueeze5( float x )
-            {
-                return x * ( 15 - 10*x*x + 3*pow(x,4) ) / 8;
-            }
+            float  psi(      float2 p ){ return ( 2 - (1-cos(p.x))*(1-cos(p.y)) ) / 7; }
+            float2 psi_grad( float2 p ){ return float2( sin(p.x)*(cos(p.y)-1), sin(p.y)*(cos(p.x)-1) ) / 7; }
 
-            float psqueeze5_d( float x )
-            {
-                return ( 1 - 2*x*x + pow(x,4) ) * 15/8;
-            }
-
-            float mu( float2 p )
-            {
-                return 1 + dpa*psqueeze5(cos(p.x/dpal)) + dpb*psqueeze5(cos(p.y/dpbe));
-            }
-            float2 mu_grad( float2 p )
-            {
-                return float2(  -(dpa/dpal)*sin(p.x/dpal)*psqueeze5_d(cos(p.x/dpal)),
-                                -(dpb/dpbe)*sin(p.y/dpbe)*psqueeze5_d(cos(p.y/dpbe))    );
-            }
-
-            #include "Common/ConfMets_mu.hlsl"
+            #include "Common/ConfMets_psi.hlsl"
             #include "Common/ConfMetsIncludes.hlsl"
             #include "Common/FragMain.hlsl"
 

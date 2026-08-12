@@ -1,4 +1,4 @@
-Shader "Custom/Confmets/dupin_sqz3"
+Shader "Custom/Confmets/sqFlat"
 {
     Properties
     {
@@ -33,27 +33,10 @@ Shader "Custom/Confmets/dupin_sqz3"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/GlobalSamplers.hlsl"
 
-            #include "Common/DupinShaderPreamble.hlsl"
+            #include "Common/ConfMetsShaderPreamble.hlsl"
 
-            float psqueeze3( float x )
-            {
-                return x*(3-x*x)/2;
-            }
-
-            float psqueeze3_d( float x )
-            {
-                return (1-x*x)*3/2;
-            }
-
-            float mu( float2 p )
-            {
-                return 1 + dpa*psqueeze3(cos(p.x/dpal)) + dpb*psqueeze3(cos(p.y/dpbe));
-            }
-            float2 mu_grad( float2 p )
-            {
-                return float2(  -(dpa/dpal)*sin(p.x/dpal)*psqueeze3_d(cos(p.x/dpal)),
-                                -(dpb/dpbe)*sin(p.y/dpbe)*psqueeze3_d(cos(p.y/dpbe))    );
-            }
+            float  mu     ( float2 p ){ return 1; }
+            float2 mu_grad( float2 p ){ return float2(0,0); }
 
             #include "Common/ConfMets_mu.hlsl"
             #include "Common/ConfMetsIncludes.hlsl"

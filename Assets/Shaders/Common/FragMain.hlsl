@@ -48,10 +48,13 @@ half4 frag( Varyings IN ) : SV_Target
         
         float3 col  =  SAMPLE_TEXTURE2D( _BaseMap, sampler_LinearRepeat, uv ).xyz;
 
-        if( abs(u2p.y) < 0.01*abs(u2p.w) )
-            col  =  add_main_roads_rectangle2( col, tarPos );
-        else
-            col  =  add_main_roads_hexagon2( col, tarPos );
+        if( display_roads )
+        {
+            if( abs(u2p.y) < 0.01*abs(u2p.w) )
+                col  =  add_main_roads_rectangle2( col, tarPos );
+            else
+                col  =  add_main_roads_hexagon2( col, tarPos );
+        }
 
         col  =  draw_sprite_quadratic( col, tarPos, camPos, vulVec, _VulTex, 1.0 );
         

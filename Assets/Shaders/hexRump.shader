@@ -1,4 +1,4 @@
-Shader "Custom/Confmets/rademord"
+Shader "Custom/Confmets/hexRump"
 {
     Properties
     {
@@ -24,7 +24,7 @@ Shader "Custom/Confmets/rademord"
         Pass
         {
             Blend SrcAlpha OneMinusSrcAlpha
-            
+
             HLSLPROGRAM
 
             #pragma vertex vert
@@ -33,12 +33,23 @@ Shader "Custom/Confmets/rademord"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/GlobalSamplers.hlsl"
 
-            #include "Common/DupinShaderPreamble.hlsl"
+            #include "Common/ConfMetsShaderPreamble.hlsl"
 
-            float  psi(      float2 p ){ return ( 2 - (1-cos(p.x))*(1-cos(p.y)) ) / 7; }
-            float2 psi_grad( float2 p ){ return float2( sin(p.x)*(cos(p.y)-1), sin(p.y)*(cos(p.x)-1) ) / 7; }
+            static const float htri = 2/sqrt(3);
 
-            #include "Common/ConfMets_psi.hlsl"
+            static const float2 k0 = float2( 0, 1 ) * htri;
+            static const float2 k1 = float2( +sqrt(3), -1 ) * htri/2;
+            static const float2 k2 = float2( -sqrt(3), -1 ) * htri/2;
+
+            float skap( float2 p, float2 k ){ return p.x*k.x + p.y*k.y; }
+
+            float cop( float2 p, float2 k ){ return cos(skap(k,p)); }
+            float sip( float2 p, float2 k ){ return sin(skap(k,p)); }
+
+            float  mu(      float2 p ){ return ( 5 + sip(p,k0) + sip(p,k1) + sip(p,k2) ) / 5; }
+            float2 mu_grad( float2 p ){ return float2( k0.x*cop(p,k0) + k1.x*cop(p,k1) + k2.x*cop(p,k2), k0.y*cop(p,k0) + k1.y*cop(p,k1) + k2.y*cop(p,k2) ) * ( 1.0 / 5 ); }
+
+            #include "Common/ConfMets_mu.hlsl"
             #include "Common/ConfMetsIncludes.hlsl"
             #include "Common/FragMain.hlsl"
 

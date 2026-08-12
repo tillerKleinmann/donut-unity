@@ -33,7 +33,7 @@ Shader "Custom/Confmets/torus"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/GlobalSamplers.hlsl"
 
-            #include "Common/DupinShaderPreamble.hlsl"
+            #include "Common/ConfMetsShaderPreamble.hlsl"
 
             float  psi(      float2 p ){ return log( 3 ) - log( 2 - cos(p.y*sqrt(3)) ); }
             float2 psi_grad( float2 p ){ return float2( 0, -sqrt(3)*sin(p.y*sqrt(3)) ) / ( 2 - cos(p.y*sqrt(3)) ); }
