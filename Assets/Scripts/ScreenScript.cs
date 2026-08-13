@@ -162,38 +162,55 @@ public class ScreenScript : MonoBehaviour
         switch (n)
         {
             case 1:
-                return new Vector2(0, 0);
+                return new Vector2( 0, 0 );
             case 2:
-                return new Vector2(-Sin(p.x) / 4, 0);
+                return new Vector2( -Sin(p.x), 0 ) / 4;
             case 3:
-                return new Vector2(-Sin(p.x) * Cos(p.y) / 4, -Cos(p.x) * Sin(p.y) / 4);
+                return new Vector2( -Sin(p.x)*Cos(p.y), -Cos(p.x)*Sin(p.y) ) / 4;
             case 4:
-                return new Vector2(Sin(p.x) * (1 - Cos(p.y)) / 4, Sin(p.y) * (1 - Cos(p.x)) / 4);
+                return new Vector2( Sin(p.x)*(1-Cos(p.y)), Sin(p.y)*(1-Cos(p.x)) ) / 4;
             case 5:
-                return new Vector2(Sin(p.x) * (Cos(p.y) - 1) / 7, Sin(p.y) * (Cos(p.x) - 1) / 7);
+                return new Vector2( Sin(p.x)*(Cos(p.y)-1), Sin(p.y)*(Cos(p.x)-1) ) / 7;
             case 6:
-                return new Vector2(-3 * Sin(p.x) * (1 - Pow(Cos(p.x), 2)) / 8, 0);
+                return new Vector2( Sin(p.x)*(1-Pow(Cos(p.x),2)), 0 ) * ( 3f / 8 );
             case 7:
-                return new Vector2(-3 * Sin(p.x) * (1 - Pow(Cos(p.x), 2)) * Cos(p.y) * (3 - Pow(Cos(p.y), 2)) / 8, -3 * Sin(p.y) * (1 - Pow(Cos(p.y), 2)) * Cos(p.x) * (3 - Pow(Cos(p.x), 2)) / 8);
+                return new Vector2( Sin(p.x)*(1-Pow(Cos(p.x),2))*Cos(p.y)*(3-Pow(Cos(p.y),2)),
+                                    Sin(p.y)*(1-Pow(Cos(p.y),2))*Cos(p.x)*(3-Pow(Cos(p.x),2))  )
+                                        *
+                                    ( -3f / 8 );
             case 8:
-                return new Vector2(0, 0);
+                return new Vector2( 0, 0 );
             case 9:
-                return new Vector2( k0.x*sip(p,k0) + k1.x*sip(p,k1) + k2.x*sip(p,k2), k0.y*sip(p,k0) + k1.y*sip(p,k1) + k2.y*sip(p,k2) ) / ( 5 + cop(p,k0) + cop(p,k1) + cop(p,k2) );
+                return new Vector2( k0.x*sip(p,k0) + k1.x*sip(p,k1) + k2.x*sip(p,k2),
+                                    k0.y*sip(p,k0) + k1.y*sip(p,k1) + k2.y*sip(p,k2)  )
+                                        /
+                                    ( 5 + cop(p,k0) + cop(p,k1) + cop(p,k2) );
             case 10:
-                return new Vector2( k0.x*cop(p,k0) + k1.x*cop(p,k1) + k2.x*cop(p,k2), k0.y*cop(p,k0) + k1.y*cop(p,k1) + k2.y*cop(p,k2) ) / ( sip(p,k0) + sip(p,k1) + sip(p,k2) - 5 );
+                return new Vector2( k0.x*cop(p,k0) + k1.x*cop(p,k1) + k2.x*cop(p,k2),
+                                    k0.y*cop(p,k0) + k1.y*cop(p,k1) + k2.y*cop(p,k2)  )
+                                        *
+                                    (-1) / ( 5 + sip(p,k0) + sip(p,k1) + sip(p,k2) );
             case 11:
                 return new Vector2( k3.x*cop(p,k3) + k4.x*cop(p,k4) + k5.x*cop(p,k5) + k6.x*cop(p,k6) + k7.x*cop(p,k7) + k8.x*cop(p,k8),
                                     k3.y*cop(p,k3) + k4.y*cop(p,k4) + k5.y*cop(p,k5) + k6.y*cop(p,k6) + k7.y*cop(p,k7) + k8.y*cop(p,k8)  )
-                                        /
-                                    ( sip(p,k3) + sip(p,k4) + sip(p,k5) + sip(p,k6) + sip(p,k7) + sip(p,k8) - 7 );
+                                        *
+                                    (-1) / ( 7 + sip(p,k3) + sip(p,k4) + sip(p,k5) + sip(p,k6) + sip(p,k7) + sip(p,k8) );
             case 12:
-                return new Vector2( 0, -Sqrt(3)*Sin(p.y*Sqrt(3)) / ( 2 - Cos(p.y*Sqrt(3)) ) );
+                return new Vector2( 0, Sin(p.y*Sqrt(3)) )
+                                        *
+                                    ( -Sqrt(3) ) / ( 2 - Cos(p.y*Sqrt(3)) );
             case 13:
-                return new Vector2( Sin(p.x)/3, Sin(p.y)/3 ) / ( 1 + Cos(p.x)/3 + Cos(p.y)/3 );
+                return new Vector2( Sin(p.x), Sin(p.y) )
+                                        /
+                                    ( 3 + Cos(p.x) + Cos(p.y) );
             case 14:
-                return new Vector2( Sin(p.x) * psqueeze3_d(Cos(p.x))/3, Sin(p.y) * psqueeze3_d(Cos(p.y))/3 ) / ( 1 + psqueeze3(Cos(p.x))/3 + psqueeze3(Cos(p.y))/3 );
+                return new Vector2( Sin(p.x)*psqueeze3_d(Cos(p.x)), Sin(p.y)*psqueeze3_d(Cos(p.y)) )
+                                        /
+                                    ( 3 + psqueeze3(Cos(p.x)) + psqueeze3(Cos(p.y)) );
             default:
-                return new Vector2( Sin(p.x) * psqueeze5_d(Cos(p.x))/3, Sin(p.y) * psqueeze5_d(Cos(p.y))/3 ) / ( 1 + psqueeze5(Cos(p.x))/3 + psqueeze5(Cos(p.y))/3 );
+                return new Vector2( Sin(p.x)*psqueeze5_d(Cos(p.x)), Sin(p.y)*psqueeze5_d(Cos(p.y)) )
+                                        /
+                                    ( 3 + psqueeze5(Cos(p.x)) + psqueeze5(Cos(p.y)) );
         }
     }
     

@@ -54,7 +54,7 @@ Shader "Custom/Confmets/hexp3"
 
             float  mu(      float2 p ){ return ( 7 + sip(p,k3) + sip(p,k4) + sip(p,k5) + sip(p,k6) + sip(p,k7) + sip(p,k8) ) / 7; }
             float2 mu_grad( float2 p ){ return float2(  k3.x*cop(p,k3) + k4.x*cop(p,k4) + k5.x*cop(p,k5) + k6.x*cop(p,k6) + k7.x*cop(p,k7) + k8.x*cop(p,k8),
-                                                        k3.y*cop(p,k3) + k4.y*cop(p,k4) + k5.y*cop(p,k5) + k6.y*cop(p,k6) + k7.y*cop(p,k7) + k8.y*cop(p,k8)  ) * ( 1.0 / 7 ); }
+                                                        k3.y*cop(p,k3) + k4.y*cop(p,k4) + k5.y*cop(p,k5) + k6.y*cop(p,k6) + k7.y*cop(p,k7) + k8.y*cop(p,k8)  ) / 7; }
 
             #include "Common/ConfMets_mu.hlsl"
             #include "Common/ConfMetsIncludes.hlsl"

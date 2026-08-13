@@ -20,5 +20,7 @@ float2 distance_from_parameter_line( float2 p, float2 q, float2 k )
     float rk = r.x*k.x + r.y*k.y;
     float lk = length(k);
 
-    return confac( p - k*(rk/pow(lk,2)) ) * abs( reset_to_centered_interval( rk / lk, lk ) );
+    rk  =  reset_to_centered_interval( rk, pow(lk,2) );
+
+    return confac( p - k*(rk/pow(lk,2)) ) * abs( rk / lk );
 }

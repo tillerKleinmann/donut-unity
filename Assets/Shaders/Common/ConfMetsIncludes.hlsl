@@ -2,7 +2,7 @@
 #include "Common/ConfMetsGeneral.hlsl"
 #include "Common/GeoProp.hlsl"
 #include "Common/ChartComp.hlsl"
-#include "Common/tandil.hlsl"
+#include "Common/TanDil.hlsl"
 #include "Common/SpriteRendering.hlsl"
 #include "Common/RenderRoads.hlsl"
 #include "Common/Coloring.hlsl"
