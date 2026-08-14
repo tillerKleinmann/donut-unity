@@ -51,9 +51,9 @@ half4 frag( Varyings IN ) : SV_Target
         if( display_roads )
         {
             if( abs(u2p.y) < 0.01*abs(u2p.w) )
-                col  =  add_main_roads_rectangle2( col, tarPos );
+                col  =  add_main_roads_rectangle_2( col, tarPos );
             else
-                col  =  add_main_roads_hexagon2( col, tarPos );
+                col  =  add_main_roads_hexagon_4( col, tarPos );
         }
 
         col  =  draw_sprite_quadratic( col, tarPos, camPos, vulVec, _VulTex, 1.0 );
@@ -72,7 +72,7 @@ half4 frag( Varyings IN ) : SV_Target
         //     col  =  brighter( col );
 
         if( fullscreen == false )
-            col  =  lerp( float3(0,0,0), col, pow( clamp( ( 1.0 - xy_rl ) * 32, 0, 1 ), 2 ) );
+            col  =  lerp( float3(0,0,0), col, pow( clamp( (1.0-xy_rl)*32, 0, 1 ), 2 ) );
 
         return float4( col, 1 );
     }

@@ -46,17 +46,23 @@ public class ScreenScript : MonoBehaviour
     Material material;
 
 
-    private static float htri = 2/Sqrt(3);
+    private static Vector2  k0  =  new Vector2(  0.0f,  2/Sqrt(3) );
+    private static Vector2  k1  =  new Vector2( +1.0f, -1/Sqrt(3) );
+    private static Vector2  k2  =  new Vector2( -1.0f, -1/Sqrt(3) );
+    private static Vector2  k3  =  k0 * 2;
+    private static Vector2  k4  =  k1 * 2;
+    private static Vector2  k5  =  k2 * 2;
+    private static Vector2  k6  =  new Vector2(  2.0f, 0.0f );
+    private static Vector2  k7  =  new Vector2( -1.0f, -3/Sqrt(3) );
+    private static Vector2  k8  =  new Vector2( -1.0f, +3/Sqrt(3) );
 
-    private static Vector2 k0 = new Vector2( 0, 1 ) * htri;
-    private static Vector2 k1 = new Vector2( +Sqrt(3)*0.5f, -0.5f ) * htri;
-    private static Vector2 k2 = new Vector2( -Sqrt(3)*0.5f, -0.5f ) * htri;
-    private static Vector2 k3 = new Vector2( 0, 2 ) * htri/2;
-    private static Vector2 k4 = new Vector2( +Sqrt(3), -1 ) * htri/2;
-    private static Vector2 k5 = new Vector2( -Sqrt(3), -1 ) * htri/2;
-    private static Vector2 k6 = new Vector2( Sqrt(3), 0 ) * htri/2;
-    private static Vector2 k7 = new Vector2( -Sqrt(3)*0.5f, -1.5f ) * htri/2;
-    private static Vector2 k8 = new Vector2( -Sqrt(3)*0.5f, +1.5f ) * htri/2;
+    private static Vector2  k3m  =  k3 / 2;
+    private static Vector2  k4m  =  k4 / 2;
+    private static Vector2  k5m  =  k5 / 2;
+    private static Vector2  k6m  =  k6 / 2;
+    private static Vector2  k7m  =  k7 / 2;
+    private static Vector2  k8m  =  k8 / 2;
+
 
     private float skap( Vector2 p, Vector2 k ){ return p.x*k.x + p.y*k.y; }
 
@@ -145,7 +151,8 @@ public class ScreenScript : MonoBehaviour
             case 10:
                 return Log( 5 ) - Log( 5 + sip(p,k0) + sip(p,k1) + sip(p,k2) );
             case 11:
-                return Log( 7 ) - Log( 7 + sip(p,k3) + sip(p,k4) + sip(p,k5) + sip(p,k6) + sip(p,k7) + sip(p,k8) );
+                return Log( 9 ) - Log( sip(p,k3m) + sip(p,k4m) + sip(p,k5m) +
+                                       sip(p,k6m) + sip(p,k7m) + sip(p,k8m) + 9 );
             case 12:
                 return Log( 3 ) - Log( 2 - Cos( p.y * Sqrt(3) ) );
             case 13:
@@ -191,10 +198,13 @@ public class ScreenScript : MonoBehaviour
                                         *
                                     (-1) / ( 5 + sip(p,k0) + sip(p,k1) + sip(p,k2) );
             case 11:
-                return new Vector2( k3.x*cop(p,k3) + k4.x*cop(p,k4) + k5.x*cop(p,k5) + k6.x*cop(p,k6) + k7.x*cop(p,k7) + k8.x*cop(p,k8),
-                                    k3.y*cop(p,k3) + k4.y*cop(p,k4) + k5.y*cop(p,k5) + k6.y*cop(p,k6) + k7.y*cop(p,k7) + k8.y*cop(p,k8)  )
+                return new Vector2( k3m.x*cop(p,k3m) + k4m.x*cop(p,k4m) + k5m.x*cop(p,k5m) +
+                                    k6m.x*cop(p,k6m) + k7m.x*cop(p,k7m) + k8m.x*cop(p,k8m),
+                                    k3m.y*cop(p,k3m) + k4m.y*cop(p,k4m) + k5m.y*cop(p,k5m) +
+                                    k6m.y*cop(p,k6m) + k7m.y*cop(p,k7m) + k8m.y*cop(p,k8m)   )
                                         *
-                                    (-1) / ( 7 + sip(p,k3) + sip(p,k4) + sip(p,k5) + sip(p,k6) + sip(p,k7) + sip(p,k8) );
+                                    (-1) / ( sip(p,k3m) + sip(p,k4m) + sip(p,k5m) +
+                                             sip(p,k6m) + sip(p,k7m) + sip(p,k8m) + 9 );
             case 12:
                 return new Vector2( 0, Sin(p.y*Sqrt(3)) )
                                         *
@@ -204,11 +214,13 @@ public class ScreenScript : MonoBehaviour
                                         /
                                     ( 3 + Cos(p.x) + Cos(p.y) );
             case 14:
-                return new Vector2( Sin(p.x)*psqueeze3_d(Cos(p.x)), Sin(p.y)*psqueeze3_d(Cos(p.y)) )
+                return new Vector2( Sin(p.x)*psqueeze3_d(Cos(p.x)),
+                                    Sin(p.y)*psqueeze3_d(Cos(p.y))  )
                                         /
                                     ( 3 + psqueeze3(Cos(p.x)) + psqueeze3(Cos(p.y)) );
             default:
-                return new Vector2( Sin(p.x)*psqueeze5_d(Cos(p.x)), Sin(p.y)*psqueeze5_d(Cos(p.y)) )
+                return new Vector2( Sin(p.x)*psqueeze5_d(Cos(p.x)),
+                                    Sin(p.y)*psqueeze5_d(Cos(p.y))  )
                                         /
                                     ( 3 + psqueeze5(Cos(p.x)) + psqueeze5(Cos(p.y)) );
         }
@@ -216,8 +228,8 @@ public class ScreenScript : MonoBehaviour
     
     private float distance( Vector2 p, Vector2 q, int n )
     {
-        Vector2 diff = reset_to_fundamental_domain(p - q, domainParameters);
-        return diff.magnitude * Exp(0.5f * (confun(p, n) + confun(q, n)));
+        Vector2 diff  =  reset_to_fundamental_domain( p - q, domainParameters );
+        return diff.magnitude * Exp( 0.5f*(confun(p,n)+confun(q,n)) );
     }
 
     private Vector2 christoffel( Vector2 p, Vector2 u, Vector2 v, int n )
@@ -321,12 +333,12 @@ public class ScreenScript : MonoBehaviour
         if (toggleFullscreenRendering.WasPressedThisFrame()) { fullscreen = !fullscreen; if (fullscreen) fullscreenFloat = 1f; else fullscreenFloat = 0f; }
         if (toggleDisplayRoads.WasPressedThisFrame()) { displayRoads = !displayRoads; if (displayRoads) displayRoadsFloat = 1f; else displayRoadsFloat = 0f; }
 
-        material.SetFloat("_VisRad", visionRadius);
-        material.SetFloat("_Accuracy", accuracy);
-        material.SetFloat("_GSM", gsmNumber);
-        material.SetFloat("_ChartType", ctNumber);
-        material.SetFloat("_FullScreen", fullscreenFloat);
-        material.SetFloat("_Roads", displayRoadsFloat);
+        material.SetFloat( "_VisRad",     visionRadius      );
+        material.SetFloat( "_Accuracy",   accuracy          );
+        material.SetFloat( "_GSM",        gsmNumber         );
+        material.SetFloat( "_ChartType",  ctNumber          );
+        material.SetFloat( "_FullScreen", fullscreenFloat   );
+        material.SetFloat( "_Roads",      displayRoadsFloat );
 
         accuracyField.text = accuracy.ToString();
         radiusField.text = string.Format("{0:0.000}", visionRadius);
@@ -347,17 +359,17 @@ public class ScreenScript : MonoBehaviour
 
     private void update_world_settings()
     {
-        bool metricChanged = false;
+        bool metricChanged  = false;
         bool textureChanged = false;
 
-        if( nextMetric.WasPressedThisFrame()  ) { if( metricNumber  < 13 )  metricNumber += 1; else  metricNumber =  1;  metricChanged = true; }
-        if( prevMetric.WasPressedThisFrame()  ) { if( metricNumber  >  1 )  metricNumber -= 1; else  metricNumber = 13;  metricChanged = true; }
-        if( nextTexture.WasPressedThisFrame() ) { if( textureNumber <  4 ) textureNumber += 1; else textureNumber =  1; textureChanged = true; }
-        if( prevTexture.WasPressedThisFrame() ) { if( textureNumber >  1 ) textureNumber -= 1; else textureNumber =  4; textureChanged = true; }
+        if( nextMetric.WasPressedThisFrame()  ){ if( metricNumber  < 13 )  metricNumber += 1; else  metricNumber =  1;  metricChanged = true; }
+        if( prevMetric.WasPressedThisFrame()  ){ if( metricNumber  >  1 )  metricNumber -= 1; else  metricNumber = 13;  metricChanged = true; }
+        if( nextTexture.WasPressedThisFrame() ){ if( textureNumber <  4 ) textureNumber += 1; else textureNumber =  1; textureChanged = true; }
+        if( prevTexture.WasPressedThisFrame() ){ if( textureNumber >  1 ) textureNumber -= 1; else textureNumber =  4; textureChanged = true; }
 
-        if (metricChanged)
+        if( metricChanged )
         {
-            switch (metricNumber)
+            switch( metricNumber )
             {
                 case 1:
                     metricName  =  "sqFlat";
@@ -380,9 +392,9 @@ public class ScreenScript : MonoBehaviour
                     domainParameters  =  make_domain_parameters( 2*PI, 2*PI, 90 );
                     break;
                 case 5:
-                    metricName = "sqAntiBump";
-                    domainName = "square";
-                    domainParameters = make_domain_parameters(2 * PI, 2 * PI, 90);
+                    metricName  =  "sqAntiBump";
+                    domainName  =  "square";
+                    domainParameters  =  make_domain_parameters( 2*PI, 2*PI, 90 );
                     break;
                 case 6:
                     metricName  =  "torusPsiSqz";
@@ -436,20 +448,20 @@ public class ScreenScript : MonoBehaviour
                     break;
             }
 
-            material.shader = Shader.Find("Custom/Confmets/" + metricName);
-            metricField.text = metricName;
-            domainField.text = domainName;
+            material.shader  =  Shader.Find( "Custom/Confmets/" + metricName );
+            metricField.text  =  metricName;
+            domainField.text  =  domainName;
 
-            Vector4 domMat = new Vector4(domainParameters.va.x, domainParameters.vb.x, domainParameters.va.y, domainParameters.vb.y);
-            material.SetVector("_DomMat", domMat);
+            Vector4  domMat  =  new Vector4( domainParameters.va.x, domainParameters.vb.x, domainParameters.va.y, domainParameters.vb.y );
+            material.SetVector( "_DomMat", domMat );
         }
 
-        if (textureChanged) textureField.text = textureNumber.ToString();
+        if( textureChanged ) textureField.text = textureNumber.ToString();
 
-        if (metricChanged | textureChanged)
+        if( metricChanged | textureChanged )
         {
-            tilingTexture = AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/Textures/Tilings/" + metricName + "_" + textureNumber.ToString() + ".png");
-            material.SetTexture("_BaseMap", tilingTexture);
+            tilingTexture  =  AssetDatabase.LoadAssetAtPath<Texture2D>( "Assets/Textures/Tilings/" + metricName + "_" + textureNumber.ToString() + ".png" );
+            material.SetTexture( "_BaseMap", tilingTexture );
         }
     }
 
