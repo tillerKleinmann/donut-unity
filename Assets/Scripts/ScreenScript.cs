@@ -18,6 +18,9 @@ public class ScreenScript : MonoBehaviour
 
     private Vector2 moveVulture;
 
+
+    private Vector2 vulPos, vulVel, vulTan, vulNor;
+
     private Vector4[] rocketsState = new Vector4[16];
     private float[] rocketsLive = new float[16];
     private int nextRocket = 0;
@@ -69,6 +72,29 @@ public class ScreenScript : MonoBehaviour
     private float cop( Vector2 p, Vector2 k ){ return Cos(skap(k,p)); }
     private float sip( Vector2 p, Vector2 k ){ return Sin(skap(k,p)); }
 
+
+    private struct VultureState
+    {
+        public Vector2 pos; // Position (vector)
+        public Vector2 vel; // Velocity (vector)
+        public Vector2 tan; // Tangent Vector (normalized vector)
+        public Vector2 nor; // Normal Vector (normalized vector, for immersed surfaces: binormal vector in the Darboux frame)
+        public float ang; // Angle (real number, relative to the standard x-coordinate vector)
+        public float sgn; // Sign (can be +1 or -1, means orientation)
+    }
+
+    private struct VultureProperties
+    {
+        public float speed;
+    }
+
+    private struct Vulture
+    {
+        public VultureState state;
+        public VultureProperties props;
+    }
+
+    private Vulture vulture;
 
     private struct DomainParameters
     {
@@ -179,7 +205,7 @@ public class ScreenScript : MonoBehaviour
             case 5:
                 return new Vector2( Sin(p.x)*(Cos(p.y)-1), Sin(p.y)*(Cos(p.x)-1) ) / 7;
             case 6:
-                return new Vector2( Sin(p.x)*(1-Pow(Cos(p.x),2)), 0 ) * ( 3f / 8 );
+                return new Vector2( Sin(p.x)*(1-Pow(Cos(p.x),2)), 0 ) * ( -3f / 8 );
             case 7:
                 return new Vector2( Sin(p.x)*(1-Pow(Cos(p.x),2))*Cos(p.y)*(3-Pow(Cos(p.y),2)),
                                     Sin(p.y)*(1-Pow(Cos(p.y),2))*Cos(p.x)*(3-Pow(Cos(p.x),2))  )
@@ -226,9 +252,27 @@ public class ScreenScript : MonoBehaviour
         }
     }
     
+    private float sqn( Vector2 v )
+    {
+        return v.x*v.x + v.y*v.y;
+    }
+
+    private float det( Vector2 u, Vector2 v )
+    {
+        return u.x*v.y - u.y*v.x;
+    }
+
+    private Vector2 rot_by_ang( Vector2 v, float a )
+    {
+        float c = Cos(a);
+        float s = Sin(a);
+
+        return new Vector2( c*v.x - s*v.y, s*v.x + c*v.y );
+    }
+
     private float distance( Vector2 p, Vector2 q, int n )
     {
-        Vector2 diff  =  reset_to_fundamental_domain( p - q, domainParameters );
+        Vector2  diff  =  reset_to_fundamental_domain( p - q, domainParameters );
         return diff.magnitude * Exp( 0.5f*(confun(p,n)+confun(q,n)) );
     }
 
@@ -254,7 +298,7 @@ public class ScreenScript : MonoBehaviour
         p += dt * v;
         v -= dt * Ga;
     }
-    
+
     private void apply_geodesic_step__midpoint( ref Vector2 p, ref Vector2 v, float dt, int n )
     {
         Vector2 Ga = christoffel(p, v, v, n);
@@ -273,20 +317,16 @@ public class ScreenScript : MonoBehaviour
         Vector2 rp_p = new Vector2(rp.x, rp.y);
         Vector2 rp_v = new Vector2(rp.z, rp.w);
 
-        //apply_geodesic_step__euler(ref rp_p, ref rp_v, dt, n);
         apply_geodesic_step__midpoint( ref rp_p, ref rp_v, dt, n );
 
         rp = new Vector4(rp_p.x, rp_p.y, rp_v.x, rp_v.y);
     }
 
-    private Vector2 move2vel(Vector2 pos, Vector2 moveVec, Vector4 camPos, float camAng, float speed)
+    private Vector2 move2vel(Vector2 pos, Vector2 moveVec, float camAng, float speed)
     {
-        float a = -camAng * deg2rad;
+        float a = camAng * deg2rad;
 
-        float c = Cos(a);
-        float s = Sin(a);
-
-        return new Vector2(c * moveVec.x + s * moveVec.y, -s * moveVec.x + c * moveVec.y) * (Exp(-confun(pos, metricNumber)) * (-speed));
+        return rot_by_ang( moveVec, a ) * ( Exp( -confun( pos, metricNumber ) ) * (-speed) );
     }
 
     private Vector2 reset_to_domain_unit_square(Vector2 p)
@@ -485,66 +525,62 @@ public class ScreenScript : MonoBehaviour
 
     private void update_vulture()
     {
-        moveVulture = moveAction.ReadValue<Vector2>();
+        moveVulture  =  moveAction.ReadValue<Vector2>();
 
-        Vector4 camPos = material.GetVector("_CamPos");
-        float camAng = material.GetFloat("_CamAng");
+        vulture.state.vel  = 
+            move2vel( vulture.state.pos, moveVulture,
+                        vulture.state.ang, vulture.props.speed );
 
-        Vector2 pos = new Vector2(camPos.x, camPos.y);
+        float  dt  =  Time.deltaTime;
+        float  da  =  0.0f;
 
-        Vector2 vel = move2vel(pos, moveVulture, camPos, camAng, vultureMoveSpeed);
-
-        float dt = Time.deltaTime;
-        float da = 0;
-
-        Vector2 new_pos = pos;
-        if (stopVul.ReadValue<float>() == 0)
-            new_pos = reset_to_fundamental_domain(pos + dt * vel, domainParameters);
-
-        camPos.x = new_pos.x;
-        camPos.y = new_pos.y;
-
-        if (vel.magnitude > 0)
+        if( vulture.state.vel.magnitude > 0 )
         {
-            Vector2 vulVec = vel.normalized;
-            camPos.z = vulVec.x;
-            camPos.w = vulVec.y;
+            Vector2  accel  =
+                -christoffel( vulture.state.pos, vulture.state.vel,
+                    vulture.state.vel, metricNumber );
+
+            da  =  dt * det( accel, vulture.state.vel ) / sqn( vulture.state.vel );
+
+            vulture.state.tan  =  vulture.state.vel.normalized;
         }
 
-        Vector2 accel = -christoffel(pos, vel, vel, metricNumber);
-        if (vel.magnitude > 0)
-            da = dt * (accel.x * vel.y - accel.y * vel.x) / (vel.x * vel.x + vel.y * vel.y);
+        if( stopVul.ReadValue<float>() == 0 )
+        {
+            vulture.state.pos  =  reset_to_fundamental_domain( vulture.state.pos + dt*vulture.state.vel, domainParameters );
 
-        if (stopVul.ReadValue<float>() == 0)
-            camAng = camAng - da * rad2deg;
+            vulture.state.ang  =  vulture.state.ang - da*rad2deg;
+        }
 
-        material.SetVector("_CamPos", camPos);
-        material.SetFloat("_CamAng", camAng);
+        vulture.state.nor  =  rot_by_ang( vulture.state.tan, PI/2 );
+
+        material.SetVector( "_CamPos", new Vector4( vulture.state.pos.x, vulture.state.pos.y, vulture.state.tan.x, vulture.state.tan.y ) );
+        material.SetFloat(  "_CamAng", vulture.state.ang );
     }
 
     private void update_rockets()
     {
-        for (int k = 0; k < 16; k++)
+        for( int k = 0; k < 16; k++ )
         {
-            propagate_rocket(ref rocketsState[k], Time.deltaTime, metricNumber);
-            if (rocketsLive[k] > 0)
+            propagate_rocket( ref rocketsState[k], Time.deltaTime, metricNumber );
+            if( rocketsLive[k] > 0 )
                 rocketsLive[k] -= Time.deltaTime;
         }
     }
 
     private void detect_vulture_rocket_collisions()
     {
-        Vector4 camPos = material.GetVector("_CamPos");
+        Vector4  camPos  =  material.GetVector( "_CamPos" );
 
-        for (int k = 0; k < 16; k++)
+        for( int k = 0; k < 16; k++ )
         {
-            Vector2 p = new Vector2(rocketsState[k].x, rocketsState[k].y);
-            Vector2 q = new Vector2(camPos.x, camPos.y);
+            Vector2  p  =  new Vector2( rocketsState[k].x, rocketsState[k].y );
+            Vector2  q  =  new Vector2( camPos.x,          camPos.y          );
 
-            float dist = distance(p, q, metricNumber);
+            float  dist  =  distance( p, q, metricNumber );
 
-            if (dist < 0.35f)
-                if (rocketsLive[k] < 3f)
+            if( dist < 0.35f )
+                if( rocketsLive[k] < 3f )
                     rocketsLive[k] = 0f;
         }
     }
@@ -584,6 +620,16 @@ public class ScreenScript : MonoBehaviour
 
         tilingTexture = AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/Textures/Tilings/" + metricName + "_" + textureNumber.ToString() + ".png");
         material.SetTexture("_BaseMap", tilingTexture);
+
+        vulture.state.pos  =  new Vector2( 0.0f, 0.0f );
+        vulture.state.vel  =  new Vector2( 0.0f, 0.0f );
+        vulture.state.tan  =  new Vector2( 1.0f, 0.0f );
+        vulture.state.nor  =  new Vector2( 0.0f, 1.0f );
+        vulture.state.ang  =  0.0f;
+        vulture.state.sgn  =  1.0f;
+
+        vulture.props.speed  =  vultureMoveSpeed;
+
     }
 
     private void Start()

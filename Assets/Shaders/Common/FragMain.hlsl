@@ -44,7 +44,7 @@ half4 frag( Varyings IN ) : SV_Target
 
         float2 uv  =  mul( tarPos, plg2usq );
         
-        uv  +=  float2( 0.5, 0.5 );
+        uv  +=  float2(1,1)*0.5;
         
         float3 col  =  SAMPLE_TEXTURE2D( _BaseMap, sampler_LinearRepeat, uv ).xyz;
 
@@ -77,5 +77,5 @@ half4 frag( Varyings IN ) : SV_Target
         return float4( col, 1 );
     }
     else
-        return float4( 0.0, 0.0, 0.0, 1.0 );
+        return float4(0,0,0,1);
 }
