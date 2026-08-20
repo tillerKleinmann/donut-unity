@@ -13,8 +13,9 @@ public class ScreenScript : MonoBehaviour
     public float vultureMoveSpeed = 2.0f, visionRadius = 2.0f*PI, rocketSpeed = 11.0f, rocketInitialLive = 3.142f;
 
     public int accuracy = 16, metricNumber = 1, textureNumber = 1, gsmNumber = 1;
+    public int metricCount = 17, textureCount = 4;
 
-    private InputAction moveAction, nextMetric, prevMetric, incrVisRad, decrVisRad, incrAccuracy, decrAccuracy, nextTexture, prevTexture, nextGSM, prevGSM, nextCT, prevCT, stopVul, shoot, toggleFullscreenRendering, toggleDisplayRoads;
+    private InputAction moveAction, nextMetric, prevMetric, incrVisRad, decrVisRad, incrAccuracy, decrAccuracy, nextTexture, prevTexture, nextGSM, prevGSM, nextCT, prevCT, stopVul, shoot, toggleFullscreenRendering, toggleDisplayRoads, resetVulPos;
 
     private Vector2 moveVulture;
 
@@ -73,7 +74,7 @@ public class ScreenScript : MonoBehaviour
     private float sip( Vector2 p, Vector2 k ){ return Sin(skap(k,p)); }
 
 
-    private struct VultureState
+    private struct ObjState
     {
         public Vector2 pos; // Position (vector)
         public Vector2 vel; // Velocity (vector)
@@ -83,18 +84,19 @@ public class ScreenScript : MonoBehaviour
         public float sgn; // Sign (can be +1 or -1, means orientation)
     }
 
-    private struct VultureProperties
-    {
-        public float speed;
-    }
-
     private struct Vulture
     {
-        public VultureState state;
-        public VultureProperties props;
+        public ObjState state;
+        public float moveSpeed;
+    }
+
+    private struct Observer
+    {
+        public ObjState state;
     }
 
     private Vulture vulture;
+    private Observer observer;
 
     private struct DomainParameters
     {
@@ -157,36 +159,40 @@ public class ScreenScript : MonoBehaviour
         switch (n)
         {
             case 1:
-                return 0f;
+                return  0f;
             case 2:
-                return Cos(p.x) / 4;
+                return  Cos(p.x) / 4;
             case 3:
-                return Cos(p.x) * Cos(p.y) / 4;
+                return  Cos(p.x)*Cos(p.y) / 4;
             case 4:
-                return (1 - Cos(p.x)) * (1 - Cos(p.y)) / 4;
+                return  (1-Cos(p.x))*(1-Cos(p.y)) / 4;
             case 5:
-                return (2 - (1 - Cos(p.x)) * (1 - Cos(p.y))) / 7;
+                return  ( 2 - (1-Cos(p.x))*(1-Cos(p.y)) ) / 7;
             case 6:
-                return 0.5f + Cos(p.x)*(3-Pow(Cos(p.x),2))/8;
+                return  0.5f + Cos(p.x)*(3-Pow(Cos(p.x),2))/8;
             case 7:
-                return 0.5f + Cos(p.x) * (3 - Pow(Cos(p.x), 2)) * Cos(p.y) * (3 - Pow(Cos(p.y), 2)) / 8;
+                return  0.5f + Cos(p.x)*(3-Pow(Cos(p.x),2))*Cos(p.y)*(3-Pow(Cos(p.y),2)) / 8;
             case 8:
-                return 0f;
+                return  0f;
             case 9:
-                return Log( 5 ) - Log( 5 + cop(p,k0) + cop(p,k1) + cop(p,k2) );
+                return  Log(5) - Log( 5 + cop(p,k0) + cop(p,k1) + cop(p,k2) );
             case 10:
-                return Log( 5 ) - Log( 5 + sip(p,k0) + sip(p,k1) + sip(p,k2) );
+                return  Log(5) - Log( 5 + sip(p,k0) + sip(p,k1) + sip(p,k2) );   
             case 11:
-                return Log( 9 ) - Log( sip(p,k3m) + sip(p,k4m) + sip(p,k5m) +
-                                       sip(p,k6m) + sip(p,k7m) + sip(p,k8m) + 9 );
+                return  Log(9) - Log( 9 + sip(p,k3m) + sip(p,k4m) + sip(p,k5m)
+                                        + sip(p,k6m) + sip(p,k7m) + sip(p,k8m) );
             case 12:
-                return Log( 3 ) - Log( 2 - Cos( p.y * Sqrt(3) ) );
+                return  Log(3) - Log( 2 - Cos(p.y*Sqrt(3)) );
             case 13:
-                return -Log( 1 + Cos(p.x)/3 + Cos(p.y)/3 );
+                return  Log(3) - Log( 3 + Cos(p.x) + Cos(p.y) );
             case 14:
-                return -Log( 1 + psqueeze3(Cos(p.x))/3 + psqueeze3(Cos(p.y))/3 );
+                return  Log(3) - Log( 3 + psqueeze3(Cos(p.x)) + psqueeze3(Cos(p.y)) );
+            case 15:
+                return  Log(3) - Log( 3 + psqueeze5(Cos(p.x)) + psqueeze5(Cos(p.y)) );
+            case 16:
+                return  Log(6) - Log( 6 + Cos(p.x) + Cos(p.y) + Cos(p.x+0.5f*p.y) + Cos(-0.5f*p.x+p.y) );
             default:
-                return -Log( 1 + psqueeze5(Cos(p.x))/3 + psqueeze5(Cos(p.y))/3 );
+                return  Log(5) - Log( 5 + Cos(0.5f*p.x)*Cos(0.5f*p.y) + Sin(0.5f*p.x)*Sin(p.y) - Sin(p.x)*Sin(0.5f*p.y) );
         }
     }
 
@@ -229,14 +235,15 @@ public class ScreenScript : MonoBehaviour
                                     k3m.y*cop(p,k3m) + k4m.y*cop(p,k4m) + k5m.y*cop(p,k5m) +
                                     k6m.y*cop(p,k6m) + k7m.y*cop(p,k7m) + k8m.y*cop(p,k8m)   )
                                         *
-                                    (-1) / ( sip(p,k3m) + sip(p,k4m) + sip(p,k5m) +
-                                             sip(p,k6m) + sip(p,k7m) + sip(p,k8m) + 9 );
+                                    (-1) / ( 9 + sip(p,k3m) + sip(p,k4m) + sip(p,k5m)
+                                               + sip(p,k6m) + sip(p,k7m) + sip(p,k8m) );
             case 12:
                 return new Vector2( 0, Sin(p.y*Sqrt(3)) )
                                         *
                                     ( -Sqrt(3) ) / ( 2 - Cos(p.y*Sqrt(3)) );
             case 13:
-                return new Vector2( Sin(p.x), Sin(p.y) )
+                return new Vector2( Sin(p.x),
+                                    Sin(p.y)  )
                                         /
                                     ( 3 + Cos(p.x) + Cos(p.y) );
             case 14:
@@ -244,11 +251,21 @@ public class ScreenScript : MonoBehaviour
                                     Sin(p.y)*psqueeze3_d(Cos(p.y))  )
                                         /
                                     ( 3 + psqueeze3(Cos(p.x)) + psqueeze3(Cos(p.y)) );
-            default:
+            case 15:
                 return new Vector2( Sin(p.x)*psqueeze5_d(Cos(p.x)),
                                     Sin(p.y)*psqueeze5_d(Cos(p.y))  )
                                         /
                                     ( 3 + psqueeze5(Cos(p.x)) + psqueeze5(Cos(p.y)) );
+            case 16:
+                return new Vector2( Sin(p.x) +     Sin(p.x+0.5f*p.y) - 0.5f*Sin(-0.5f*p.x+p.y),
+                                    Sin(p.y) + 0.5f*Sin(p.x+0.5f*p.y) +     Sin(-0.5f*p.x+p.y)  )
+                                        /
+                                    ( 6 + Cos(p.x) + Cos(p.y) + Cos(p.x+0.5f*p.y) + Cos(-0.5f*p.x+p.y) );
+            default:
+                return new Vector2( 0.5f*Sin(0.5f*p.x)*Cos(0.5f*p.y) - 0.5f*Cos(0.5f*p.x)*Sin(p.y) + Cos(p.x)*Sin(0.5f*p.y),
+                                    0.5f*Cos(0.5f*p.x)*Sin(0.5f*p.y) - Sin(0.5f*p.x)*Cos(p.y) + 0.5f*Sin(p.x)*Cos(0.5f*p.y)  )
+                                        /
+                                    ( 5 + Cos(0.5f*p.x)*Cos(0.5f*p.y) + Sin(0.5f*p.x)*Sin(p.y) - Sin(p.x)*Sin(0.5f*p.y) );
         }
     }
     
@@ -262,12 +279,17 @@ public class ScreenScript : MonoBehaviour
         return u.x*v.y - u.y*v.x;
     }
 
-    private Vector2 rot_by_ang( Vector2 v, float a )
+    private Vector2 rotate_by_angle( Vector2 v, float a )
     {
         float c = Cos(a);
         float s = Sin(a);
 
         return new Vector2( c*v.x - s*v.y, s*v.x + c*v.y );
+    }
+
+    private Vector2 rotate_by_90( Vector2 v )
+    {
+        return new Vector2( -v.y, v.x );
     }
 
     private float distance( Vector2 p, Vector2 q, int n )
@@ -312,33 +334,39 @@ public class ScreenScript : MonoBehaviour
         v  =  v - dt * Ga_m;
     }
 
-    private void propagate_rocket(ref Vector4 rp, float dt, int n)
+    private void propagate_rocket( ref Vector4 rp, float dt, int n )
     {
-        Vector2 rp_p = new Vector2(rp.x, rp.y);
-        Vector2 rp_v = new Vector2(rp.z, rp.w);
+        Vector2  rp_p  =  new Vector2( rp.x, rp.y );
+        Vector2  rp_v  =  new Vector2( rp.z, rp.w );
 
         apply_geodesic_step__midpoint( ref rp_p, ref rp_v, dt, n );
 
-        rp = new Vector4(rp_p.x, rp_p.y, rp_v.x, rp_v.y);
+        rp  =  new Vector4( rp_p.x, rp_p.y, rp_v.x, rp_v.y );
     }
 
-    private Vector2 move2vel(Vector2 pos, Vector2 moveVec, float camAng, float speed)
+    private Vector2 move2vel( Vector2 pos, Vector2 moveVec, float camAng, float speed )
     {
-        float a = camAng * deg2rad;
-
-        return rot_by_ang( moveVec, a ) * ( Exp( -confun( pos, metricNumber ) ) * (-speed) );
+        return rotate_by_angle( moveVec, camAng*deg2rad ) * ( Exp( -confun( pos, metricNumber ) ) * (-speed) );
     }
 
-    private Vector2 reset_to_domain_unit_square(Vector2 p)
+    private Vector2 reset_to_domain_unit_square( Vector2 p )
     {
         return new Vector2( p.x - RoundToInt(p.x), p.y - RoundToInt(p.y) );
     }
 
-    private Vector2 reset_to_fundamental_domain(Vector2 p, DomainParameters DP )
+    private Vector2 dom2usq( Vector2 p, DomainParameters DP )
     {
-        p = new Vector2(p.x * DP.av.x + p.y * DP.av.y, p.y * DP.bv.x + p.y * DP.bv.y);
-        p = reset_to_domain_unit_square(p);
-        return DP.va * p.x + DP.vb * p.y;
+        return new Vector2( p.x*DP.av.x + p.y*DP.av.y, p.y*DP.bv.x + p.y*DP.bv.y );
+    }
+
+    private Vector2 usq2dom( Vector2 p, DomainParameters DP )
+    {
+        return  DP.va*p.x + DP.vb*p.y;
+    }
+
+    private Vector2 reset_to_fundamental_domain( Vector2 p, DomainParameters DP )
+    {
+        return  p  =  usq2dom( reset_to_domain_unit_square( dom2usq( p, DP ) ), DP );
     }
 
     private void update_fps()
@@ -402,10 +430,10 @@ public class ScreenScript : MonoBehaviour
         bool metricChanged  = false;
         bool textureChanged = false;
 
-        if( nextMetric.WasPressedThisFrame()  ){ if( metricNumber  < 13 )  metricNumber += 1; else  metricNumber =  1;  metricChanged = true; }
-        if( prevMetric.WasPressedThisFrame()  ){ if( metricNumber  >  1 )  metricNumber -= 1; else  metricNumber = 13;  metricChanged = true; }
-        if( nextTexture.WasPressedThisFrame() ){ if( textureNumber <  4 ) textureNumber += 1; else textureNumber =  1; textureChanged = true; }
-        if( prevTexture.WasPressedThisFrame() ){ if( textureNumber >  1 ) textureNumber -= 1; else textureNumber =  4; textureChanged = true; }
+        if( nextMetric.WasPressedThisFrame()  ){ if( metricNumber  < metricCount )  metricNumber += 1; else  metricNumber =  1;  metricChanged = true; }
+        if( prevMetric.WasPressedThisFrame()  ){ if( metricNumber  >  1 )  metricNumber -= 1; else  metricNumber = metricCount;  metricChanged = true; }
+        if( nextTexture.WasPressedThisFrame() ){ if( textureNumber <  textureCount ) textureNumber += 1; else textureNumber =  1; textureChanged = true; }
+        if( prevTexture.WasPressedThisFrame() ){ if( textureNumber >  1 ) textureNumber -= 1; else textureNumber = textureCount; textureChanged = true; }
 
         if( metricChanged )
         {
@@ -481,10 +509,20 @@ public class ScreenScript : MonoBehaviour
                     domainName  =  "square";
                     domainParameters  =  make_domain_parameters( 2*PI, 2*PI, 90 );
                     break;
-                default:
+                case 15:
                     metricName  =  "dupinSqz5";
                     domainName  =  "square";
                     domainParameters  =  make_domain_parameters( 2*PI, 2*PI, 90 );
+                    break;
+                case 16:
+                    metricName  =  "sq_p4";
+                    domainName  =  "square";
+                    domainParameters  =  make_domain_parameters( 4*PI, 4*PI, 90 );
+                    break;
+                default:
+                    metricName  =  "sq_p4gm";
+                    domainName  =  "square";
+                    domainParameters  =  make_domain_parameters( 4*PI, 4*PI, 90 );
                     break;
             }
 
@@ -502,6 +540,19 @@ public class ScreenScript : MonoBehaviour
         {
             tilingTexture  =  AssetDatabase.LoadAssetAtPath<Texture2D>( "Assets/Textures/Tilings/" + metricName + "_" + textureNumber.ToString() + ".png" );
             material.SetTexture( "_BaseMap", tilingTexture );
+        }
+    }
+
+    private void update_vulture_actions()
+    {
+        if( resetVulPos.WasPressedThisFrame() )
+        {
+            vulture.state.pos  =  new Vector2( 0.0f, 0.0f );
+            vulture.state.vel  =  new Vector2( 0.0f, 0.0f );
+            vulture.state.tan  =  new Vector2( 0.0f, 1.0f );
+            vulture.state.nor  =  new Vector2(-1.0f, 0.0f );
+            vulture.state.ang  =  90;
+            vulture.state.sgn  =  1.0f;
         }
     }
 
@@ -527,18 +578,14 @@ public class ScreenScript : MonoBehaviour
     {
         moveVulture  =  moveAction.ReadValue<Vector2>();
 
-        vulture.state.vel  = 
-            move2vel( vulture.state.pos, moveVulture,
-                        vulture.state.ang, vulture.props.speed );
+        vulture.state.vel  =  move2vel( vulture.state.pos, moveVulture, observer.state.ang, vulture.moveSpeed );
 
         float  dt  =  Time.deltaTime;
         float  da  =  0.0f;
 
         if( vulture.state.vel.magnitude > 0 )
         {
-            Vector2  accel  =
-                -christoffel( vulture.state.pos, vulture.state.vel,
-                    vulture.state.vel, metricNumber );
+            Vector2  accel  =  -christoffel( vulture.state.pos, vulture.state.vel, vulture.state.vel, metricNumber );
 
             da  =  dt * det( accel, vulture.state.vel ) / sqn( vulture.state.vel );
 
@@ -549,40 +596,32 @@ public class ScreenScript : MonoBehaviour
         {
             vulture.state.pos  =  reset_to_fundamental_domain( vulture.state.pos + dt*vulture.state.vel, domainParameters );
 
-            vulture.state.ang  =  vulture.state.ang - da*rad2deg;
+            observer.state.ang  =  observer.state.ang - da*rad2deg;
         }
 
-        vulture.state.nor  =  rot_by_ang( vulture.state.tan, PI/2 );
+        vulture.state.nor  =  rotate_by_90( vulture.state.tan );
+    }
 
-        material.SetVector( "_CamPos", new Vector4( vulture.state.pos.x, vulture.state.pos.y, vulture.state.tan.x, vulture.state.tan.y ) );
-        material.SetFloat(  "_CamAng", vulture.state.ang );
+    private void update_rocket( int k )
+    {
+        propagate_rocket( ref rocketsState[k], Time.deltaTime, metricNumber );
+
+        if( rocketsLive[k] > 0 )
+            rocketsLive[k] -= Time.deltaTime;        
     }
 
     private void update_rockets()
     {
         for( int k = 0; k < 16; k++ )
-        {
-            propagate_rocket( ref rocketsState[k], Time.deltaTime, metricNumber );
-            if( rocketsLive[k] > 0 )
-                rocketsLive[k] -= Time.deltaTime;
-        }
+            update_rocket( k );
     }
 
     private void detect_vulture_rocket_collisions()
     {
-        Vector4  camPos  =  material.GetVector( "_CamPos" );
-
         for( int k = 0; k < 16; k++ )
-        {
-            Vector2  p  =  new Vector2( rocketsState[k].x, rocketsState[k].y );
-            Vector2  q  =  new Vector2( camPos.x,          camPos.y          );
-
-            float  dist  =  distance( p, q, metricNumber );
-
-            if( dist < 0.35f )
+            if( distance( new Vector2( rocketsState[k].x, rocketsState[k].y ), vulture.state.pos, metricNumber ) < 0.35f )
                 if( rocketsLive[k] < 3f )
                     rocketsLive[k] = 0f;
-        }
     }
     
     private void Awake()
@@ -613,23 +652,31 @@ public class ScreenScript : MonoBehaviour
 
         shoot = InputSystem.actions.FindAction("Attack");
 
+        resetVulPos = InputSystem.actions.FindAction("Reset Vulture Position");
+
         toggleFullscreenRendering = InputSystem.actions.FindAction("Toggle Fullscreen Rendering");
         toggleDisplayRoads = InputSystem.actions.FindAction("Toggle Display Roads");
 
-        domainParameters = make_domain_parameters(2 * PI, 2 * PI, 90);
+        domainParameters  =  make_domain_parameters( 2*PI, 2*PI, 90 );
 
-        tilingTexture = AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/Textures/Tilings/" + metricName + "_" + textureNumber.ToString() + ".png");
-        material.SetTexture("_BaseMap", tilingTexture);
+        tilingTexture  =  AssetDatabase.LoadAssetAtPath<Texture2D>( "Assets/Textures/Tilings/" + metricName + "_" + textureNumber.ToString() + ".png" );
+        material.SetTexture( "_BaseMap", tilingTexture );
 
         vulture.state.pos  =  new Vector2( 0.0f, 0.0f );
         vulture.state.vel  =  new Vector2( 0.0f, 0.0f );
-        vulture.state.tan  =  new Vector2( 1.0f, 0.0f );
-        vulture.state.nor  =  new Vector2( 0.0f, 1.0f );
-        vulture.state.ang  =  0.0f;
+        vulture.state.tan  =  new Vector2( 0.0f, 1.0f );
+        vulture.state.nor  =  new Vector2(-1.0f, 0.0f );
+        vulture.state.ang  =  90;
         vulture.state.sgn  =  1.0f;
 
-        vulture.props.speed  =  vultureMoveSpeed;
+        vulture.moveSpeed  =  vultureMoveSpeed;
 
+        observer.state.ang  =  180;
+
+        material.SetVector( "_CamPos", new Vector4( vulture.state.pos.x, vulture.state.pos.y, vulture.state.tan.x, vulture.state.tan.y ) );
+        material.SetFloat(  "_CamAng", observer.state.ang );
+        material.SetVectorArray( "_RocketsState", rocketsState );
+        material.SetFloatArray(  "_RocketsLive",  rocketsLive );
     }
 
     private void Start()
@@ -642,6 +689,7 @@ public class ScreenScript : MonoBehaviour
         update_vision_settings();
         update_world_settings();
         update_rocket_states();
+        update_vulture_actions();
     }
 
     private void FixedUpdate()
@@ -650,7 +698,9 @@ public class ScreenScript : MonoBehaviour
         update_rockets();
         detect_vulture_rocket_collisions();
 
-        material.SetVectorArray("_RocketsState", rocketsState);
-        material.SetFloatArray("_RocketsLive", rocketsLive);
+        material.SetVector( "_CamPos", new Vector4( vulture.state.pos.x, vulture.state.pos.y, vulture.state.tan.x, vulture.state.tan.y ) );
+        material.SetFloat(  "_CamAng", observer.state.ang );
+        material.SetVectorArray( "_RocketsState", rocketsState );
+        material.SetFloatArray(  "_RocketsLive",  rocketsLive );
     }
 }

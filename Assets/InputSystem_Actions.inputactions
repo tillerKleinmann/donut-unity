@@ -212,6 +212,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Reset Vulture Position",
+                    "type": "Button",
+                    "id": "5086a1a9-3493-4339-95b4-4e2b1a133742",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -872,6 +881,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "Toggle Display Roads",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "73c8c1b9-4a83-4551-b592-f1e7f264d9c2",
+                    "path": "<Keyboard>/k",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Reset Vulture Position",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "92a1a993-39c0-457e-91de-3218ef27dc13",
+                    "path": "<Gamepad>/buttonEast",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "Reset Vulture Position",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

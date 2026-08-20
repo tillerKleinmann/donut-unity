@@ -45,8 +45,11 @@ half4 frag( Varyings IN ) : SV_Target
         float2 uv  =  mul( tarPos, plg2usq );
         
         uv  +=  float2(1,1)*0.5;
-        
+
+        uv  =  reset_to_unit_square_shifted( uv );
+
         float3 col  =  SAMPLE_TEXTURE2D( _BaseMap, sampler_LinearRepeat, uv ).xyz;
+        //float3 col  =  float3( uv.x, uv.y, 0 );
 
         if( display_roads )
         {
@@ -74,7 +77,7 @@ half4 frag( Varyings IN ) : SV_Target
         if( fullscreen == false )
             col  =  lerp( float3(0,0,0), col, pow( clamp( (1.0-xy_rl)*32, 0, 1 ), 2 ) );
 
-        return float4( col, 1 );
+        return float4(col,1);
     }
     else
         return float4(0,0,0,1);
