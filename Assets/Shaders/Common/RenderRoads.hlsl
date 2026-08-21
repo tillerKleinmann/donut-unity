@@ -258,3 +258,76 @@ float3 add_main_roads_hexagon_4( float3 col, float2 tarPos )
 
     return col;
 }
+
+float3 add_symmetry_roads_p3m1( float3 col, float2 tarPos )
+{
+    float roadbr      =  0.30;
+    //float linebr      =  0.03;
+    float roadfadebr  =  0.04;
+
+    float2 k0m  =  float2(  1.0,       0.00  ) * u2p.x/2;
+    float2 k1m  =  float2( -0.5, +sqrt(0.75) ) * u2p.x/2;
+    float2 k2m  =  float2( -0.5, -sqrt(0.75) ) * u2p.x/2;
+
+    float dRx  =  distance_from_parameter_line( tarPos, float2(0,0), k0m );
+    float dR1  =  distance_from_parameter_line( tarPos, float2(0,0), k1m );
+    float dR2  =  distance_from_parameter_line( tarPos, float2(0,0), k2m );
+
+    float dRoad  =  min( dRx, min( dR1, dR2 ) );
+
+    if( dRoad < roadbr )
+        col  =  float3(1,1,1)*0.05;
+    else
+        col  =  lerp( float3(1,1,1)*0.5, col, clamp( ( dRoad - roadbr ) / roadfadebr, 0, 1 ) );
+
+    //if( dRoad < linebr )
+    //    col  =  float3(1,1,1);
+
+    return col;
+}
+
+float3 add_symmetry_roads_p3m1_colored( float3 col, float2 tarPos )
+{
+    float roadbr      =  0.30;
+    float linebr      =  0.03;
+    float roadfadebr  =  0.04;
+
+    float2 k0m  =  float2(  1.0,       0.00  ) * u2p.x/2;
+    float2 k1m  =  float2( -0.5, +sqrt(0.75) ) * u2p.x/2;
+    float2 k2m  =  float2( -0.5, -sqrt(0.75) ) * u2p.x/2;
+
+    float dR0  =  distance_from_parameter_line( tarPos, float2(0,0), k0m );
+    float dR1  =  distance_from_parameter_line( tarPos, float2(0,0), k1m );
+    float dR2  =  distance_from_parameter_line( tarPos, float2(0,0), k2m );
+
+    float dRoad  =  min( dR0, min( dR1, dR2 ) );
+
+    bool in0  =  ( dR0 < roadbr );
+    bool in1  =  ( dR1 < roadbr );
+    bool in2  =  ( dR2 < roadbr );
+
+    if( dRoad < roadbr )
+        col  =  float3(1,1,1)*0.05;
+    else
+        col  =  lerp( float3(1,1,1)*0.5, col, clamp( ( dRoad - roadbr ) / roadfadebr, 0, 1 ) );
+    
+    if( in1 == false & in2 == false )
+    {
+        if( dR0 < linebr )
+            col  =  float3(1.0,0.0,0.0);
+    }
+
+    if( in2 == false & in0 == false )
+    {
+        if( dR1 < linebr )
+            col  =  float3(0.0,1.0,0.0);
+    }
+
+    if( in0 == false & in1 == false )
+    {
+        if( dR2 < linebr )
+            col  =  float3(0.0,0.0,1.0);
+    }
+
+    return col;
+}

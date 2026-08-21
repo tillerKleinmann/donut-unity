@@ -12,10 +12,10 @@ public class ScreenScript : MonoBehaviour
 
     public float vultureMoveSpeed = 2.0f, visionRadius = 2.0f*PI, rocketSpeed = 11.0f, rocketInitialLive = 3.142f;
 
-    public int accuracy = 16, metricNumber = 1, textureNumber = 1, gsmNumber = 1;
-    public int metricCount = 17, textureCount = 4;
+    public int accuracy = 16, metricNumber = 1, textureNumber = 1, gsmNumber = 1, roadsType = 1;
+    public int metricCount = 17, textureCount = 4, roadsTypeCount = 2;
 
-    private InputAction moveAction, nextMetric, prevMetric, incrVisRad, decrVisRad, incrAccuracy, decrAccuracy, nextTexture, prevTexture, nextGSM, prevGSM, nextCT, prevCT, stopVul, shoot, toggleFullscreenRendering, toggleDisplayRoads, resetVulPos;
+    private InputAction moveAction, nextMetric, prevMetric, incrVisRad, decrVisRad, incrAccuracy, decrAccuracy, nextTexture, prevTexture, nextRoadsType, prevRoadsType, nextGSM, prevGSM, nextCT, prevCT, stopVul, shoot, toggleFullscreenRendering, toggleDisplayRoads, resetVulPos;
 
     private Vector2 moveVulture;
 
@@ -44,8 +44,7 @@ public class ScreenScript : MonoBehaviour
     private bool fullscreen = false;
     private bool displayRoads = false;
 
-    private float fullscreenFloat = 0f;
-    private float displayRoadsFloat = 0f;
+    private float fullscreenFloat = 0f, displayRoadsFloat = 0f;
 
     Material material;
 
@@ -401,17 +400,18 @@ public class ScreenScript : MonoBehaviour
         if (toggleFullscreenRendering.WasPressedThisFrame()) { fullscreen = !fullscreen; if (fullscreen) fullscreenFloat = 1f; else fullscreenFloat = 0f; }
         if (toggleDisplayRoads.WasPressedThisFrame()) { displayRoads = !displayRoads; if (displayRoads) displayRoadsFloat = 1f; else displayRoadsFloat = 0f; }
 
+        material.SetFloat( "_ChartType",  ctNumber          );
+        material.SetFloat( "_RoadsDisp",  displayRoadsFloat );
+        material.SetFloat( "_RoadsType",  (float)roadsType  );
         material.SetFloat( "_VisRad",     visionRadius      );
+        material.SetFloat( "_FullScreen", fullscreenFloat   );
         material.SetFloat( "_Accuracy",   accuracy          );
         material.SetFloat( "_GSM",        gsmNumber         );
-        material.SetFloat( "_ChartType",  ctNumber          );
-        material.SetFloat( "_FullScreen", fullscreenFloat   );
-        material.SetFloat( "_Roads",      displayRoadsFloat );
 
         accuracyField.text = accuracy.ToString();
         radiusField.text = string.Format("{0:0.000}", visionRadius);
 
-        switch (gsmNumber)
+        switch( gsmNumber )
         {
             case 1:
                 GSMField.text = "RK4";
@@ -430,10 +430,14 @@ public class ScreenScript : MonoBehaviour
         bool metricChanged  = false;
         bool textureChanged = false;
 
-        if( nextMetric.WasPressedThisFrame()  ){ if( metricNumber  < metricCount )  metricNumber += 1; else  metricNumber =  1;  metricChanged = true; }
-        if( prevMetric.WasPressedThisFrame()  ){ if( metricNumber  >  1 )  metricNumber -= 1; else  metricNumber = metricCount;  metricChanged = true; }
-        if( nextTexture.WasPressedThisFrame() ){ if( textureNumber <  textureCount ) textureNumber += 1; else textureNumber =  1; textureChanged = true; }
-        if( prevTexture.WasPressedThisFrame() ){ if( textureNumber >  1 ) textureNumber -= 1; else textureNumber = textureCount; textureChanged = true; }
+        if( nextMetric.WasPressedThisFrame()  ){ if( metricNumber  < metricCount )  metricNumber += 1; else  metricNumber =  1;           metricChanged = true; }
+        if( prevMetric.WasPressedThisFrame()  ){ if( metricNumber  >  1 )           metricNumber -= 1; else  metricNumber = metricCount;  metricChanged = true; }
+        
+        if( nextTexture.WasPressedThisFrame() ){ if( textureNumber <  textureCount ) textureNumber += 1; else textureNumber =  1;           textureChanged = true; }
+        if( prevTexture.WasPressedThisFrame() ){ if( textureNumber >  1 )            textureNumber -= 1; else textureNumber = textureCount; textureChanged = true; }
+        
+        if( nextRoadsType.WasPressedThisFrame() ){ if( roadsType <  roadsTypeCount ) roadsType += 1; else roadsType = 1;              }
+        if( prevRoadsType.WasPressedThisFrame() ){ if( roadsType >  1 )              roadsType -= 1; else roadsType = roadsTypeCount; }
 
         if( metricChanged )
         {
@@ -442,86 +446,103 @@ public class ScreenScript : MonoBehaviour
                 case 1:
                     metricName  =  "sqFlat";
                     domainName  =  "square";
+                    roadsType  =  1;
                     domainParameters  =  make_domain_parameters( 2*PI, 2*PI, 90 );
                     break;
                 case 2:
                     metricName  =  "torusPsi";
                     domainName  =  "square";
+                    roadsType  =  1;
                     domainParameters  =  make_domain_parameters( 2*PI, 2*PI, 90 );
                     break;
                 case 3:
                     metricName  =  "dgBump";
                     domainName  =  "square";
+                    roadsType  =  1;
                     domainParameters  =  make_domain_parameters( 2*PI, 2*PI, 90 );
                     break;
                 case 4:
                     metricName  =  "sqBump";
                     domainName  =  "square";
+                    roadsType  =  1;
                     domainParameters  =  make_domain_parameters( 2*PI, 2*PI, 90 );
                     break;
                 case 5:
                     metricName  =  "sqAntiBump";
                     domainName  =  "square";
+                    roadsType  =  1;
                     domainParameters  =  make_domain_parameters( 2*PI, 2*PI, 90 );
                     break;
                 case 6:
                     metricName  =  "torusPsiSqz";
                     domainName  =  "square";
+                    roadsType  =  1;
                     domainParameters  =  make_domain_parameters( 2*PI, 2*PI, 90 );
                     break;
                 case 7:
                     metricName  =  "dgBumpSqz";
                     domainName  =  "square";
+                    roadsType  =  1;
                     domainParameters  =  make_domain_parameters( 2*PI, 2*PI, 90 );
                     break;
                 case 8:
                     metricName  =  "hexFlat";
                     domainName  =  "hexagon";
+                    roadsType  =  2;
                     domainParameters  =  make_domain_parameters( 2*PI, 2*PI, 60 );
                     break;
                 case 9:
                     metricName  =  "hexBump";
                     domainName  =  "hexagon";
+                    roadsType  =  2;
                     domainParameters  =  make_domain_parameters( 2*PI, 2*PI, 60 );
                     break;
                 case 10:
                     metricName  =  "hexRump";
                     domainName  =  "hexagon";
+                    roadsType  =  2;
                     domainParameters  =  make_domain_parameters( 2*PI, 2*PI, 60 );
                     break;
                 case 11:
                     metricName  =  "hexp3";
                     domainName  =  "hexagon";
+                    roadsType  =  2;
                     domainParameters  =  make_domain_parameters( 4*PI, 4*PI, 60 );
                     break;
                 case 12:
                     metricName  =  "torus";
                     domainName  =  "rectangle";
+                    roadsType  =  1;
                     domainParameters  =  make_domain_parameters( 2*PI, 2*PI/Sqrt(3), 90 );
                     break;
                 case 13:
                     metricName  =  "dupin";
                     domainName  =  "square";
+                    roadsType  =  1;
                     domainParameters  =  make_domain_parameters( 2*PI, 2*PI, 90 );
                     break;
                 case 14:
                     metricName  =  "dupinSqz3";
                     domainName  =  "square";
+                    roadsType  =  1;
                     domainParameters  =  make_domain_parameters( 2*PI, 2*PI, 90 );
                     break;
                 case 15:
                     metricName  =  "dupinSqz5";
                     domainName  =  "square";
+                    roadsType  =  1;
                     domainParameters  =  make_domain_parameters( 2*PI, 2*PI, 90 );
                     break;
                 case 16:
                     metricName  =  "sq_p4";
                     domainName  =  "square";
+                    roadsType  =  1;
                     domainParameters  =  make_domain_parameters( 4*PI, 4*PI, 90 );
                     break;
                 default:
                     metricName  =  "sq_p4gm";
                     domainName  =  "square";
+                    roadsType  =  1;
                     domainParameters  =  make_domain_parameters( 4*PI, 4*PI, 90 );
                     break;
             }
@@ -635,6 +656,9 @@ public class ScreenScript : MonoBehaviour
 
         nextTexture = InputSystem.actions.FindAction("Next Texture");
         prevTexture = InputSystem.actions.FindAction("Previous Texture");
+
+        nextRoadsType = InputSystem.actions.FindAction("Next Roads Type");
+        prevRoadsType = InputSystem.actions.FindAction("Previous Roads Type");
 
         nextGSM = InputSystem.actions.FindAction("Next GSM");
         prevGSM = InputSystem.actions.FindAction("Previous GSM");

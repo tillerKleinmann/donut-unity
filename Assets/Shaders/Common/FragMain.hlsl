@@ -6,8 +6,6 @@ half4 frag( Varyings IN ) : SV_Target
     
     xy.x *= 2;
     
-    //float ph0  =  _Time.y;
-    
     if( ( pow(xy.x,2) + pow(xy.y,2) < 1.0 ) || fullscreen )
     {
         float xy_rl  =  length( xy );
@@ -53,10 +51,11 @@ half4 frag( Varyings IN ) : SV_Target
 
         if( display_roads )
         {
-            if( abs(u2p.y) < 0.01*abs(u2p.w) )
+            if( roadsType == 1 )
                 col  =  add_main_roads_rectangle_2( col, tarPos );
-            else
-                col  =  add_main_roads_hexagon_4( col, tarPos );
+            else if( roadsType == 2 )
+                col  =  add_symmetry_roads_p3m1_colored( col, tarPos );
+                //col  =  add_main_roads_hexagon_4( col, tarPos );
         }
 
         col  =  draw_sprite_quadratic( col, tarPos, camPos, vulVec, _VulTex, 1.0 );

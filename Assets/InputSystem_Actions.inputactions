@@ -124,6 +124,24 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "Next Roads Type",
+                    "type": "Button",
+                    "id": "1a2da9c6-5509-420b-ba40-c22e37e95181",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Previous Roads Type",
+                    "type": "Button",
+                    "id": "5cb4748c-6981-415e-aa94-71eea4b09316",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "Next Texture",
                     "type": "Button",
                     "id": "0435e267-7ea9-4bfa-8951-5e5e10efdd49",
@@ -865,7 +883,7 @@
                 {
                     "name": "",
                     "id": "1877b75d-025e-4621-8113-3da60d2a312a",
-                    "path": "<Keyboard>/numpad7",
+                    "path": "<Keyboard>/numpad9",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -903,6 +921,28 @@
                     "processors": "",
                     "groups": ";Gamepad",
                     "action": "Reset Vulture Position",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "c33e48d9-af1b-4fc2-9e95-263cf35890d8",
+                    "path": "<Keyboard>/numpad7",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Next Roads Type",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "8da4f77d-7d68-45a8-8875-5d66ea5a9b6d",
+                    "path": "<Keyboard>/numpad8",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Previous Roads Type",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
