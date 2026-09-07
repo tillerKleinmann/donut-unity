@@ -927,7 +927,7 @@
                 {
                     "name": "",
                     "id": "c33e48d9-af1b-4fc2-9e95-263cf35890d8",
-                    "path": "<Keyboard>/numpad7",
+                    "path": "<Keyboard>/numpad8",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -938,7 +938,7 @@
                 {
                     "name": "",
                     "id": "8da4f77d-7d68-45a8-8875-5d66ea5a9b6d",
-                    "path": "<Keyboard>/numpad8",
+                    "path": "<Keyboard>/numpad7",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
