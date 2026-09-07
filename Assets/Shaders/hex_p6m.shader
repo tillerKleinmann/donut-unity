@@ -1,4 +1,4 @@
-Shader "Custom/Confmets/hexBump"
+Shader "Custom/Confmets/hex_p6m"
 {
     Properties
     {

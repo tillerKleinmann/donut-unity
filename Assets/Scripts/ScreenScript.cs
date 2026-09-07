@@ -488,25 +488,25 @@ public class ScreenScript : MonoBehaviour
                 case 8:
                     metricName  =  "hexFlat";
                     domainName  =  "hexagon";
-                    roadsType  =  2;
+                    roadsType  =  9;
                     domainParameters  =  make_domain_parameters( 2*PI, 2*PI, 60 );
                     break;
                 case 9:
-                    metricName  =  "hexBump";
+                    metricName  =  "hex_p6m";
                     domainName  =  "hexagon";
-                    roadsType  =  2;
+                    roadsType  =  9;
                     domainParameters  =  make_domain_parameters( 2*PI, 2*PI, 60 );
                     break;
                 case 10:
-                    metricName  =  "hexRump";
+                    metricName  =  "hex_p3m1";
                     domainName  =  "hexagon";
-                    roadsType  =  2;
+                    roadsType  =  7;
                     domainParameters  =  make_domain_parameters( 2*PI, 2*PI, 60 );
                     break;
                 case 11:
-                    metricName  =  "hexp3";
+                    metricName  =  "hex_p3";
                     domainName  =  "hexagon";
-                    roadsType  =  2;
+                    roadsType  =  9;
                     domainParameters  =  make_domain_parameters( 4*PI, 4*PI, 60 );
                     break;
                 case 12:
