@@ -215,7 +215,7 @@ float4 symmetry_line_color_alpha__p4m__colored( float2 tarPos )
     }
     else if( dR_min < symLineWidth )
     {
-        color  =  float3( lax0 + lay1 + mup1 + mus0, lay0 + lax1 + mup1 + mus0, mup0 + lax1 + lay1 + mus0 );
+        color  =  float3( lax0 + lax1 + mus0 + mus1, lay0 + lay1 + mus0 + mus1, lay0 + lax1 + mup0 + mus1 );
 
         color  =  lerp( colorGrey, color, pow( cos( PI/2 * dR_min/symLineWidth ), 2 ) );
         alpha  =  1.0;
@@ -280,7 +280,7 @@ float4 symmetry_line_color_alpha__p4g__colored( float2 tarPos )
     }
     else if( dR_min < symLineWidth )
     {
-        color  =  float3( lax0 + lay1 + mup1 + mus0, lay0 + lax1 + mup1 + mus0, mup0 + lax1 + lay1 + mus0 );
+        color  =  float3( lax0 + lax1 + mus0 + mus1, lay0 + lay1 + mus0 + mus1, lay0 + lax1 + mup0 + mus1 );
 
         color  =  lerp( colorGrey, color, pow( cos( PI/2 * dR_min/symLineWidth ), 2 ) );
         alpha  =  1.0;
