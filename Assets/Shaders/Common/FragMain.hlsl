@@ -93,6 +93,31 @@ half4 frag( Varyings IN ) : SV_Target
                 cola = symmetry_line_color_alpha__p6m_glide__colored( tarPos );
                 col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
             }
+            else if( roadsType == 10 )
+            {
+                cola = symmetry_line_color_alpha__pmm__colored( tarPos );
+                col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
+            }
+            else if( roadsType == 11 )
+            {
+                cola = symmetry_line_color_alpha__pmg__colored( tarPos );
+                col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
+            }
+            else if( roadsType == 12 )
+            {
+                cola = symmetry_line_color_alpha__pgg__colored( tarPos );
+                col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
+            }
+            else if( roadsType == 13 )
+            {
+                cola = symmetry_line_color_alpha__p4m__colored( tarPos );
+                col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
+            }
+            else if( roadsType == 14 )
+            {
+                cola = symmetry_line_color_alpha__p4g__colored( tarPos );
+                col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
+            }
         }
 
         col  =  draw_sprite_quadratic( col, tarPos, camPos, vulVec, _VulTex, 1.0 );

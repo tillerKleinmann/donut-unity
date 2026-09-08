@@ -13,7 +13,7 @@ public class ScreenScript : MonoBehaviour
     public float vultureMoveSpeed = 2.0f, visionRadius = 2.0f*PI, rocketSpeed = 11.0f, rocketInitialLive = 3.142f;
 
     public int accuracy = 16, metricNumber = 1, textureNumber = 1, gsmNumber = 1, roadsType = 1;
-    public int metricCount = 17, textureCount = 4, roadsTypeCount = 9;
+    public int metricCount = 17, textureCount = 4, roadsTypeCount = 14;
 
     private InputAction moveAction, nextMetric, prevMetric, incrVisRad, decrVisRad, incrAccuracy, decrAccuracy, nextTexture, prevTexture, nextRoadsType, prevRoadsType, nextGSM, prevGSM, nextCT, prevCT, stopVul, shoot, toggleFullscreenRendering, toggleDisplayRoads, resetVulPos;
 
@@ -33,7 +33,7 @@ public class ScreenScript : MonoBehaviour
     private static float deg2rad = PI/180;
 
 
-    private string metricName = "sqFlat";
+    private string metricName = "tp_flat";
     private string domainName = "square";
 
     public TextMeshProUGUI domainField, metricField, textureField, radiusField, GSMField, accuracyField, frameRateField;
@@ -168,15 +168,15 @@ public class ScreenScript : MonoBehaviour
             case 5:
                 return  ( 2 - (1-Cos(p.x))*(1-Cos(p.y)) ) / 7;
             case 6:
-                return  0.5f + Cos(p.x)*(3-Pow(Cos(p.x),2))/8;
+                return  ( 4 + Cos(p.x)*(3-Pow(Cos(p.x),2)) ) / 8;
             case 7:
-                return  0.5f + Cos(p.x)*(3-Pow(Cos(p.x),2))*Cos(p.y)*(3-Pow(Cos(p.y),2)) / 8;
+                return  ( 4 + Cos(p.x)*(3-Pow(Cos(p.x),2))*Cos(p.y)*(3-Pow(Cos(p.y),2)) ) / 8;
             case 8:
                 return  0f;
             case 9:
                 return  Log(5) - Log( 5 + cop(p,k0) + cop(p,k1) + cop(p,k2) );
             case 10:
-                return  Log(5) - Log( 5 + sip(p,k0) + sip(p,k1) + sip(p,k2) );   
+                return  Log(5) - Log( 5 + sip(p,k0) + sip(p,k1) + sip(p,k2) );
             case 11:
                 return  Log(9) - Log( 9 + sip(p,k3m) + sip(p,k4m) + sip(p,k5m)
                                         + sip(p,k6m) + sip(p,k7m) + sip(p,k8m) );
@@ -189,9 +189,9 @@ public class ScreenScript : MonoBehaviour
             case 15:
                 return  Log(3) - Log( 3 + psqueeze5(Cos(p.x)) + psqueeze5(Cos(p.y)) );
             case 16:
-                return  Log(6) - Log( 6 + Cos(p.x) + Cos(p.y) + Cos(p.x+0.5f*p.y) + Cos(-0.5f*p.x+p.y) );
+                return  Log(6) - Log( 6 + Cos(p.x) + Cos(p.y) + Cos( p.x + p.y/2 ) + Cos( -p.x/2 + p.y ) );
             default:
-                return  Log(5) - Log( 5 + Cos(0.5f*p.x)*Cos(0.5f*p.y) + Sin(0.5f*p.x)*Sin(p.y) - Sin(p.x)*Sin(0.5f*p.y) );
+                return  Log(5) - Log( 5 + Cos(p.x/2)*Cos(p.y/2) + Sin(p.x/2)*Sin(p.y) - Sin(p.x)*Sin(p.y/2) );
         }
     }
 
@@ -256,15 +256,15 @@ public class ScreenScript : MonoBehaviour
                                         /
                                     ( 3 + psqueeze5(Cos(p.x)) + psqueeze5(Cos(p.y)) );
             case 16:
-                return new Vector2( Sin(p.x) +     Sin(p.x+0.5f*p.y) - 0.5f*Sin(-0.5f*p.x+p.y),
-                                    Sin(p.y) + 0.5f*Sin(p.x+0.5f*p.y) +     Sin(-0.5f*p.x+p.y)  )
+                return new Vector2( Sin(p.x) + Sin( p.x + p.y/2 )   - Sin( -p.x/2 + p.y )/2,
+                                    Sin(p.y) + Sin( p.x + p.y/2 )/2 + Sin( -p.x/2 + p.y )    )
                                         /
-                                    ( 6 + Cos(p.x) + Cos(p.y) + Cos(p.x+0.5f*p.y) + Cos(-0.5f*p.x+p.y) );
+                                    ( 6 + Cos(p.x) + Cos(p.y) + Cos( p.x + p.y/2 ) + Cos( -p.x/2 + p.y ) );
             default:
-                return new Vector2( 0.5f*Sin(0.5f*p.x)*Cos(0.5f*p.y) - 0.5f*Cos(0.5f*p.x)*Sin(p.y) + Cos(p.x)*Sin(0.5f*p.y),
-                                    0.5f*Cos(0.5f*p.x)*Sin(0.5f*p.y) - Sin(0.5f*p.x)*Cos(p.y) + 0.5f*Sin(p.x)*Cos(0.5f*p.y)  )
+                return new Vector2( Sin(p.x/2)*Cos(p.y/2)/2 - Cos(p.x/2)*Sin(p.y)/2 + Cos(p.x)*Sin(p.y/2),
+                                    Cos(p.x/2)*Sin(p.y/2)/2 - Sin(p.x/2)*Cos(p.y)   + Sin(p.x)*Cos(p.y/2)/2 )
                                         /
-                                    ( 5 + Cos(0.5f*p.x)*Cos(0.5f*p.y) + Sin(0.5f*p.x)*Sin(p.y) - Sin(p.x)*Sin(0.5f*p.y) );
+                                    ( 5 + Cos(p.x/2)*Cos(p.y/2) + Sin(p.x/2)*Sin(p.y) - Sin(p.x)*Sin(p.y/2) );
         }
     }
     
@@ -301,36 +301,36 @@ public class ScreenScript : MonoBehaviour
     {
         Vector2 cfd  =  confun_grad( p, n );
 
-        float a   =   u.x * v.x  -  u.y * v.y;
-        float b   =   u.x * v.y  +  u.y * v.x;
+        float a  =  u.x*v.x - u.y*v.y;
+        float b  =  u.x*v.y + u.y*v.x;
 
         return new Vector2( cfd.x*a + cfd.y*b, -cfd.y*a + cfd.x*b );
     }
 
     private Vector2 parallel_transport_step__euler(Vector2 x, Vector2 dx, Vector2 y, float dt, int n)
     {
-        return y - dt * christoffel(x, dx, y, n);
+        return y - dt*christoffel( x, dx, y, n );
     }
 
     private void apply_geodesic_step__euler(ref Vector2 p, ref Vector2 v, float dt, int n)
     {
-        Vector2 Ga = christoffel(p, v, v, n);
+        Vector2 Ga = christoffel( p, v, v, n );
 
-        p += dt * v;
-        v -= dt * Ga;
+        p += dt*v;
+        v -= dt*Ga;
     }
 
     private void apply_geodesic_step__midpoint( ref Vector2 p, ref Vector2 v, float dt, int n )
     {
-        Vector2 Ga = christoffel(p, v, v, n);
+        Vector2 Ga  =  christoffel( p, v, v, n );
 
-        Vector2 p_m = p + (dt / 2) * v;
-        Vector2 v_m = v - (dt / 2) * Ga;
+        Vector2 p_m  =  p + (dt/2)*v;
+        Vector2 v_m  =  v - (dt/2)*Ga;
 
-        Vector2 Ga_m = christoffel(p_m, v_m, v_m, n);
+        Vector2 Ga_m  =  christoffel( p_m, v_m, v_m, n );
 
-        p  =  p + dt * v_m;
-        v  =  v - dt * Ga_m;
+        p  =  p + dt*v_m;
+        v  =  v - dt*Ga_m;
     }
 
     private void propagate_rocket( ref Vector4 rp, float dt, int n )
@@ -444,7 +444,7 @@ public class ScreenScript : MonoBehaviour
             switch( metricNumber )
             {
                 case 1:
-                    metricName  =  "sqFlat";
+                    metricName  =  "tp_flat";
                     domainName  =  "square";
                     roadsType  =  1;
                     domainParameters  =  make_domain_parameters( 2*PI, 2*PI, 90 );
@@ -486,25 +486,25 @@ public class ScreenScript : MonoBehaviour
                     domainParameters  =  make_domain_parameters( 2*PI, 2*PI, 90 );
                     break;
                 case 8:
-                    metricName  =  "hexFlat";
+                    metricName  =  "hp_flat";
                     domainName  =  "hexagon";
                     roadsType  =  9;
                     domainParameters  =  make_domain_parameters( 2*PI, 2*PI, 60 );
                     break;
                 case 9:
-                    metricName  =  "hex_p6m";
+                    metricName  =  "hp_p6m";
                     domainName  =  "hexagon";
                     roadsType  =  9;
                     domainParameters  =  make_domain_parameters( 2*PI, 2*PI, 60 );
                     break;
                 case 10:
-                    metricName  =  "hex_p3m1";
+                    metricName  =  "hp_p3m1";
                     domainName  =  "hexagon";
                     roadsType  =  7;
                     domainParameters  =  make_domain_parameters( 2*PI, 2*PI, 60 );
                     break;
                 case 11:
-                    metricName  =  "hex_p3";
+                    metricName  =  "hp_p3";
                     domainName  =  "hexagon";
                     roadsType  =  9;
                     domainParameters  =  make_domain_parameters( 4*PI, 4*PI, 60 );
@@ -518,31 +518,31 @@ public class ScreenScript : MonoBehaviour
                 case 13:
                     metricName  =  "dupin";
                     domainName  =  "square";
-                    roadsType  =  1;
+                    roadsType  =  11;
                     domainParameters  =  make_domain_parameters( 2*PI, 2*PI, 90 );
                     break;
                 case 14:
                     metricName  =  "dupinSqz3";
                     domainName  =  "square";
-                    roadsType  =  1;
+                    roadsType  =  11;
                     domainParameters  =  make_domain_parameters( 2*PI, 2*PI, 90 );
                     break;
                 case 15:
                     metricName  =  "dupinSqz5";
                     domainName  =  "square";
-                    roadsType  =  1;
+                    roadsType  =  11;
                     domainParameters  =  make_domain_parameters( 2*PI, 2*PI, 90 );
                     break;
                 case 16:
-                    metricName  =  "sq_p4";
+                    metricName  =  "tp_p4";
                     domainName  =  "square";
-                    roadsType  =  1;
+                    roadsType  =  10;
                     domainParameters  =  make_domain_parameters( 4*PI, 4*PI, 90 );
                     break;
                 default:
-                    metricName  =  "sq_p4gm";
+                    metricName  =  "tp_p4gm";
                     domainName  =  "square";
-                    roadsType  =  1;
+                    roadsType  =  10;
                     domainParameters  =  make_domain_parameters( 4*PI, 4*PI, 90 );
                     break;
             }

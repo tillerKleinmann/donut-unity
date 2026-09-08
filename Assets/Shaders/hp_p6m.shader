@@ -1,4 +1,4 @@
-Shader "Custom/Confmets/hex_p3m1"
+Shader "Custom/Confmets/hp_p6m"
 {
     Properties
     {
@@ -48,8 +48,8 @@ Shader "Custom/Confmets/hex_p3m1"
             float cop( float2 p, float2 k ){ return cos(skap(k,p)); }
             float sip( float2 p, float2 k ){ return sin(skap(k,p)); }
 
-            float  mu(      float2 p ){ return ( 5 + sip(p,k0) + sip(p,k1) + sip(p,k2) ) / 5; }
-            float2 mu_grad( float2 p ){ return float2( k0.x*cop(p,k0) + k1.x*cop(p,k1) + k2.x*cop(p,k2), k0.y*cop(p,k0) + k1.y*cop(p,k1) + k2.y*cop(p,k2) ) * ( 1.0 / 5 ); }
+            float  mu(      float2 p ){ return ( 5 + cop(p,k0) + cop(p,k1) + cop(p,k2) ) / 5; }
+            float2 mu_grad( float2 p ){ return float2( k0.x*sip(p,k0) + k1.x*sip(p,k1) + k2.x*sip(p,k2), k0.y*sip(p,k0) + k1.y*sip(p,k1) + k2.y*sip(p,k2) ) * ( -1.0 / 5 ); }
 
             #include "Common/ConfMets_mu.hlsl"
             #include "Common/ConfMetsIncludes.hlsl"
