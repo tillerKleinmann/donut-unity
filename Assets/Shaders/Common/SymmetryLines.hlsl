@@ -1,7 +1,7 @@
 static const float symLineWidth        =  0.08;
 static const float symLineDoubleWidth  =  2*symLineWidth;
 
-// dual lattice vectors
+// dual lattice vectors (but differentially scaled)
 static const float2 hex_k0  =  float2(  0,       sqrt(3) ) * u2p.x/2;
 static const float2 hex_k1  =  float2( +1.5, -sqrt(0.75) ) * u2p.x/2;
 static const float2 hex_k2  =  float2( -1.5, -sqrt(0.75) ) * u2p.x/2;
@@ -11,6 +11,121 @@ static const float2 hex_k1m  =  float2( -0.5, -sqrt(0.75) ) * u2p.x/2;
 static const float2 hex_k2m  =  float2( -0.5, +sqrt(0.75) ) * u2p.x/2;
 
 static const float3 colorGrey  =  float3( 1, 1, 1 ) * 0.5;
+
+float4 symmetry_line_color_alpha__cm__colored( float2 tarPos )
+{
+    float3 color;
+    float  alpha;
+
+    float dRm0  =    x_distance_estimate_to_y_parameter_line( tarPos, 0.0     );
+    float dRm1  =    x_distance_estimate_to_y_parameter_line( tarPos, u2p.x/2 );
+
+    float dRg0  =  2*x_distance_estimate_to_y_parameter_line( tarPos, 1*u2p.x/4 );
+    float dRg1  =  2*x_distance_estimate_to_y_parameter_line( tarPos, 3*u2p.x/4 );
+
+    float dRm  =  min( dRm0, dRm1 );
+    float dRg  =  min( dRg0, dRg1 );
+
+    float dR_min  =  min( dRm, dRg );
+
+    float dR_pow2  =  1 / pow( pow(dRm0,-2) + pow(dRm1,-2) + pow(dRg0,-2) + pow(dRg1,-2), 0.5 );
+
+    float la0  =  pow( max( 0, symLineWidth - dRm0 ), 2 );
+    float la1  =  pow( max( 0, symLineWidth - dRm1 ), 2 );
+    float mu0  =  pow( max( 0, symLineWidth - dRg0 ), 2 );
+    float mu1  =  pow( max( 0, symLineWidth - dRg1 ), 2 );
+
+    float et  =  la0 + la1 + mu0 + mu1;
+
+    if( et > 0 )
+    {
+        la0  =  la0 / et;
+        la1  =  la1 / et;
+        mu0  =  mu0 / et;
+        mu1  =  mu1 / et;
+    }
+
+    if( dR_pow2 >= symLineDoubleWidth )
+        alpha  =  0.0;
+    else if( dR_pow2 < symLineDoubleWidth & dR_min >= symLineWidth )
+    {
+        color  =  colorGrey;
+        alpha  =  pow( sin( PI/2 * clamp( 2 - dR_pow2/symLineWidth, 0, 1 ) ), 2 );
+    }
+    else if( dR_min < symLineWidth )
+    {
+        color  =  la0*float3(1,1,1) + la1*float3(1,1,1);
+
+        color  =  lerp( colorGrey, color, pow( cos( PI/2 * dR_min/symLineWidth ), 2 ) );
+        alpha  =  1.0;
+    }
+
+    return float4( color.x, color.y, color.z, alpha );
+}
+
+float4 symmetry_line_color_alpha__cmm__colored( float2 tarPos )
+{
+    float3 color;
+    float  alpha;
+
+    tarPos  =  reset_to_parallelogram( tarPos );
+
+    float dRm0  =    x_distance_estimate_to_y_parameter_line( tarPos, 0.0     );
+    float dRm1  =    x_distance_estimate_to_y_parameter_line( tarPos, u2p.x/2 );
+
+    float dRg0  =  2*x_distance_estimate_to_y_parameter_line( tarPos, 1*u2p.x/4 );
+    float dRg1  =  2*x_distance_estimate_to_y_parameter_line( tarPos, 3*u2p.x/4 );
+
+    float dRym  =    y_distance_estimate_to_x_parameter_line( tarPos, 0.0     );
+    float dRyg  =  2*y_distance_estimate_to_x_parameter_line( tarPos, u2p.w/2 );
+
+    float dRm  =  min( dRm0, dRm1 );
+    float dRg  =  min( dRg0, dRg1 );
+
+    float dRy  =  min( dRym, dRyg );
+
+    float dR_min  =  min( dRy, min( dRm, dRg ) );
+
+    float dR_pow2  =  1 / pow( pow(dRm0,-2) + pow(dRm1,-2) + pow(dRg0,-2) + pow(dRg1,-2) + pow(dRym,-2) + pow(dRyg,-2), 0.5 );
+
+    float la0  =  pow( max( 0, symLineWidth - dRm0 ), 2 );
+    float la1  =  pow( max( 0, symLineWidth - dRm1 ), 2 );
+
+    float mu0  =  pow( max( 0, symLineWidth - dRg0 ), 2 );
+    float mu1  =  pow( max( 0, symLineWidth - dRg1 ), 2 );
+
+    float nu0  =  pow( max( 0, symLineWidth - dRym ), 2 );
+    float nu1  =  pow( max( 0, symLineWidth - dRyg ), 2 );
+
+    float et  =  la0 + la1 + mu0 + mu1 + nu0 + nu1;
+
+    if( et > 0 )
+    {
+        la0  =  la0 / et;
+        la1  =  la1 / et;
+        mu0  =  mu0 / et;
+        mu1  =  mu1 / et;
+        nu0  =  nu0 / et;
+        nu1  =  nu1 / et;
+    }
+
+    if( dR_pow2 >= symLineDoubleWidth )
+        alpha  =  0.0;
+    else if( dR_pow2 < symLineDoubleWidth & dR_min >= symLineWidth )
+    {
+        color  =  colorGrey;
+        alpha  =  pow( sin( PI/2 * clamp( 2 - dR_pow2/symLineWidth, 0, 1 ) ), 2 );
+    }
+    else if( dR_min < symLineWidth )
+    {
+        color  =  ( la0*float3(5,0,7) + mu0*float3(3,8,1) + la1*float3(5,0,7) + mu1*float3(3,8,1) + nu0*float3(0,5,7) + nu1*float3(8,3,1) ) / 8;
+
+        color  =  lerp( colorGrey, color, pow( cos( PI/2 * dR_min/symLineWidth ), 2 ) );
+        alpha  =  1.0;
+    }
+
+    return float4( color.x, color.y, color.z, alpha );
+}
 
 float4 symmetry_line_color_alpha__pmm__colored( float2 tarPos )
 {
@@ -66,8 +181,8 @@ float4 symmetry_line_color_alpha__pmg__colored( float2 tarPos )
     float3 color;
     float  alpha;
 
-    float dRx0  =    x_distance_estimate_to_y_parameter_line( tarPos,   u2p.x/4 );
-    float dRx1  =    x_distance_estimate_to_y_parameter_line( tarPos, 3*u2p.x/4 );
+    float dRx0  =    x_distance_estimate_to_y_parameter_line( tarPos, +u2p.x/4 );
+    float dRx1  =    x_distance_estimate_to_y_parameter_line( tarPos, -u2p.x/4 );
 
     float dRy0  =  2*y_distance_estimate_to_x_parameter_line( tarPos, 0       );
     float dRy1  =  2*y_distance_estimate_to_x_parameter_line( tarPos, u2p.w/2 );
@@ -115,11 +230,11 @@ float4 symmetry_line_color_alpha__pgg__colored( float2 tarPos )
     float3 color;
     float  alpha;
 
-    float dRx0  =  2*x_distance_estimate_to_y_parameter_line( tarPos,   u2p.x/4 );
-    float dRx1  =  2*x_distance_estimate_to_y_parameter_line( tarPos, 3*u2p.x/4 );
+    float dRx0  =  2*x_distance_estimate_to_y_parameter_line( tarPos, +u2p.x/4 );
+    float dRx1  =  2*x_distance_estimate_to_y_parameter_line( tarPos, -u2p.x/4 );
 
-    float dRy0  =  2*y_distance_estimate_to_x_parameter_line( tarPos,   u2p.w/4 );
-    float dRy1  =  2*y_distance_estimate_to_x_parameter_line( tarPos, 3*u2p.w/4 );
+    float dRy0  =  2*y_distance_estimate_to_x_parameter_line( tarPos, +u2p.w/4 );
+    float dRy1  =  2*y_distance_estimate_to_x_parameter_line( tarPos, -u2p.w/4 );
 
     float dR_min  =  min( min( dRx0, dRx1 ), min( dRy0, dRy1 ) );
 
@@ -164,17 +279,19 @@ float4 symmetry_line_color_alpha__p4m__colored( float2 tarPos )
     float3 color;
     float  alpha;
 
-    float dRx0  =  x_distance_estimate_to_y_parameter_line( tarPos, 0       );
-    float dRx1  =  x_distance_estimate_to_y_parameter_line( tarPos, u2p.x/2 );
+    float hs  =  u2p.x / 2;
 
-    float dRy0  =  y_distance_estimate_to_x_parameter_line( tarPos, 0       );
-    float dRy1  =  y_distance_estimate_to_x_parameter_line( tarPos, u2p.w/2 );
+    float dRx0  =  x_distance_estimate_to_y_parameter_line( tarPos, 0  );
+    float dRx1  =  x_distance_estimate_to_y_parameter_line( tarPos, hs );
 
-    float dDp0  =    distance_from_parameter_line( tarPos, float2(  0, 0 ), PI*float2(1,1) );
-    float dDp1  =  2*distance_from_parameter_line( tarPos, float2( PI, 0 ), PI*float2(1,1) );
+    float dRy0  =  y_distance_estimate_to_x_parameter_line( tarPos, 0  );
+    float dRy1  =  y_distance_estimate_to_x_parameter_line( tarPos, hs );
 
-    float dDm0  =    distance_from_parameter_line( tarPos, float2(  0, 0 ), PI*float2(-1,1) );
-    float dDm1  =  2*distance_from_parameter_line( tarPos, float2( PI, 0 ), PI*float2(-1,1) );
+    float dDp0  =    distance_from_parameter_line( tarPos, float2(  0, 0 ), hs*float2(1,1) );
+    float dDp1  =  2*distance_from_parameter_line( tarPos, float2( hs, 0 ), hs*float2(1,1) );
+
+    float dDm0  =    distance_from_parameter_line( tarPos, float2(  0, 0 ), hs*float2(-1,1) );
+    float dDm1  =  2*distance_from_parameter_line( tarPos, float2( hs, 0 ), hs*float2(-1,1) );
 
     float dR_min  =  min( min( min( dRx0, dRx1 ), min( dRy0, dRy1 ) ), min( min( dDp0, dDp1 ), min( dDm0, dDm1 ) ) );
 
@@ -229,17 +346,19 @@ float4 symmetry_line_color_alpha__p4g__colored( float2 tarPos )
     float3 color;
     float  alpha;
 
-    float dRx0  =  2*x_distance_estimate_to_y_parameter_line( tarPos, 0       );
-    float dRx1  =  2*x_distance_estimate_to_y_parameter_line( tarPos, u2p.x/2 );
+    float hs  =  u2p.x / 2;
 
-    float dRy0  =  2*y_distance_estimate_to_x_parameter_line( tarPos, 0       );
-    float dRy1  =  2*y_distance_estimate_to_x_parameter_line( tarPos, u2p.w/2 );
+    float dRx0  =  2*x_distance_estimate_to_y_parameter_line( tarPos, 0  );
+    float dRx1  =  2*x_distance_estimate_to_y_parameter_line( tarPos, hs );
 
-    float dDp0  =  2*distance_from_parameter_line( tarPos, float2(  0, 0 ), PI*float2(1,1) );
-    float dDp1  =    distance_from_parameter_line( tarPos, float2( PI, 0 ), PI*float2(1,1) );
+    float dRy0  =  2*y_distance_estimate_to_x_parameter_line( tarPos, 0  );
+    float dRy1  =  2*y_distance_estimate_to_x_parameter_line( tarPos, hs );
 
-    float dDm0  =  2*distance_from_parameter_line( tarPos, float2(  0, 0 ), PI*float2(-1,1) );
-    float dDm1  =    distance_from_parameter_line( tarPos, float2( PI, 0 ), PI*float2(-1,1) );
+    float dDp0  =  2*distance_from_parameter_line( tarPos, float2(  0, 0 ), hs*float2(1,1) );
+    float dDp1  =    distance_from_parameter_line( tarPos, float2( hs, 0 ), hs*float2(1,1) );
+
+    float dDm0  =  2*distance_from_parameter_line( tarPos, float2(  0, 0 ), hs*float2(-1,1) );
+    float dDm1  =    distance_from_parameter_line( tarPos, float2( hs, 0 ), hs*float2(-1,1) );
 
     float dR_min  =  min( min( min( dRx0, dRx1 ), min( dRy0, dRy1 ) ), min( min( dDp0, dDp1 ), min( dDm0, dDm1 ) ) );
 

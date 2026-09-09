@@ -2,7 +2,7 @@ Shader "Custom/Confmets/hp_p6m"
 {
     Properties
     {
-        [MainColor] _BaseColor("Base Color", Color) = (1, 1, 1, 1)
+        [MainColor] _BaseColor("Base Color", Color)  =  ( 0.5, 0.5, 0.5, 0.5 )
         [MainTexture] _BaseMap("Base Map", 2D) = "white"
         [VultureTexture] _VulTex("Vulture Texture", 2D) = "white"
         [RocketTexture] _RocTex("Rocket Texture", 2D) = "white"

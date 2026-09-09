@@ -13,7 +13,7 @@ public class ScreenScript : MonoBehaviour
     public float vultureMoveSpeed = 2.0f, visionRadius = 2.0f*PI, rocketSpeed = 11.0f, rocketInitialLive = 3.142f;
 
     public int accuracy = 16, metricNumber = 1, textureNumber = 1, gsmNumber = 1, roadsType = 1;
-    public int metricCount = 17, textureCount = 4, roadsTypeCount = 14;
+    public int metricCount = 17, textureCount = 4, roadsTypeCount = 16;
 
     private InputAction moveAction, nextMetric, prevMetric, incrVisRad, decrVisRad, incrAccuracy, decrAccuracy, nextTexture, prevTexture, nextRoadsType, prevRoadsType, nextGSM, prevGSM, nextCT, prevCT, stopVul, shoot, toggleFullscreenRendering, toggleDisplayRoads, resetVulPos;
 
