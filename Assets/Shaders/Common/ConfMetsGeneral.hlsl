@@ -24,3 +24,10 @@ float distance_from_parameter_line( float2 p, float2 q, float2 k )
 
     return confac( p - k*(rk/pow(lk,2)) ) * abs( rk / lk );
 }
+
+float angle_relative_to_point( float2 p, float2 q )
+{
+    float2 r  =  reset_to_parallelogram( p - q );
+
+    return atan2( r.y, r.x );
+}

@@ -1,6 +1,12 @@
 static const float symLineWidth        =  0.08;
 static const float symLineDoubleWidth  =  2*symLineWidth;
 
+static const float rotPointRadius   =  0.07;
+static const float rotPointRadius2  =  rotPointRadius * sqrt(2);
+static const float rotPointRadius3  =  rotPointRadius * sqrt(3);
+static const float rotPointRadius4  =  rotPointRadius * sqrt(4);
+static const float rotPointRadius6  =  rotPointRadius * sqrt(6);
+
 // dual lattice vectors (but differentially scaled)
 static const float2 hex_k0  =  float2(  0,       sqrt(3) ) * u2p.x/2;
 static const float2 hex_k1  =  float2( +1.5, -sqrt(0.75) ) * u2p.x/2;
@@ -252,25 +258,6 @@ float4 symmetry_line_color_alpha__pmm__colored( float2 tarPos )
         color  =  ( la0*float3(5,0,7) + la1*float3(3,8,1) + mu0*float3(0,5,7) + mu1*float3(8,3,1) ) / 8;
 
         color  =  lerp( colorGrey, color, pow( cos( PI/2 * dR_min/symLineWidth ), 2 ) );
-        alpha  =  1.0;
-    }
-
-    float dP0  =  distance_estimate_from_point( tarPos, float2(       0,       0 ) );
-    float dP1  =  distance_estimate_from_point( tarPos, float2( u2p.x/2,       0 ) );
-    float dP2  =  distance_estimate_from_point( tarPos, float2(       0, u2p.w/2 ) );
-    float dP3  =  distance_estimate_from_point( tarPos, float2( u2p.x/2, u2p.w/2 ) );
-
-    float dP_min  =  min( min( dP0, dP1 ), min( dP2, dP3 ) );
-
-    if( dP_min < symLineWidth )
-    {
-        float ang  =  reset_to_centered_interval( atan2( tarPos.x, tarPos.y ) + gameTime, 2*PI );
-
-        if( ang > 0 )
-            color  =  float3(0,0,0);
-        else
-            color  =  float3(1,1,1);
-
         alpha  =  1.0;
     }
 
@@ -871,6 +858,243 @@ float4 symmetry_line_color_alpha__p6m_glide__colored( float2 tarPos )
     else
     {
         alpha  =  0.0;
+    }
+
+    return float4( color.x, color.y, color.z, alpha );
+}
+
+float4 rotation_symmetry_points__p2( float2 tarPos )
+{
+    float3 color;
+    float  alpha;
+
+    float dP0  =  distance_estimate_from_point( tarPos, float2(       0,       0 ) );
+    float dP1  =  distance_estimate_from_point( tarPos, float2( u2p.x/2,       0 ) );
+    float dP2  =  distance_estimate_from_point( tarPos, float2(       0, u2p.w/2 ) );
+    float dP3  =  distance_estimate_from_point( tarPos, float2( u2p.x/2, u2p.w/2 ) );
+
+    float dP_min  =  min( min( dP0, dP1 ), min( dP2, dP3 ) );
+
+    if( dP_min < rotPointRadius2 )
+    {
+        float ang;
+
+        if( dP0 < rotPointRadius2 )
+            ang  =  angle_relative_to_point( tarPos, float2( 0, 0 ) );
+        else if( dP1 < rotPointRadius2 )
+            ang  =  angle_relative_to_point( tarPos, float2( u2p.x/2, 0 ) );
+        else if( dP2 < rotPointRadius2 )
+            ang  =  angle_relative_to_point( tarPos, float2( 0, u2p.w/2 ) );
+        else if( dP3 < rotPointRadius2 )
+            ang  =  angle_relative_to_point( tarPos, float2( u2p.x/2, u2p.w/2 ) );
+
+        if( reset_to_centered_interval( ang + gameTime, 2*PI ) > 0 )
+            color  =  float3(0,0,0);
+        else
+            color  =  float3(1,1,1);
+
+        alpha  =  1.0;
+    }
+    else
+        alpha  =  0.0;
+
+    return float4( color.x, color.y, color.z, alpha );
+}
+
+float4 rotation_symmetry_points__p4( float2 tarPos )
+{
+    float3 color;
+    float  alpha;
+
+    float dP0  =  distance_estimate_from_point( tarPos, float2(       0,       0 ) );
+    float dP1  =  distance_estimate_from_point( tarPos, float2( u2p.x/2,       0 ) );
+    float dP2  =  distance_estimate_from_point( tarPos, float2(       0, u2p.w/2 ) );
+    float dP3  =  distance_estimate_from_point( tarPos, float2( u2p.x/2, u2p.w/2 ) );
+
+    float dP_min  =  min( min( dP0, dP1 ), min( dP2, dP3 ) );
+
+
+    float ang;
+
+    if( dP0 < rotPointRadius4 )
+        ang  =  angle_relative_to_point( tarPos, float2( 0, 0 ) );
+    else if( dP1 < rotPointRadius2 )
+        ang  =  angle_relative_to_point( tarPos, float2( u2p.x/2, 0 ) );
+    else if( dP2 < rotPointRadius2 )
+        ang  =  angle_relative_to_point( tarPos, float2( 0, u2p.w/2 ) );
+    else if( dP3 < rotPointRadius4 )
+        ang  =  angle_relative_to_point( tarPos, float2( u2p.x/2, u2p.w/2 ) );
+
+    float angt  =  reset_to_centered_interval( ang + gameTime, 2*PI );
+
+    alpha  =  0.0;
+
+    if( dP1 < rotPointRadius2 | dP2 < rotPointRadius2 )
+    {
+        if( angt > 0 )
+            color  =  float3(0,0,0);
+        else
+            color  =  float3(1,1,1);
+
+            alpha  =  1.0;
+    }
+
+    if( dP0 < rotPointRadius4 | dP3 < rotPointRadius4 )
+    {
+        if( angt > 0 )
+        {
+            if( 2*angt < PI )
+                color  =  float3(5,0,7)/8;
+            else
+                color  =  float3(3,8,1)/8;
+        }
+        else
+        {
+            if( -PI < 2*angt )
+                color  =  float3(0,5,7)/8;
+            else
+                color  =  float3(8,3,1)/8;
+        }
+
+        alpha  =  1.0;
+    }
+
+    return float4( color.x, color.y, color.z, alpha );
+}
+
+float4 rotation_symmetry_points__p3( float2 tarPos )
+{
+    float3 color;
+    float  alpha;
+
+    float2 hex_kk  =  float2( 1, sqrt(1.0/3) ) * u2p.x/2;
+
+    float dP0  =  distance_estimate_from_point( tarPos, float2(0,0) );
+    float dP1  =  distance_estimate_from_point( tarPos,      hex_kk );
+    float dP2  =  distance_estimate_from_point( tarPos,    2*hex_kk );
+
+    float dP_min  =  min( dP0, min( dP1, dP2 ) );
+
+    if( dP_min < rotPointRadius3 )
+    {
+        float ang;
+
+        if( dP0 < rotPointRadius3 )
+            ang  =  angle_relative_to_point( tarPos, float2(0,0) );
+        else if( dP1 < rotPointRadius3 )
+            ang  =  angle_relative_to_point( tarPos, hex_kk );
+        else if( dP2 < rotPointRadius3 )
+            ang  =  angle_relative_to_point( tarPos, 2*hex_kk );
+
+        float angt  =  reset_to_centered_interval( ang + gameTime, 2*PI );
+
+        if( dP0 < rotPointRadius3 | dP1 < rotPointRadius3 | dP2 < rotPointRadius3 )
+        {
+            if( angt > PI/3 )
+                color  =  float3(1,0,0);
+            else if( angt < -PI/3 )
+                color  =  float3(0,1,0);
+            else
+                color  =  float3(0,0,1);
+        }
+
+        alpha  =  1.0;
+    }
+    else
+        alpha  =  0.0;
+
+    return float4( color.x, color.y, color.z, alpha );
+}
+
+float4 rotation_symmetry_points__p6( float2 tarPos )
+{
+    float3 color;
+    float  alpha;
+
+    float2 hex_kk  =  float2( 1, sqrt(1.0/3) ) * u2p.x/2;
+
+    float2 hex_q1  =  float2(  u2p.x/2,               0 );
+    float2 hex_q2  =  float2( -u2p.x/4, u2p.x*sqrt(3)/4 );
+    float2 hex_q3  =  float2( +u2p.x/4, u2p.x*sqrt(3)/4 );
+
+    float dP0  =  distance_estimate_from_point( tarPos, float2(0,0) );
+
+    float dP1  =  distance_estimate_from_point( tarPos,   hex_kk );
+    float dP2  =  distance_estimate_from_point( tarPos, 2*hex_kk );
+
+    float dP_min  =  min( dP0, min( dP1, dP2 ) );
+
+    float dQ1  =  distance_estimate_from_point( tarPos, hex_q1 );
+    float dQ2  =  distance_estimate_from_point( tarPos, hex_q2 );
+    float dQ3  =  distance_estimate_from_point( tarPos, hex_q3 );
+
+    float dQ_min  =  min( dQ1, min( dQ2, dQ3 ) );
+
+    float dPQ_min  =  min( dP_min, dQ_min );
+
+    float ang;
+
+    if( dP0 < rotPointRadius6 )
+        ang  =  angle_relative_to_point( tarPos, float2(0,0) );
+    else if( dP1 < rotPointRadius3 )
+        ang  =  angle_relative_to_point( tarPos, hex_kk );
+    else if( dP2 < rotPointRadius3 )
+        ang  =  angle_relative_to_point( tarPos, 2*hex_kk );
+    else if( dQ1 < rotPointRadius2 )
+        ang  =  angle_relative_to_point( tarPos, hex_q1 );
+    else if( dQ2 < rotPointRadius2 )
+        ang  =  angle_relative_to_point( tarPos, hex_q2 );
+    else if( dQ3 < rotPointRadius2 )
+        ang  =  angle_relative_to_point( tarPos, hex_q3 );
+
+    float angt  =  reset_to_centered_interval( ang + gameTime, 2*PI );
+
+    alpha  =  0.0;
+
+    if( dP0 < rotPointRadius6 )
+    {
+        if( angt > 0 )
+        {
+            if( angt > 2*PI/3 )
+                color  =  float3(0,1,0);
+            else if( angt > PI/3 )
+                color  =  float3(1,1,0);
+            else
+                color  =  float3(1,0,0);
+        }
+        else
+        {
+            if( -angt > 2*PI/3 )
+                color  =  float3(0,1,1);
+            else if( -angt > PI/3 )
+                color  =  float3(0,0,1);
+            else
+                color  =  float3(1,0,1);
+        }
+
+        alpha  =  1.0;
+    }
+
+    if( dP1 < rotPointRadius3 | dP2 < rotPointRadius3 )
+    {
+        if( angt > PI/3 )
+            color  =  float3(1,0,0);
+        else if( angt < -PI/3 )
+            color  =  float3(0,1,0);
+        else
+            color  =  float3(0,0,1);
+
+        alpha  =  1.0;
+    }
+
+    if( dQ1 < rotPointRadius2 | dQ2 < rotPointRadius2 | dQ3 < rotPointRadius2 )
+    {
+        if( angt > 0 )
+            color  =  float3(0,0,0);
+        else
+            color  =  float3(1,1,1);
+        
+        alpha  =  1.0;
     }
 
     return float4( color.x, color.y, color.z, alpha );

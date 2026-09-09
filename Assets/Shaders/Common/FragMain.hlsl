@@ -67,55 +67,77 @@ half4 frag( Varyings IN ) : SV_Target
             {
                 cola =  symmetry_line_color_alpha__p31m__colored( tarPos );
                 col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
+                cola =  rotation_symmetry_points__p3( tarPos );
+                col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
             }
             else if( roadsType == 5 )
             {
                 cola =  symmetry_line_color_alpha__p31m_glide__colored( tarPos );
+                col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
+                cola =  rotation_symmetry_points__p3( tarPos );
                 col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
             }
             else if( roadsType == 6 )
             {
                 cola =  symmetry_line_color_alpha__p3m1__colored( tarPos );
                 col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
+                cola =  rotation_symmetry_points__p3( tarPos );
+                col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
             }
             else if( roadsType == 7 )
             {
                 cola =  symmetry_line_color_alpha__p3m1_glide__colored( tarPos );
+                col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
+                cola =  rotation_symmetry_points__p3( tarPos );
                 col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
             }
             else if( roadsType == 8 )
             {
                 cola =  symmetry_line_color_alpha__p6m__colored( tarPos );
                 col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
+                cola =  rotation_symmetry_points__p6( tarPos );
+                col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
             }
             else if( roadsType == 9 )
             {
                 cola =  symmetry_line_color_alpha__p6m_glide__colored( tarPos );
+                col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
+                cola =  rotation_symmetry_points__p6( tarPos );
                 col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
             }
             else if( roadsType == 10 )
             {
                 cola =  symmetry_line_color_alpha__pmm__colored( tarPos );
                 col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
+                cola =  rotation_symmetry_points__p2( tarPos );
+                col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
             }
             else if( roadsType == 11 )
             {
                 cola =  symmetry_line_color_alpha__pmg__colored( tarPos );
+                col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
+                cola =  rotation_symmetry_points__p2( tarPos );
                 col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
             }
             else if( roadsType == 12 )
             {
                 cola =  symmetry_line_color_alpha__pgg__colored( tarPos );
                 col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
+                cola =  rotation_symmetry_points__p2( tarPos );
+                col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
             }
             else if( roadsType == 13 )
             {
                 cola =  symmetry_line_color_alpha__p4m__colored( tarPos );
                 col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
+                cola =  rotation_symmetry_points__p4( tarPos );
+                col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
             }
             else if( roadsType == 14 )
             {
                 cola =  symmetry_line_color_alpha__p4g__colored( tarPos );
+                col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
+                cola =  rotation_symmetry_points__p4( tarPos );
                 col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
             }
             else if( roadsType == 15 )
@@ -136,6 +158,26 @@ half4 frag( Varyings IN ) : SV_Target
             else if( roadsType == 17 )
             {
                 cola =  symmetry_line_color_alpha__pg__colored( tarPos );
+                col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
+            }
+            else if( roadsType == 18 )
+            {
+                cola =  rotation_symmetry_points__p2( tarPos );
+                col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
+            }
+            else if( roadsType == 19 )
+            {
+                cola =  rotation_symmetry_points__p3( tarPos );
+                col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
+            }
+            else if( roadsType == 20 )
+            {
+                cola =  rotation_symmetry_points__p4( tarPos );
+                col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
+            }
+            else if( roadsType == 21 )
+            {
+                cola =  rotation_symmetry_points__p6( tarPos );
                 col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
             }
         }
