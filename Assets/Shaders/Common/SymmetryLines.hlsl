@@ -12,6 +12,88 @@ static const float2 hex_k2m  =  float2( -0.5, +sqrt(0.75) ) * u2p.x/2;
 
 static const float3 colorGrey  =  float3( 1, 1, 1 ) * 0.5;
 
+float4 symmetry_line_color_alpha__pm__colored( float2 tarPos )
+{
+    float3 color;
+    float  alpha;
+
+    float dR0  =  x_distance_estimate_to_y_parameter_line( tarPos, 0.0     );
+    float dR1  =  x_distance_estimate_to_y_parameter_line( tarPos, u2p.x/2 );
+
+    float dR_min  =  min( dR0, dR1 );
+
+    float dR_pow2  =  1 / pow( pow(dR0,-2) + pow(dR1,-2), 0.5 );
+
+    float la0  =  pow( max( 0, symLineWidth - dR0 ), 2 );
+    float la1  =  pow( max( 0, symLineWidth - dR1 ), 2 );
+
+    float et  =  la0 + la1;
+
+    if( et > 0 )
+    {
+        la0  =  la0 / et;
+        la1  =  la1 / et;
+    }
+
+    if( dR_pow2 >= symLineDoubleWidth )
+        alpha  =  0.0;
+    else if( dR_pow2 < symLineDoubleWidth & dR_min >= symLineWidth )
+    {
+        color  =  colorGrey;
+        alpha  =  pow( sin( PI/2 * clamp( 2 - dR_pow2/symLineWidth, 0, 1 ) ), 2 );
+    }
+    else if( dR_min < symLineWidth )
+    {
+        color  =  la0*float3(1,1,1);
+
+        color  =  lerp( colorGrey, color, pow( cos( PI/2 * dR_min/symLineWidth ), 2 ) );
+        alpha  =  1.0;
+    }
+
+    return float4( color.x, color.y, color.z, alpha );
+}
+
+float4 symmetry_line_color_alpha__pg__colored( float2 tarPos )
+{
+    float3 color;
+    float  alpha;
+
+    float dR0  =  2*x_distance_estimate_to_y_parameter_line( tarPos, 0.0     );
+    float dR1  =  2*x_distance_estimate_to_y_parameter_line( tarPos, u2p.x/2 );
+
+    float dR_min  =  min( dR0, dR1 );
+
+    float dR_pow2  =  1 / pow( pow(dR0,-2) + pow(dR1,-2), 0.5 );
+
+    float la0  =  pow( max( 0, symLineWidth - dR0 ), 2 );
+    float la1  =  pow( max( 0, symLineWidth - dR1 ), 2 );
+
+    float et  =  la0 + la1;
+
+    if( et > 0 )
+    {
+        la0  =  la0 / et;
+        la1  =  la1 / et;
+    }
+
+    if( dR_pow2 >= symLineDoubleWidth )
+        alpha  =  0.0;
+    else if( dR_pow2 < symLineDoubleWidth & dR_min >= symLineWidth )
+    {
+        color  =  colorGrey;
+        alpha  =  pow( sin( PI/2 * clamp( 2 - dR_pow2/symLineWidth, 0, 1 ) ), 2 );
+    }
+    else if( dR_min < symLineWidth )
+    {
+        color  =  la0*float3(1,1,1);
+
+        color  =  lerp( colorGrey, color, pow( cos( PI/2 * dR_min/symLineWidth ), 2 ) );
+        alpha  =  1.0;
+    }
+
+    return float4( color.x, color.y, color.z, alpha );
+}
+
 float4 symmetry_line_color_alpha__cm__colored( float2 tarPos )
 {
     float3 color;
@@ -170,6 +252,25 @@ float4 symmetry_line_color_alpha__pmm__colored( float2 tarPos )
         color  =  ( la0*float3(5,0,7) + la1*float3(3,8,1) + mu0*float3(0,5,7) + mu1*float3(8,3,1) ) / 8;
 
         color  =  lerp( colorGrey, color, pow( cos( PI/2 * dR_min/symLineWidth ), 2 ) );
+        alpha  =  1.0;
+    }
+
+    float dP0  =  distance_estimate_from_point( tarPos, float2(       0,       0 ) );
+    float dP1  =  distance_estimate_from_point( tarPos, float2( u2p.x/2,       0 ) );
+    float dP2  =  distance_estimate_from_point( tarPos, float2(       0, u2p.w/2 ) );
+    float dP3  =  distance_estimate_from_point( tarPos, float2( u2p.x/2, u2p.w/2 ) );
+
+    float dP_min  =  min( min( dP0, dP1 ), min( dP2, dP3 ) );
+
+    if( dP_min < symLineWidth )
+    {
+        float ang  =  reset_to_centered_interval( atan2( tarPos.x, tarPos.y ) + gameTime, 2*PI );
+
+        if( ang > 0 )
+            color  =  float3(0,0,0);
+        else
+            color  =  float3(1,1,1);
+
         alpha  =  1.0;
     }
 

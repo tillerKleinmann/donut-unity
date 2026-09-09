@@ -10,9 +10,9 @@ struct Varyings
     float2 uv : TEXCOORD0;
 };
 
-TEXTURE2D(_BaseMap);
-TEXTURE2D(_VulTex);
-TEXTURE2D(_RocTex);
+TEXTURE2D( _BaseMap );
+TEXTURE2D( _VulTex  );
+TEXTURE2D( _RocTex  );
 
 CBUFFER_START(UnityPerMaterial)
     half4  _BaseColor;
@@ -28,6 +28,7 @@ CBUFFER_START(UnityPerMaterial)
     float  _GSM;
     float4 _CamPos;
     float  _CamAng;
+    float  _GameTime;
 CBUFFER_END
 
 Varyings vert(Attributes IN)
@@ -69,3 +70,5 @@ static const float dpal = dupinPar.z;
 static const float dpbe = dupinPar.w;
 static const float dpAl = 2*PI*dpal;
 static const float dpBe = 2*PI*dpbe;
+
+static const float gameTime  =  _GameTime;

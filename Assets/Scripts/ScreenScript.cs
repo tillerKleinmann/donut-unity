@@ -714,6 +714,8 @@ public class ScreenScript : MonoBehaviour
         update_world_settings();
         update_rocket_states();
         update_vulture_actions();
+
+        material.SetFloat( "_GameTime", Time.fixedTime );
     }
 
     private void FixedUpdate()

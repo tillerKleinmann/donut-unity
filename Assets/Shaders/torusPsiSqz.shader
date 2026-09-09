@@ -17,6 +17,7 @@ Shader "Custom/Confmets/torusPsiSqz"
         [GSM] _GSM("Geodesic Step Method", Float)  =  1
         [CameraPosition] _CamPos("Camera Position", Vector)  =  (0, 0, 0, 0)
         [CameraAngle] _CamAng("Camera Angle", Float)  =  0
+        [GameTime] _GameTime( "GameTime", Float )  =  0
     }
 
     SubShader
