@@ -53,133 +53,136 @@ half4 frag( Varyings IN ) : SV_Target
         {
             float4 cola;
 
-            if( roadsType == 1 )
-                col  =  add_main_roads_rectangle_2( col, tarPos );
-            else if( roadsType == 2 )
+                 if( roadsType == 2 )
             {
-                col  =  add_symmetry_roads_p3m1_colored( col, tarPos );
+                cola =  rotation_symmetry_points__p2( tarPos );
+                col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
             }
             else if( roadsType == 3 )
             {
-                col  =  add_main_roads_hexagon_4( col, tarPos );
+                cola =  symmetry_line_color_alpha__pg__colored( tarPos );
+                col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
             }
             else if( roadsType == 4 )
             {
-                cola =  symmetry_line_color_alpha__p31m__colored( tarPos );
-                col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
-                cola =  rotation_symmetry_points__p3( tarPos );
+                cola =  symmetry_line_color_alpha__pm__colored( tarPos );
                 col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
             }
             else if( roadsType == 5 )
             {
-                cola =  symmetry_line_color_alpha__p31m_glide__colored( tarPos );
-                col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
-                cola =  rotation_symmetry_points__p3( tarPos );
+                cola =  symmetry_line_color_alpha__cm__colored( tarPos );
                 col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
             }
             else if( roadsType == 6 )
             {
-                cola =  symmetry_line_color_alpha__p3m1__colored( tarPos );
+                cola =  symmetry_line_color_alpha__cmm__colored( tarPos );
                 col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
-                cola =  rotation_symmetry_points__p3( tarPos );
+                cola =  rotation_symmetry_points__c2( tarPos );
                 col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
             }
             else if( roadsType == 7 )
-            {
-                cola =  symmetry_line_color_alpha__p3m1_glide__colored( tarPos );
-                col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
-                cola =  rotation_symmetry_points__p3( tarPos );
-                col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
-            }
-            else if( roadsType == 8 )
-            {
-                cola =  symmetry_line_color_alpha__p6m__colored( tarPos );
-                col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
-                cola =  rotation_symmetry_points__p6( tarPos );
-                col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
-            }
-            else if( roadsType == 9 )
-            {
-                cola =  symmetry_line_color_alpha__p6m_glide__colored( tarPos );
-                col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
-                cola =  rotation_symmetry_points__p6( tarPos );
-                col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
-            }
-            else if( roadsType == 10 )
             {
                 cola =  symmetry_line_color_alpha__pmm__colored( tarPos );
                 col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
                 cola =  rotation_symmetry_points__p2( tarPos );
                 col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
             }
-            else if( roadsType == 11 )
+            else if( roadsType == 8 )
             {
                 cola =  symmetry_line_color_alpha__pmg__colored( tarPos );
                 col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
                 cola =  rotation_symmetry_points__p2( tarPos );
                 col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
             }
-            else if( roadsType == 12 )
+            else if( roadsType == 9 )
             {
                 cola =  symmetry_line_color_alpha__pgg__colored( tarPos );
                 col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
                 cola =  rotation_symmetry_points__p2( tarPos );
                 col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
             }
-            else if( roadsType == 13 )
+            else if( roadsType == 10 )
+            {
+                cola =  rotation_symmetry_points__p4( tarPos );
+                col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
+            }
+            else if( roadsType == 11 )
             {
                 cola =  symmetry_line_color_alpha__p4m__colored( tarPos );
                 col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
                 cola =  rotation_symmetry_points__p4( tarPos );
                 col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
             }
-            else if( roadsType == 14 )
+            else if( roadsType == 12 )
             {
                 cola =  symmetry_line_color_alpha__p4g__colored( tarPos );
                 col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
                 cola =  rotation_symmetry_points__p4( tarPos );
                 col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
             }
+            else if( roadsType == 13 )
+            {
+                cola =  rotation_symmetry_points__p3( tarPos );
+                col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
+            }
+            else if( roadsType == 14 )
+            {
+                cola =  symmetry_line_color_alpha__p31m_glide__colored( tarPos );
+                col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
+                cola =  rotation_symmetry_points__p3( tarPos );
+                col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
+            }
             else if( roadsType == 15 )
             {
-                cola =  symmetry_line_color_alpha__cm__colored( tarPos );
+                cola =  symmetry_line_color_alpha__p3m1_glide__colored( tarPos );
+                col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
+                cola =  rotation_symmetry_points__p3( tarPos );
                 col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
             }
             else if( roadsType == 16 )
             {
-                cola =  symmetry_line_color_alpha__cmm__colored( tarPos );
-                col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
-            }
-            else if( roadsType == 16 )
-            {
-                cola =  symmetry_line_color_alpha__pm__colored( tarPos );
+                cola =  rotation_symmetry_points__p6( tarPos );
                 col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
             }
             else if( roadsType == 17 )
             {
-                cola =  symmetry_line_color_alpha__pg__colored( tarPos );
+                cola =  symmetry_line_color_alpha__p6m_glide__colored( tarPos );
+                col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
+                cola =  rotation_symmetry_points__p6( tarPos );
                 col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
             }
             else if( roadsType == 18 )
             {
-                cola =  rotation_symmetry_points__p2( tarPos );
+                cola =  rotation_symmetry_points__c2( tarPos );
                 col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
             }
             else if( roadsType == 19 )
             {
+                cola =  symmetry_line_color_alpha__p31m__colored( tarPos );
+                col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
                 cola =  rotation_symmetry_points__p3( tarPos );
                 col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
             }
             else if( roadsType == 20 )
             {
-                cola =  rotation_symmetry_points__p4( tarPos );
+                cola =  symmetry_line_color_alpha__p3m1__colored( tarPos );
+                col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
+                cola =  rotation_symmetry_points__p3( tarPos );
                 col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
             }
             else if( roadsType == 21 )
             {
+                cola =  symmetry_line_color_alpha__p6m__colored( tarPos );
+                col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
                 cola =  rotation_symmetry_points__p6( tarPos );
                 col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
             }
+            else if( roadsType == 22 )
+                col  =  add_main_roads_rectangle_2( col, tarPos );
+            else if( roadsType == 23 )
+                col  =  add_symmetry_roads_p3m1_colored( col, tarPos );
+            else if( roadsType == 24 )
+                col  =  add_main_roads_hexagon_4( col, tarPos );
         }
 
         col  =  draw_sprite_quadratic( col, tarPos, camPos, vulVec, _VulTex, 1.0 );

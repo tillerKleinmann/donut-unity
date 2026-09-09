@@ -13,7 +13,7 @@ public class ScreenScript : MonoBehaviour
     public float vultureMoveSpeed = 2.0f, visionRadius = 2.0f*PI, rocketSpeed = 11.0f, rocketInitialLive = 3.142f;
 
     public int accuracy = 16, metricNumber = 1, textureNumber = 1, gsmNumber = 1, roadsType = 1;
-    public int metricCount = 17, textureCount = 4, roadsTypeCount = 21;
+    public int metricCount = 17, textureCount = 4, roadsTypeCount = 24;
 
     private InputAction moveAction, nextMetric, prevMetric, incrVisRad, decrVisRad, incrAccuracy, decrAccuracy, nextTexture, prevTexture, nextRoadsType, prevRoadsType, nextGSM, prevGSM, nextCT, prevCT, stopVul, shoot, toggleFullscreenRendering, toggleDisplayRoads, resetVulPos;
 
@@ -446,73 +446,73 @@ public class ScreenScript : MonoBehaviour
                 case 1:
                     metricName  =  "tp_flat";
                     domainName  =  "square";
-                    roadsType  =  1;
+                    roadsType  =  11;
                     domainParameters  =  make_domain_parameters( 2*PI, 2*PI, 90 );
                     break;
                 case 2:
                     metricName  =  "torusPsi";
                     domainName  =  "square";
-                    roadsType  =  1;
+                    roadsType  =  7;
                     domainParameters  =  make_domain_parameters( 2*PI, 2*PI, 90 );
                     break;
                 case 3:
                     metricName  =  "dgBump";
                     domainName  =  "square";
-                    roadsType  =  1;
+                    roadsType  =  11;
                     domainParameters  =  make_domain_parameters( 2*PI, 2*PI, 90 );
                     break;
                 case 4:
                     metricName  =  "sqBump";
                     domainName  =  "square";
-                    roadsType  =  1;
+                    roadsType  =  11;
                     domainParameters  =  make_domain_parameters( 2*PI, 2*PI, 90 );
                     break;
                 case 5:
                     metricName  =  "sqAntiBump";
                     domainName  =  "square";
-                    roadsType  =  1;
+                    roadsType  =  11;
                     domainParameters  =  make_domain_parameters( 2*PI, 2*PI, 90 );
                     break;
                 case 6:
                     metricName  =  "torusPsiSqz";
                     domainName  =  "square";
-                    roadsType  =  1;
+                    roadsType  =  7;
                     domainParameters  =  make_domain_parameters( 2*PI, 2*PI, 90 );
                     break;
                 case 7:
                     metricName  =  "dgBumpSqz";
                     domainName  =  "square";
-                    roadsType  =  1;
+                    roadsType  =  11;
                     domainParameters  =  make_domain_parameters( 2*PI, 2*PI, 90 );
                     break;
                 case 8:
                     metricName  =  "hp_flat";
                     domainName  =  "hexagon";
-                    roadsType  =  9;
+                    roadsType  =  17;
                     domainParameters  =  make_domain_parameters( 2*PI, 2*PI, 60 );
                     break;
                 case 9:
                     metricName  =  "hp_p6m";
                     domainName  =  "hexagon";
-                    roadsType  =  9;
+                    roadsType  =  17;
                     domainParameters  =  make_domain_parameters( 2*PI, 2*PI, 60 );
                     break;
                 case 10:
                     metricName  =  "hp_p3m1";
                     domainName  =  "hexagon";
-                    roadsType  =  7;
+                    roadsType  =  14;
                     domainParameters  =  make_domain_parameters( 2*PI, 2*PI, 60 );
                     break;
                 case 11:
                     metricName  =  "hp_p3";
                     domainName  =  "hexagon";
-                    roadsType  =  9;
+                    roadsType  =  13;
                     domainParameters  =  make_domain_parameters( 4*PI, 4*PI, 60 );
                     break;
                 case 12:
                     metricName  =  "torus";
                     domainName  =  "rectangle";
-                    roadsType  =  1;
+                    roadsType  =  7;
                     domainParameters  =  make_domain_parameters( 2*PI, 2*PI/Sqrt(3), 90 );
                     break;
                 case 13:
@@ -542,7 +542,7 @@ public class ScreenScript : MonoBehaviour
                 default:
                     metricName  =  "tp_p4gm";
                     domainName  =  "square";
-                    roadsType  =  10;
+                    roadsType  =  12;
                     domainParameters  =  make_domain_parameters( 4*PI, 4*PI, 90 );
                     break;
             }
