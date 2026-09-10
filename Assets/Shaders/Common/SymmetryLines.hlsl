@@ -156,7 +156,7 @@ float4 symmetry_line_color_alpha__cmm__colored( float2 tarPos )
     float3 color;
     float  alpha;
 
-    tarPos  =  reset_to_parallelogram( tarPos );
+    //tarPos  =  reset_to_parallelogram( tarPos );
 
     float dRm0  =    x_distance_estimate_to_y_parameter_line( tarPos, 0.0     );
     float dRm1  =    x_distance_estimate_to_y_parameter_line( tarPos, u2p.x/2 );
@@ -868,6 +868,8 @@ float4 rotation_symmetry_points__p2( float2 tarPos )
     float3 color;
     float  alpha;
 
+    tarPos  =  reset_to_parallelogram( tarPos );
+
     float dP0  =  distance_estimate_from_point( tarPos, float2(       0,       0 ) );
     float dP1  =  distance_estimate_from_point( tarPos, float2( u2p.x/2,       0 ) );
     float dP2  =  distance_estimate_from_point( tarPos, float2(       0, u2p.w/2 ) );
@@ -906,19 +908,31 @@ float4 rotation_symmetry_points__c2( float2 tarPos )
     float3 color;
     float  alpha = 0;
 
-    float dP0  =  distance_estimate_from_point( tarPos, float2(       0,       0 ) );
-    float dP1  =  distance_estimate_from_point( tarPos, float2( u2p.x/2, u2p.w/2 ) );
+    //tarPos  =  reset_to_parallelogram( tarPos );
+    float2 p0  =  float2( 0, 0 );
+    float2 p1  =  float2( u2p.x/4, u2p.w/2 );
+    float2 p2  =  float2( u2p.x/2, 0 );
+    float2 p3  =  float2( 3*u2p.x/4, u2p.w/2 );
 
-    float dP_min  =  min( dP0, dP1 );
+    float dP0  =  distance_estimate_from_point( tarPos, p0 );
+    float dP1  =  distance_estimate_from_point( tarPos, p1 );
+    float dP2  =  distance_estimate_from_point( tarPos, p2 );
+    float dP3  =  distance_estimate_from_point( tarPos, p3 );
+
+    float dP_min  =  min( min( dP0, dP1 ), min( dP2, dP3 ) );
 
     if( dP_min < rotPointRadius2 )
     {
         float ang;
 
         if( dP0 < rotPointRadius2 )
-            ang  =  angle_relative_to_point( tarPos, float2( 0, 0 ) );
+            ang  =  angle_relative_to_point( tarPos, p0 );
         else if( dP1 < rotPointRadius2 )
-            ang  =  angle_relative_to_point( tarPos, float2( u2p.x/2, u2p.w/2 ) );
+            ang  =  angle_relative_to_point( tarPos, p1 );
+        else if( dP2 < rotPointRadius2 )
+            ang  =  angle_relative_to_point( tarPos, p2 );
+        else if( dP3 < rotPointRadius2 )
+            ang  =  angle_relative_to_point( tarPos, p3 );
 
         if( reset_to_centered_interval( ang + gameTime, 2*PI ) > 0 )
             color  =  float3(0,0,0);

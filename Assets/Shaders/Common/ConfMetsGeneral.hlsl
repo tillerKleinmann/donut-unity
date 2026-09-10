@@ -5,11 +5,15 @@ float distance_estimate_from_point( float2 p, float2 q )
 
 float x_distance_estimate_to_y_parameter_line( float2 p, float q_x )
 {
+    p  =  float2(q_x,0) + reset_to_parallelogram( p - float2(q_x,0) );
+
     return confac( float2( q_x, p.y ) ) * abs( reset_to_centered_interval( p.x - q_x, u2p.x ) );
 }
 
 float y_distance_estimate_to_x_parameter_line( float2 p, float q_y )
 {
+    p  =  float2(0,q_y) + reset_to_parallelogram( p - float2(0,q_y) );
+
     return confac( float2( p.x, q_y ) ) * abs( reset_to_centered_interval( p.y - q_y, u2p.w ) );
 }
 
