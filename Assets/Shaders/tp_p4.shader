@@ -2,22 +2,22 @@ Shader "Custom/Confmets/tp_p4"
 {
     Properties
     {
-        [MainColor] _BaseColor("Base Color", Color) = (1, 1, 1, 1)
-        [MainTexture] _BaseMap("Base Map", 2D) = "white"
-        [VultureTexture] _VulTex("Vulture Texture", 2D) = "white"
-        [RocketTexture] _RocTex("Rocket Texture", 2D) = "white"
-        [DomainMatrix] _DomMat( "Domain Matrix", Vector )  =  (6.2831853,0,0,6.2831853)
-        [DupinParameters] _DupinPar("Dupin Parameters", Vector)  =  (0.333, 0.333, 1.0, 1.0) // ( a, b, al , be )
-        [RoadsDisp] _RoadsDisp("Display Roads", Float)  =  1
-        [RoadsType] _RoadsType("Roads Type", Float)  =  1
-        [ChartType] _ChartType("Chart Type", Float)  =  1
-        [VisionRadius] _VisRad("Vision Radius", Float)  =  2
-        [FullScreen] _FullScreen("Fullscreen", Float)  =  0
-        [Accuracy] _Accuracy("Accuracy", Float)  =  64
-        [GSM] _GSM("Geodesic Step Method", Float)  =  1
-        [CameraPosition] _CamPos("Camera Position", Vector)  =  (0, 0, 0, 0)
-        [CameraAngle] _CamAng("Camera Angle", Float)  =  0
-        [GameTime] _GameTime( "GameTime", Float )  =  0
+        [MainColor]       _BaseColor(  "Base Color",           Color  )  =  ( 1, 1, 1, 1 )
+        [MainTexture]     _BaseMap(    "Base Map",             2D     )  =  "white"
+        [VultureTexture]  _VulTex(     "Vulture Texture",      2D     )  =  "white"
+        [RocketTexture]   _RocTex(     "Rocket Texture",       2D     )  =  "white"
+        [DomainMatrix]    _DomMat(     "Domain Matrix",        Vector )  =  ( 6.2831853, 0, 0, 6.2831853 ) // ( b, s,  0,  h )
+        [DupinParameters] _DupinPar(   "Dupin Parameters",     Vector )  =  ( 0.333, 0.333, 1.0, 1.0 )     // ( a, b, al, be )
+        [RoadsDisp]       _RoadsDisp(  "Display Roads",        Float  )  =  1
+        [RoadsType]       _RoadsType(  "Roads Type",           Float  )  =  1
+        [ChartType]       _ChartType(  "Chart Type",           Float  )  =  1
+        [VisionRadius]    _VisRad(     "Vision Radius",        Float  )  =  2
+        [FullScreen]      _FullScreen( "Fullscreen",           Float  )  =  0
+        [Accuracy]        _Accuracy(   "Accuracy",             Float  )  =  64
+        [GSM]             _GSM(        "Geodesic Step Method", Float  )  =  1
+        [CameraPosition]  _CamPos(     "Camera Position",      Vector )  =  ( 0, 0, 0, 0 )
+        [CameraAngle]     _CamAng(     "Camera Angle",         Float  )  =  0
+        [GameTime]        _GameTime(   "GameTime",             Float  )  =  0
     }
 
     SubShader

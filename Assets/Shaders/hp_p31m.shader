@@ -1,4 +1,4 @@
-Shader "Custom/Confmets/hp_p3"
+Shader "Custom/Confmets/hp_p31m"
 {
     Properties
     {
@@ -38,40 +38,59 @@ Shader "Custom/Confmets/hp_p3"
 
             #include "Common/ConfMetsShaderPreamble.hlsl"
 
-            static const float2 k0 = float2(  0,  2/sqrt(3) );
-            static const float2 k1 = float2( +1, -1/sqrt(3) );
-            static const float2 k2 = float2( -1, -1/sqrt(3) );
-            static const float2 k3 = 2*k0;
-            static const float2 k4 = 2*k1;
-            static const float2 k5 = 2*k2;
-            static const float2 k6 = float2(  2,  0         );
-            static const float2 k7 = float2( -1, -3/sqrt(3) );
-            static const float2 k8 = float2( -1, +3/sqrt(3) );
+            static const float  htri  =  2 / sqrt(3);
 
-            static const float2 k3m = k3/2;
-            static const float2 k4m = k4/2;
-            static const float2 k5m = k5/2;
-            static const float2 k6m = k6/2;
-            static const float2 k7m = k7/2;
-            static const float2 k8m = k8/2;
+            static const float2  k0  =  float2(        0,  1 ) * htri;
+            static const float2  k1  =  float2( +sqrt(3), -1 ) * htri / 2;
+            static const float2  k2  =  float2( -sqrt(3), -1 ) * htri / 2;
 
-            float skap( float2 p, float2 k ){ return p.x*k.x + p.y*k.y; }
+            float2 dual_vec( int k, int l )
+            {
+                return float2( k / dp_b, l / dp_h  -  k * (dp_s/(dp_b*dp_h)) );
+            }
+
+            float2 rot120( float2 p )
+            {
+                return float2( -0.5*p.x - sqrt(0.75)*p.y, -0.5*p.y + sqrt(0.75)*p.x );
+            }
+
+            float2 rot240( float2 p )
+            {
+                return float2( -0.5*p.x + sqrt(0.75)*p.y, -0.5*p.y - sqrt(0.75)*p.x );
+            }
+
+            static const float2  k31_0  =  dual_vec( 3, 1 );
+            static const float2  k31_1  =  rot120( k31_0 );
+            static const float2  k31_2  =  rot240( k31_0 );
+
+            float skap( float2 p, float2 k )
+            {
+                return p.x*k.x + p.y*k.y;
+            }
+
+            float skapn( float2 p, float2 k )
+            {
+                return ( p.x*k.x*u2p.w + p.y*( k.y*u2p.x - k.x*u2p.y ) ) * 2*PI / ( u2p.x*u2p.w );
+                //return ( k.x*( p.x*u2p.w - p.y*u2p.y ) + k.y*p.y*u2p.x ) * 2*PI / ( u2p.x*u2p.w );
+            }
 
             float cop( float2 p, float2 k ){ return cos(skap(k,p)); }
             float sip( float2 p, float2 k ){ return sin(skap(k,p)); }
 
-            float  mu(      float2 p )
-            {
-                return ( 9 + sip(p,k3m) + sip(p,k4m) + sip(p,k5m)
-                           + sip(p,k6m) + sip(p,k7m) + sip(p,k8m) ) / 9;
-            }
+            static const float2  fp_a  =  4*PI/u2p.x;
+            static const float2  fp_b  =  4*PI/u2p.x/sqrt(3);
+            static const float2  fp_c  =  8*PI/u2p.x;
 
+            float mu( float2 p )
+            {
+                return ( 8 + cop(p,k31_0) + cop(p,k31_1) + cop(p,k31_2) + 2*cos(p.x*fp_a)*cos(p.y*fp_b) + cos(x*fp_c) ) / 8;
+            }
             float2 mu_grad( float2 p )
             {
-                return float2( k3m.x*cop(p,k3m) + k4m.x*cop(p,k4m) + k5m.x*cop(p,k5m) +
-                               k6m.x*cop(p,k6m) + k7m.x*cop(p,k7m) + k8m.x*cop(p,k8m),
-                               k3m.y*cop(p,k3m) + k4m.y*cop(p,k4m) + k5m.y*cop(p,k5m) +
-                               k6m.y*cop(p,k6m) + k7m.y*cop(p,k7m) + k8m.y*cop(p,k8m)   ) / 9;
+                return float2(
+                                k31_0.x*sip(p,k31_0) + k31_1.x*sip(p,k31_1) + k31_2.x*sip(p,k31_2) + 2*fp_a*sin(p.x*fp_a)*cos(p.y*fp_b) + fp_c*sin(p.x*fp_c),
+                                k31_0.y*sip(p,k31_0) + k31_1.y*sip(p,k31_1) + k31_2.y*sip(p,k31_2) + 2*fp_b*cos(p.x*fp_a)*sin(p.y*fp_b)
+                            ) * ( -1.0 / 5 );
             }
 
             #include "Common/ConfMets_mu.hlsl"

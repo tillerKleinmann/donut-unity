@@ -47,6 +47,10 @@ static const float4   dupinPar = float4( _DupinPar );
 static const float2x2 usq2plg = transpose( float2x2( u2p.x, u2p.y, 0, u2p.w ) );
 static const float2x2 plg2usq = transpose( float2x2( 1/u2p.x, -u2p.y/(u2p.x*u2p.w), 0, 1/u2p.w ) );
 
+static const float dp_b = u2p.x;
+static const float dp_h = u2p.w;
+static const float dp_s = u2p.y;
+
 static const int   roadsType  =  int( _RoadsType );
 static const int   chartType  =  int( _ChartType );
 

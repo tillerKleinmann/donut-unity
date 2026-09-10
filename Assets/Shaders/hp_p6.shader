@@ -1,4 +1,4 @@
-Shader "Custom/Confmets/hp_p3"
+Shader "Custom/Confmets/hp_p6"
 {
     Properties
     {
@@ -55,6 +55,25 @@ Shader "Custom/Confmets/hp_p3"
             static const float2 k7m = k7/2;
             static const float2 k8m = k8/2;
 
+            float2 dual_vec( int k, int l )
+            {
+                return float2( k / dp_b, l / dp_h  -  k * (dp_s/(dp_b*dp_h)) );
+            }
+
+            float2 rot120( float2 p )
+            {
+                return float2( -0.5*p.x - sqrt(0.75)*p.y, -0.5*p.y + sqrt(0.75)*p.x );
+            }
+
+            float2 rot240( float2 p )
+            {
+                return float2( -0.5*p.x + sqrt(0.75)*p.y, -0.5*p.y - sqrt(0.75)*p.x );
+            }
+
+            static const float2  k31_0  =  dual_vec( 3, 1 );
+            static const float2  k31_1  =  rot120( k31_0 );
+            static const float2  k31_2  =  rot240( k31_0 );
+
             float skap( float2 p, float2 k ){ return p.x*k.x + p.y*k.y; }
 
             float cop( float2 p, float2 k ){ return cos(skap(k,p)); }
@@ -62,16 +81,18 @@ Shader "Custom/Confmets/hp_p3"
 
             float  mu(      float2 p )
             {
-                return ( 9 + sip(p,k3m) + sip(p,k4m) + sip(p,k5m)
-                           + sip(p,k6m) + sip(p,k7m) + sip(p,k8m) ) / 9;
+                return ( 9 + cop( p, k3m   ) + cop( p, k4m   ) + cop( p, k5m   )
+                           + cop( p, k31_0 ) + cop( p, k31_1 ) + cop( p, k31_2 ) ) / 9;
             }
 
             float2 mu_grad( float2 p )
             {
-                return float2( k3m.x*cop(p,k3m) + k4m.x*cop(p,k4m) + k5m.x*cop(p,k5m) +
-                               k6m.x*cop(p,k6m) + k7m.x*cop(p,k7m) + k8m.x*cop(p,k8m),
-                               k3m.y*cop(p,k3m) + k4m.y*cop(p,k4m) + k5m.y*cop(p,k5m) +
-                               k6m.y*cop(p,k6m) + k7m.y*cop(p,k7m) + k8m.y*cop(p,k8m)   ) / 9;
+                return float(  k3m.x  *sip( p, k3m   ) + k4m.x  *sip( p, k4m   ) + k5m.x  *sip( p, k5m   ) +
+                               k31_0.x*sip( p, k31_0 ) + k31_1.x*sip( p, k31_1 ) + k31_2.x*sip( p, k31_2 ),
+                               k3m.y  *sip( p, k3m   ) + k4m.y  *sip( p, k4m   ) + k5m.y  *sip( p, k5m   ) +
+                               k31_0.y*sip( p, k31_0 ) + k31_1.y*sip( p, k31_1 ) + k31_2.y*sip( p, k31_2 )   )
+                        *
+                        ( -1.0 / 9 );
             }
 
             #include "Common/ConfMets_mu.hlsl"
