@@ -131,7 +131,7 @@ public class ScreenScript : MonoBehaviour
 
         DP.dp_b  =  DP.va.x;
         DP.dp_h  =  DP.vb.y;
-        DP.dp_s  =  DP.vb.x;        
+        DP.dp_s  =  DP.vb.x;
 
         return DP;
     }
@@ -588,6 +588,12 @@ public class ScreenScript : MonoBehaviour
                     domainName  =  "hexagon";
                     roadsType  =  16;
                     domainParameters  =  make_domain_parameters( 4*PI, 4*PI, 60 );
+                    kp6_0  =  dual_lattice_vector( 1, 0 );
+                    kp6_1  =  rot120( kp6_0 );
+                    kp6_2  =  rot240( kp6_0 );
+                    kp6_3  =  dual_lattice_vector( 3, 1 );
+                    kp6_4  =  rot120( kp6_3 );
+                    kp6_5  =  rot240( kp6_3 );
                     break;
             }
 
@@ -745,13 +751,6 @@ public class ScreenScript : MonoBehaviour
         material.SetFloat(  "_CamAng", observer.state.ang );
         material.SetVectorArray( "_RocketsState", rocketsState );
         material.SetFloatArray(  "_RocketsLive",  rocketsLive );
-
-        kp6_0  =  dual_lattice_vector( 0, 1 );
-        kp6_1  =  rot120( kp6_0 );
-        kp6_2  =  rot240( kp6_0 );
-        kp6_3  =  dual_lattice_vector( 3, 1 );
-        kp6_4  =  rot120( kp6_3 );
-        kp6_5  =  rot240( kp6_3 );
     }
 
     private void Start()

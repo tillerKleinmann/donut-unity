@@ -39,7 +39,7 @@ Shader "Custom/Confmets/hp_p6"
             #include "Common/ConfMetsShaderPreamble.hlsl"
             #include "Common/ConfMetsWaveVec.hlsl"
 
-            static const float2  k0  =  dual_lattice_vector( 0, 1 );
+            static const float2  k0  =  dual_lattice_vector( 1, 0 );
             static const float2  k1  =  rot120( k0 );
             static const float2  k2  =  rot240( k0 );
 
