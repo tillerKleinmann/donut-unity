@@ -44,21 +44,6 @@ Shader "Custom/Confmets/hp_p31m"
             static const float2  k1  =  float2( +sqrt(3), -1 ) * htri / 2;
             static const float2  k2  =  float2( -sqrt(3), -1 ) * htri / 2;
 
-            float2 dual_vec( int k, int l )
-            {
-                return float2( k / dp_b, l / dp_h  -  k * (dp_s/(dp_b*dp_h)) );
-            }
-
-            float2 rot120( float2 p )
-            {
-                return float2( -0.5*p.x - sqrt(0.75)*p.y, -0.5*p.y + sqrt(0.75)*p.x );
-            }
-
-            float2 rot240( float2 p )
-            {
-                return float2( -0.5*p.x + sqrt(0.75)*p.y, -0.5*p.y - sqrt(0.75)*p.x );
-            }
-
             static const float2  k31_0  =  dual_vec( 3, 1 );
             static const float2  k31_1  =  rot120( k31_0 );
             static const float2  k31_2  =  rot240( k31_0 );

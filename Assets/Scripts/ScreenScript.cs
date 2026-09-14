@@ -13,7 +13,7 @@ public class ScreenScript : MonoBehaviour
     public float vultureMoveSpeed = 2.0f, visionRadius = 2.0f*PI, rocketSpeed = 11.0f, rocketInitialLive = 3.142f;
 
     public int accuracy = 16, metricNumber = 1, textureNumber = 1, gsmNumber = 1, roadsType = 1;
-    public int metricCount = 17, textureCount = 4, roadsTypeCount = 24;
+    public int metricCount = 18, textureCount = 4, roadsTypeCount = 24;
 
     private InputAction moveAction, nextMetric, prevMetric, incrVisRad, decrVisRad, incrAccuracy, decrAccuracy, nextTexture, prevTexture, nextRoadsType, prevRoadsType, nextGSM, prevGSM, nextCT, prevCT, stopVul, shoot, toggleFullscreenRendering, toggleDisplayRoads, resetVulPos;
 
@@ -21,6 +21,8 @@ public class ScreenScript : MonoBehaviour
 
 
     private Vector2 vulPos, vulVel, vulTan, vulNor;
+
+    private Vector2 kp6_0, kp6_1, kp6_2, kp6_3, kp6_4, kp6_5;
 
     private Vector4[] rocketsState = new Vector4[16];
     private float[] rocketsLive = new float[16];
@@ -66,13 +68,6 @@ public class ScreenScript : MonoBehaviour
     private static Vector2  k7m  =  k7 / 2;
     private static Vector2  k8m  =  k8 / 2;
 
-
-    private float skap( Vector2 p, Vector2 k ){ return p.x*k.x + p.y*k.y; }
-
-    private float cop( Vector2 p, Vector2 k ){ return Cos(skap(k,p)); }
-    private float sip( Vector2 p, Vector2 k ){ return Sin(skap(k,p)); }
-
-
     private struct ObjState
     {
         public Vector2 pos; // Position (vector)
@@ -107,6 +102,10 @@ public class ScreenScript : MonoBehaviour
         public Vector2 vb;
         public Vector2 av;
         public Vector2 bv;
+        public float dp_b;
+        public float dp_h;
+        public float dp_s;
+
     }
 
     private DomainParameters domainParameters;
@@ -130,8 +129,40 @@ public class ScreenScript : MonoBehaviour
         DP.av = new Vector2(1 / a, c / (a * s));
         DP.bv = new Vector2(0, 1 / (b * s));
 
+        DP.dp_b  =  DP.va.x;
+        DP.dp_h  =  DP.vb.y;
+        DP.dp_s  =  DP.vb.x;        
+
         return DP;
     }
+
+    private Vector2 dual_lattice_vector( int k, int l )
+    {
+        float dp_b  =  domainParameters.dp_b;
+        float dp_h  =  domainParameters.dp_h;
+        float dp_s  =  domainParameters.dp_s;
+
+        return new Vector2( k / dp_b, l / dp_h  -  k * (dp_s/(dp_b*dp_h)) ) * 2*PI;
+    }
+
+    private Vector2 rot180( Vector2 p ){ return new Vector2( -p.x, -p.y ); }
+    private Vector2 rot90(  Vector2 p ){ return new Vector2( -p.y,  p.x ); }
+    private Vector2 rot270( Vector2 p ){ return new Vector2(  p.y, -p.x ); }
+    private Vector2 rot120( Vector2 p ){ return new Vector2( -0.5f*p.x - Sqrt(0.75f)*p.y, -0.5f*p.y + Sqrt(0.75f)*p.x ); }
+    private Vector2 rot240( Vector2 p ){ return new Vector2( -0.5f*p.x + Sqrt(0.75f)*p.y, -0.5f*p.y - Sqrt(0.75f)*p.x ); }
+    private Vector2 rot60(  Vector2 p ){ return new Vector2(  0.5f*p.x - Sqrt(0.75f)*p.y,  0.5f*p.y + Sqrt(0.75f)*p.x ); }
+    private Vector2 rot300( Vector2 p ){ return new Vector2(  0.5f*p.x + Sqrt(0.75f)*p.y,  0.5f*p.y - Sqrt(0.75f)*p.x ); }
+
+    private float skap( Vector2 p, Vector2 k ){ return p.x*k.x + p.y*k.y; }
+
+    private float cop( Vector2 p, Vector2 k ){ return Cos(skap(k,p)); }
+    private float sip( Vector2 p, Vector2 k ){ return Sin(skap(k,p)); }
+
+    private float cop_dx( Vector2 p, Vector2 k ){ return -sip(k,p)*k.x; }
+    private float sip_dx( Vector2 p, Vector2 k ){ return  cop(k,p)*k.x; }
+
+    private float cop_dy( Vector2 p, Vector2 k ){ return -sip(k,p)*k.y; }
+    private float sip_dy( Vector2 p, Vector2 k ){ return  cop(k,p)*k.y; }
 
     private float psqueeze3( float x )
     {
@@ -190,8 +221,10 @@ public class ScreenScript : MonoBehaviour
                 return  Log(3) - Log( 3 + psqueeze5(Cos(p.x)) + psqueeze5(Cos(p.y)) );
             case 16:
                 return  Log(6) - Log( 6 + Cos(p.x) + Cos(p.y) + Cos( p.x + p.y/2 ) + Cos( -p.x/2 + p.y ) );
-            default:
+            case 17:
                 return  Log(5) - Log( 5 + Cos(p.x/2)*Cos(p.y/2) + Sin(p.x/2)*Sin(p.y) - Sin(p.x)*Sin(p.y/2) );
+            default:
+                return  Log(9) - Log( 9 + cop(p,kp6_0) + cop(p,kp6_1) + cop(p,kp6_2) + cop(p,kp6_3) + cop(p,kp6_4) + cop(p,kp6_5) );
         }
     }
 
@@ -260,11 +293,16 @@ public class ScreenScript : MonoBehaviour
                                     Sin(p.y) + Sin( p.x + p.y/2 )/2 + Sin( -p.x/2 + p.y )    )
                                         /
                                     ( 6 + Cos(p.x) + Cos(p.y) + Cos( p.x + p.y/2 ) + Cos( -p.x/2 + p.y ) );
-            default:
+            case 17:
                 return new Vector2( Sin(p.x/2)*Cos(p.y/2)/2 - Cos(p.x/2)*Sin(p.y)/2 + Cos(p.x)*Sin(p.y/2),
                                     Cos(p.x/2)*Sin(p.y/2)/2 - Sin(p.x/2)*Cos(p.y)   + Sin(p.x)*Cos(p.y/2)/2 )
                                         /
                                     ( 5 + Cos(p.x/2)*Cos(p.y/2) + Sin(p.x/2)*Sin(p.y) - Sin(p.x)*Sin(p.y/2) );
+            default:
+                return new Vector2( cop_dx(p,kp6_0) + cop_dx(p,kp6_1) + cop_dx(p,kp6_2) + cop_dx(p,kp6_3) + cop_dx(p,kp6_4) + cop_dx(p,kp6_5),
+                                    cop_dy(p,kp6_0) + cop_dy(p,kp6_1) + cop_dy(p,kp6_2) + cop_dy(p,kp6_3) + cop_dy(p,kp6_4) + cop_dy(p,kp6_5)  )
+                                        /
+                                    -( 9 + cop(p,kp6_0) + cop(p,kp6_1) + cop(p,kp6_2) + cop(p,kp6_3) + cop(p,kp6_4) + cop(p,kp6_5) );
         }
     }
     
@@ -539,11 +577,17 @@ public class ScreenScript : MonoBehaviour
                     roadsType  =  10;
                     domainParameters  =  make_domain_parameters( 4*PI, 4*PI, 90 );
                     break;
-                default:
+                case 17:
                     metricName  =  "tp_p4gm";
                     domainName  =  "square";
                     roadsType  =  12;
                     domainParameters  =  make_domain_parameters( 4*PI, 4*PI, 90 );
+                    break;
+                default:
+                    metricName  =  "hp_p6";
+                    domainName  =  "hexagon";
+                    roadsType  =  16;
+                    domainParameters  =  make_domain_parameters( 4*PI, 4*PI, 60 );
                     break;
             }
 
@@ -701,6 +745,13 @@ public class ScreenScript : MonoBehaviour
         material.SetFloat(  "_CamAng", observer.state.ang );
         material.SetVectorArray( "_RocketsState", rocketsState );
         material.SetFloatArray(  "_RocketsLive",  rocketsLive );
+
+        kp6_0  =  dual_lattice_vector( 0, 1 );
+        kp6_1  =  rot120( kp6_0 );
+        kp6_2  =  rot240( kp6_0 );
+        kp6_3  =  dual_lattice_vector( 3, 1 );
+        kp6_4  =  rot120( kp6_3 );
+        kp6_5  =  rot240( kp6_3 );
     }
 
     private void Start()

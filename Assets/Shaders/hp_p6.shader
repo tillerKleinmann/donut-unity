@@ -37,62 +37,25 @@ Shader "Custom/Confmets/hp_p6"
             #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/GlobalSamplers.hlsl"
 
             #include "Common/ConfMetsShaderPreamble.hlsl"
+            #include "Common/ConfMetsWaveVec.hlsl"
 
-            static const float2 k0 = float2(  0,  2/sqrt(3) );
-            static const float2 k1 = float2( +1, -1/sqrt(3) );
-            static const float2 k2 = float2( -1, -1/sqrt(3) );
-            static const float2 k3 = 2*k0;
-            static const float2 k4 = 2*k1;
-            static const float2 k5 = 2*k2;
-            static const float2 k6 = float2(  2,  0         );
-            static const float2 k7 = float2( -1, -3/sqrt(3) );
-            static const float2 k8 = float2( -1, +3/sqrt(3) );
+            static const float2  k0  =  dual_lattice_vector( 0, 1 );
+            static const float2  k1  =  rot120( k0 );
+            static const float2  k2  =  rot240( k0 );
 
-            static const float2 k3m = k3/2;
-            static const float2 k4m = k4/2;
-            static const float2 k5m = k5/2;
-            static const float2 k6m = k6/2;
-            static const float2 k7m = k7/2;
-            static const float2 k8m = k8/2;
+            static const float2  k3  =  dual_lattice_vector( 3, 1 );
+            static const float2  k4  =  rot120( k3 );
+            static const float2  k5  =  rot240( k3 );
 
-            float2 dual_vec( int k, int l )
+            float mu( float2 p )
             {
-                return float2( k / dp_b, l / dp_h  -  k * (dp_s/(dp_b*dp_h)) );
-            }
-
-            float2 rot120( float2 p )
-            {
-                return float2( -0.5*p.x - sqrt(0.75)*p.y, -0.5*p.y + sqrt(0.75)*p.x );
-            }
-
-            float2 rot240( float2 p )
-            {
-                return float2( -0.5*p.x + sqrt(0.75)*p.y, -0.5*p.y - sqrt(0.75)*p.x );
-            }
-
-            static const float2  k31_0  =  dual_vec( 3, 1 );
-            static const float2  k31_1  =  rot120( k31_0 );
-            static const float2  k31_2  =  rot240( k31_0 );
-
-            float skap( float2 p, float2 k ){ return p.x*k.x + p.y*k.y; }
-
-            float cop( float2 p, float2 k ){ return cos(skap(k,p)); }
-            float sip( float2 p, float2 k ){ return sin(skap(k,p)); }
-
-            float  mu(      float2 p )
-            {
-                return ( 9 + cop( p, k3m   ) + cop( p, k4m   ) + cop( p, k5m   )
-                           + cop( p, k31_0 ) + cop( p, k31_1 ) + cop( p, k31_2 ) ) / 9;
+                return ( 9 + cop(p,k0) + cop(p,k1) + cop(p,k2) + cop(p,k3) + cop(p,k4) + cop(p,k5) ) / 9;
             }
 
             float2 mu_grad( float2 p )
             {
-                return float(  k3m.x  *sip( p, k3m   ) + k4m.x  *sip( p, k4m   ) + k5m.x  *sip( p, k5m   ) +
-                               k31_0.x*sip( p, k31_0 ) + k31_1.x*sip( p, k31_1 ) + k31_2.x*sip( p, k31_2 ),
-                               k3m.y  *sip( p, k3m   ) + k4m.y  *sip( p, k4m   ) + k5m.y  *sip( p, k5m   ) +
-                               k31_0.y*sip( p, k31_0 ) + k31_1.y*sip( p, k31_1 ) + k31_2.y*sip( p, k31_2 )   )
-                        *
-                        ( -1.0 / 9 );
+                return  float2( cop_dx(p,k0) + cop_dx(p,k1) + cop_dx(p,k2) + cop_dx(p,k3) + cop_dx(p,k4) + cop_dx(p,k5),
+                                cop_dy(p,k0) + cop_dy(p,k1) + cop_dy(p,k2) + cop_dy(p,k3) + cop_dy(p,k4) + cop_dy(p,k5)  ) / 9;
             }
 
             #include "Common/ConfMets_mu.hlsl"
