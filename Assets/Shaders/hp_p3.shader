@@ -37,41 +37,24 @@ Shader "Custom/Confmets/hp_p3"
             #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/GlobalSamplers.hlsl"
 
             #include "Common/ConfMetsShaderPreamble.hlsl"
+            #include "Common/ConfMetsWaveVec.hlsl"
 
-            static const float2 k0 = float2(  0,  2/sqrt(3) );
-            static const float2 k1 = float2( +1, -1/sqrt(3) );
-            static const float2 k2 = float2( -1, -1/sqrt(3) );
-            static const float2 k3 = 2*k0;
-            static const float2 k4 = 2*k1;
-            static const float2 k5 = 2*k2;
-            static const float2 k6 = float2(  2,  0         );
-            static const float2 k7 = float2( -1, -3/sqrt(3) );
-            static const float2 k8 = float2( -1, +3/sqrt(3) );
+            static const float2 K0 = dual_lattice_vector( 2, 0 );
+            static const float2 K1 = rot120( K0 );
+            static const float2 K2 = rot240( K0 );
+            static const float2 K3 = dual_lattice_vector( 2, 1 );
+            static const float2 K4 = rot120( K3 );
+            static const float2 K5 = rot240( K3 );
 
-            static const float2 k3m = k3/2;
-            static const float2 k4m = k4/2;
-            static const float2 k5m = k5/2;
-            static const float2 k6m = k6/2;
-            static const float2 k7m = k7/2;
-            static const float2 k8m = k8/2;
-
-            float skap( float2 p, float2 k ){ return p.x*k.x + p.y*k.y; }
-
-            float cop( float2 p, float2 k ){ return cos(skap(k,p)); }
-            float sip( float2 p, float2 k ){ return sin(skap(k,p)); }
-
-            float  mu(      float2 p )
+            float mu( float2 p )
             {
-                return ( 9 + sip(p,k3m) + sip(p,k4m) + sip(p,k5m)
-                           + sip(p,k6m) + sip(p,k7m) + sip(p,k8m) ) / 9;
+                return ( 9 + sip(p,K0) + sip(p,K1) + sip(p,K2) + sip(p,K3) + sip(p,K4) + sip(p,K5) ) / 9;
             }
 
             float2 mu_grad( float2 p )
             {
-                return float2( k3m.x*cop(p,k3m) + k4m.x*cop(p,k4m) + k5m.x*cop(p,k5m) +
-                               k6m.x*cop(p,k6m) + k7m.x*cop(p,k7m) + k8m.x*cop(p,k8m),
-                               k3m.y*cop(p,k3m) + k4m.y*cop(p,k4m) + k5m.y*cop(p,k5m) +
-                               k6m.y*cop(p,k6m) + k7m.y*cop(p,k7m) + k8m.y*cop(p,k8m)   ) / 9;
+                return  float2( sip_dx(p,K0) + sip_dx(p,K1) + sip_dx(p,K2) + sip_dx(p,K3) + sip_dx(p,K4) + sip_dx(p,K5),
+                                sip_dy(p,K0) + sip_dy(p,K1) + sip_dy(p,K2) + sip_dy(p,K3) + sip_dy(p,K4) + sip_dy(p,K5)  ) / 9;
             }
 
             #include "Common/ConfMets_mu.hlsl"

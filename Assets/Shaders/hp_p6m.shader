@@ -39,19 +39,19 @@ Shader "Custom/Confmets/hp_p6m"
             #include "Common/ConfMetsShaderPreamble.hlsl"
             #include "Common/ConfMetsWaveVec.hlsl"
 
-            static const float2  k0  =  dual_lattice_vector(0,1);
-            static const float2  k1  =  rot120( k0 );
-            static const float2  k2  =  rot240( k0 );
+            static const float2  K0  =  dual_lattice_vector( 0, 1 );
+            static const float2  K1  =  rot120( K0 );
+            static const float2  K2  =  rot240( K0 );
 
             float mu( float2 p )
             {
-                return ( 5 + cop(p,k0) + cop(p,k1) + cop(p,k2) ) / 5;
+                return ( 5 + cop(p,K0) + cop(p,K1) + cop(p,K2) ) / 5;
             }
             
             float2 mu_grad( float2 p )
             {
-                return  float2( cop_dx(p,k0) + cop_dx(p,k1) + cop_dx(p,k2),
-                                cop_dy(p,k0) + cop_dy(p,k1) + cop_dy(p,k2)  ) / 5;
+                return  float2( cop_dx(p,K0) + cop_dx(p,K1) + cop_dx(p,K2),
+                                cop_dy(p,K0) + cop_dy(p,K1) + cop_dy(p,K2)  ) / 5;
             }
 
             #include "Common/ConfMets_mu.hlsl"

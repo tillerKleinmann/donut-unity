@@ -22,7 +22,7 @@ public class ScreenScript : MonoBehaviour
 
     private Vector2 vulPos, vulVel, vulTan, vulNor;
 
-    private Vector2 kp6_0, kp6_1, kp6_2, kp6_3, kp6_4, kp6_5;
+    private Vector2 K0, K1, K2, K3, K4, K5;
 
     private Vector4[] rocketsState = new Vector4[16];
     private float[] rocketsLive = new float[16];
@@ -30,10 +30,10 @@ public class ScreenScript : MonoBehaviour
 
     private int ctNumber = 1;
 
-
-    private static float rad2deg = 180/PI;
-    private static float deg2rad = PI/180;
-
+    private static float rad2deg_factor = 180/PI;
+    private float deg2rad( float al_deg ){ return al_deg * deg2rad_factor; }
+    private static float deg2rad_factor = PI/180;
+    private float rad2deg( float al_rad ){ return al_rad * rad2deg_factor; }
 
     private string metricName = "tp_flat";
     private string domainName = "square";
@@ -49,24 +49,6 @@ public class ScreenScript : MonoBehaviour
     private float fullscreenFloat = 0f, displayRoadsFloat = 0f;
 
     Material material;
-
-
-    private static Vector2  k0  =  new Vector2(  0.0f,  2/Sqrt(3) );
-    private static Vector2  k1  =  new Vector2( +1.0f, -1/Sqrt(3) );
-    private static Vector2  k2  =  new Vector2( -1.0f, -1/Sqrt(3) );
-    private static Vector2  k3  =  k0 * 2;
-    private static Vector2  k4  =  k1 * 2;
-    private static Vector2  k5  =  k2 * 2;
-    private static Vector2  k6  =  new Vector2(  2.0f, 0.0f );
-    private static Vector2  k7  =  new Vector2( -1.0f, -3/Sqrt(3) );
-    private static Vector2  k8  =  new Vector2( -1.0f, +3/Sqrt(3) );
-
-    private static Vector2  k3m  =  k3 / 2;
-    private static Vector2  k4m  =  k4 / 2;
-    private static Vector2  k5m  =  k5 / 2;
-    private static Vector2  k6m  =  k6 / 2;
-    private static Vector2  k7m  =  k7 / 2;
-    private static Vector2  k8m  =  k8 / 2;
 
     private struct ObjState
     {
@@ -92,57 +74,102 @@ public class ScreenScript : MonoBehaviour
     private Vulture vulture;
     private Observer observer;
 
-    private struct DomainParameters
+    private struct FundamentalDomain
     {
-        public float a;
-        public float b;
-        public float ga_deg;
-        public float ga_rad;
-        public Vector2 va;
-        public Vector2 vb;
-        public Vector2 av;
-        public Vector2 bv;
-        public float dp_b;
-        public float dp_h;
-        public float dp_s;
+        public float w;
+        public float h;
+        public float s;
 
+        public float lu;
+        public float lv;
+
+        public float ga_deg;
+        public float ga;
+
+        public Vector2 Lu;
+        public Vector2 Lv;
+
+        public Vector2 Ku;
+        public Vector2 Kv;
     }
 
-    private DomainParameters domainParameters;
-    
-    private DomainParameters make_domain_parameters( float a, float b, float ga_deg )
+    private FundamentalDomain fuDo;
+
+    private void complete_fuDo_from_whs()
     {
-        DomainParameters DP;
+        fuDo.lu  =  fuDo.w;
+        fuDo.lv  =  Sqrt( Pow(fuDo.h,2) + Pow(fuDo.s,2) );
 
-        DP.a = a;
-        DP.b = b;
-        DP.ga_deg = ga_deg;
+        fuDo.ga  =  Asin( fuDo.h / fuDo.lv );
 
-        DP.ga_rad = ga_deg * deg2rad;
+        fuDo.ga_deg  =  rad2deg( fuDo.ga );
 
-        float c = Cos(DP.ga_rad);
-        float s = Sin(DP.ga_rad);
+        fuDo.Lu  =  new Vector2( fuDo.w,      0 );
+        fuDo.Lv  =  new Vector2( fuDo.s, fuDo.h );
 
-        DP.va = new Vector2(a, 0);
-        DP.vb = new Vector2(-b * c, b * s);
+        fuDo.Ku  =  new Vector2( 1 / fuDo.w, -fuDo.s / ( fuDo.w * fuDo.h ) );
+        fuDo.Kv  =  new Vector2(          0,                    1 / fuDo.h );
+    }
 
-        DP.av = new Vector2(1 / a, c / (a * s));
-        DP.bv = new Vector2(0, 1 / (b * s));
+    private void set_fuDo_l1l2ga_deg( float lu, float lv, float ga_deg )
+    {
+        fuDo.ga  =  deg2rad( ga_deg );
 
-        DP.dp_b  =  DP.va.x;
-        DP.dp_h  =  DP.vb.y;
-        DP.dp_s  =  DP.vb.x;
+        fuDo.w  =  lu;
+        fuDo.h  =  lv * Sin( fuDo.ga );
+        fuDo.s  = -lv * Cos( fuDo.ga );
 
-        return DP;
+        complete_fuDo_from_whs();
+    }
+
+    private void set_fuDo( float w, float h, float s )
+    {
+        fuDo.w  =  w;
+        fuDo.h  =  h;
+        fuDo.s  =  s;
+
+        complete_fuDo_from_whs();
+    }
+
+    private void set_fuDo_hexagon( float w )
+    {
+        fuDo.w  =  w;
+        fuDo.h  =  w * (Sqrt(3)/2);
+        fuDo.s  = -w / 2;
+
+        complete_fuDo_from_whs();
+    }
+
+    private void set_fuDo_square( float w )
+    {
+        fuDo.w  =  w;
+        fuDo.h  =  w;
+        fuDo.s  =  0;
+
+        complete_fuDo_from_whs();
+    }
+
+    private void set_fuDo_rectangle( float lu, float lv )
+    {
+        fuDo.w  =  lu;
+        fuDo.h  =  lv;
+        fuDo.s  =  0;
+
+        complete_fuDo_from_whs();
+    }
+
+    private void set_fuDo_centered( float w, float h )
+    {
+        fuDo.w  =  w;
+        fuDo.h  =  h;
+        fuDo.s  = -w / 2;
+
+        complete_fuDo_from_whs();
     }
 
     private Vector2 dual_lattice_vector( int k, int l )
     {
-        float dp_b  =  domainParameters.dp_b;
-        float dp_h  =  domainParameters.dp_h;
-        float dp_s  =  domainParameters.dp_s;
-
-        return new Vector2( k / dp_b, l / dp_h  -  k * (dp_s/(dp_b*dp_h)) ) * 2*PI;
+        return new Vector2( k / fuDo.w, l / fuDo.h  +  k * (fuDo.s/(fuDo.w*fuDo.h)) ) * 2*PI;
     }
 
     private Vector2 rot180( Vector2 p ){ return new Vector2( -p.x, -p.y ); }
@@ -205,12 +232,11 @@ public class ScreenScript : MonoBehaviour
             case 8:
                 return  0f;
             case 9:
-                return  Log(5) - Log( 5 + cop(p,k0) + cop(p,k1) + cop(p,k2) );
+                return  Log(5) - Log( 5 + cop(p,K0) + cop(p,K1) + cop(p,K2) );
             case 10:
-                return  Log(5) - Log( 5 + sip(p,k0) + sip(p,k1) + sip(p,k2) );
+                return  Log(5) - Log( 5 + sip(p,K0) + sip(p,K1) + sip(p,K2) );
             case 11:
-                return  Log(9) - Log( 9 + sip(p,k3m) + sip(p,k4m) + sip(p,k5m)
-                                        + sip(p,k6m) + sip(p,k7m) + sip(p,k8m) );
+                return  Log(9) - Log( 9 + sip(p,K0) + sip(p,K1) + sip(p,K2) + sip(p,K3) + sip(p,K4) + sip(p,K5) );
             case 12:
                 return  Log(3) - Log( 2 - Cos(p.y*Sqrt(3)) );
             case 13:
@@ -224,7 +250,7 @@ public class ScreenScript : MonoBehaviour
             case 17:
                 return  Log(5) - Log( 5 + Cos(p.x/2)*Cos(p.y/2) + Sin(p.x/2)*Sin(p.y) - Sin(p.x)*Sin(p.y/2) );
             default:
-                return  Log(9) - Log( 9 + cop(p,kp6_0) + cop(p,kp6_1) + cop(p,kp6_2) + cop(p,kp6_3) + cop(p,kp6_4) + cop(p,kp6_5) );
+                return  Log(9) - Log( 9 + cop(p,K0) + cop(p,K1) + cop(p,K2) + cop(p,K3) + cop(p,K4) + cop(p,K5) );
         }
     }
 
@@ -233,9 +259,9 @@ public class ScreenScript : MonoBehaviour
         switch (n)
         {
             case 1:
-                return new Vector2( 0, 0 );
+                return new Vector2( 0f, 0f );
             case 2:
-                return new Vector2( -Sin(p.x), 0 ) / 4;
+                return new Vector2( -Sin(p.x), 0f ) / 4;
             case 3:
                 return new Vector2( -Sin(p.x)*Cos(p.y), -Cos(p.x)*Sin(p.y) ) / 4;
             case 4:
@@ -250,27 +276,25 @@ public class ScreenScript : MonoBehaviour
                                         *
                                     ( -3f / 8 );
             case 8:
-                return new Vector2( 0, 0 );
+                return new Vector2( 0f, 0f );
             case 9:
-                return new Vector2( k0.x*sip(p,k0) + k1.x*sip(p,k1) + k2.x*sip(p,k2),
-                                    k0.y*sip(p,k0) + k1.y*sip(p,k1) + k2.y*sip(p,k2)  )
+                return new Vector2( cop_dx(p,K0) + cop_dx(p,K1) + cop_dx(p,K2),
+                                    cop_dy(p,K0) + cop_dy(p,K1) + cop_dy(p,K2)  )
                                         /
-                                    ( 5 + cop(p,k0) + cop(p,k1) + cop(p,k2) );
+                                    -( 5 + cop(p,K0) + cop(p,K1) + cop(p,K2) );
             case 10:
-                return new Vector2( k0.x*cop(p,k0) + k1.x*cop(p,k1) + k2.x*cop(p,k2),
-                                    k0.y*cop(p,k0) + k1.y*cop(p,k1) + k2.y*cop(p,k2)  )
-                                        *
-                                    (-1) / ( 5 + sip(p,k0) + sip(p,k1) + sip(p,k2) );
+                return new Vector2( sip_dx(p,K0) + sip_dx(p,K1) + sip_dx(p,K2),
+                                    sip_dy(p,K0) + sip_dy(p,K1) + sip_dy(p,K2)  )
+                                        /
+                                    -( 5 + sip(p,K0) + sip(p,K1) + sip(p,K2) );
             case 11:
-                return new Vector2( k3m.x*cop(p,k3m) + k4m.x*cop(p,k4m) + k5m.x*cop(p,k5m) +
-                                    k6m.x*cop(p,k6m) + k7m.x*cop(p,k7m) + k8m.x*cop(p,k8m),
-                                    k3m.y*cop(p,k3m) + k4m.y*cop(p,k4m) + k5m.y*cop(p,k5m) +
-                                    k6m.y*cop(p,k6m) + k7m.y*cop(p,k7m) + k8m.y*cop(p,k8m)   )
-                                        *
-                                    (-1) / ( 9 + sip(p,k3m) + sip(p,k4m) + sip(p,k5m)
-                                               + sip(p,k6m) + sip(p,k7m) + sip(p,k8m) );
+                return new Vector2( sip_dx(p,K0) + sip_dx(p,K1) + sip_dx(p,K2) + sip_dx(p,K3) + sip_dx(p,K4) + sip_dx(p,K5),
+                                    sip_dy(p,K0) + sip_dy(p,K1) + sip_dy(p,K2) + sip_dy(p,K3) + sip_dy(p,K4) + sip_dy(p,K5)  )
+                                        /
+                                    -( 9 + sip(p,K0) + sip(p,K1) + sip(p,K2) + sip(p,K3) + sip(p,K4) + sip(p,K5) );
             case 12:
-                return new Vector2( 0, Sin(p.y*Sqrt(3)) )
+                return new Vector2( 0f,
+                                    Sin(p.y*Sqrt(3)) )
                                         *
                                     ( -Sqrt(3) ) / ( 2 - Cos(p.y*Sqrt(3)) );
             case 13:
@@ -299,10 +323,10 @@ public class ScreenScript : MonoBehaviour
                                         /
                                     ( 5 + Cos(p.x/2)*Cos(p.y/2) + Sin(p.x/2)*Sin(p.y) - Sin(p.x)*Sin(p.y/2) );
             default:
-                return new Vector2( cop_dx(p,kp6_0) + cop_dx(p,kp6_1) + cop_dx(p,kp6_2) + cop_dx(p,kp6_3) + cop_dx(p,kp6_4) + cop_dx(p,kp6_5),
-                                    cop_dy(p,kp6_0) + cop_dy(p,kp6_1) + cop_dy(p,kp6_2) + cop_dy(p,kp6_3) + cop_dy(p,kp6_4) + cop_dy(p,kp6_5)  )
+                return new Vector2( cop_dx(p,K0) + cop_dx(p,K1) + cop_dx(p,K2) + cop_dx(p,K3) + cop_dx(p,K4) + cop_dx(p,K5),
+                                    cop_dy(p,K0) + cop_dy(p,K1) + cop_dy(p,K2) + cop_dy(p,K3) + cop_dy(p,K4) + cop_dy(p,K5)  )
                                         /
-                                    -( 9 + cop(p,kp6_0) + cop(p,kp6_1) + cop(p,kp6_2) + cop(p,kp6_3) + cop(p,kp6_4) + cop(p,kp6_5) );
+                                    -( 9 + cop(p,K0) + cop(p,K1) + cop(p,K2) + cop(p,K3) + cop(p,K4) + cop(p,K5) );
         }
     }
     
@@ -331,7 +355,7 @@ public class ScreenScript : MonoBehaviour
 
     private float distance( Vector2 p, Vector2 q, int n )
     {
-        Vector2  diff  =  reset_to_fundamental_domain( p - q, domainParameters );
+        Vector2  diff  =  reset_to_fundamental_domain( p - q );
         return diff.magnitude * Exp( 0.5f*(confun(p,n)+confun(q,n)) );
     }
 
@@ -381,9 +405,9 @@ public class ScreenScript : MonoBehaviour
         rp  =  new Vector4( rp_p.x, rp_p.y, rp_v.x, rp_v.y );
     }
 
-    private Vector2 move2vel( Vector2 pos, Vector2 moveVec, float camAng, float speed )
+    private Vector2 move2vel( Vector2 pos, Vector2 moveVec, float camAng_deg, float speed )
     {
-        return rotate_by_angle( moveVec, camAng*deg2rad ) * ( Exp( -confun( pos, metricNumber ) ) * (-speed) );
+        return rotate_by_angle( moveVec, deg2rad(camAng_deg) ) * ( Exp( -confun( pos, metricNumber ) ) * (-speed) );
     }
 
     private Vector2 reset_to_domain_unit_square( Vector2 p )
@@ -391,19 +415,19 @@ public class ScreenScript : MonoBehaviour
         return new Vector2( p.x - RoundToInt(p.x), p.y - RoundToInt(p.y) );
     }
 
-    private Vector2 dom2usq( Vector2 p, DomainParameters DP )
+    private Vector2 dom2usq( Vector2 p )
     {
-        return new Vector2( p.x*DP.av.x + p.y*DP.av.y, p.y*DP.bv.x + p.y*DP.bv.y );
+        return new Vector2( p.x*fuDo.Ku.x + p.y*fuDo.Ku.y, p.y*fuDo.Kv.x + p.y*fuDo.Kv.y );
     }
 
-    private Vector2 usq2dom( Vector2 p, DomainParameters DP )
+    private Vector2 usq2dom( Vector2 q )
     {
-        return  DP.va*p.x + DP.vb*p.y;
+        return  fuDo.Lu*q.x + fuDo.Lv*q.y;
     }
 
-    private Vector2 reset_to_fundamental_domain( Vector2 p, DomainParameters DP )
+    private Vector2 reset_to_fundamental_domain( Vector2 p )
     {
-        return  p  =  usq2dom( reset_to_domain_unit_square( dom2usq( p, DP ) ), DP );
+        return  p  =  usq2dom( reset_to_domain_unit_square( dom2usq( p ) ) );
     }
 
     private void update_fps()
@@ -485,115 +509,127 @@ public class ScreenScript : MonoBehaviour
                     metricName  =  "tp_flat";
                     domainName  =  "square";
                     roadsType  =  11;
-                    domainParameters  =  make_domain_parameters( 2*PI, 2*PI, 90 );
+                    set_fuDo_square( 2*PI );
                     break;
                 case 2:
                     metricName  =  "torusPsi";
                     domainName  =  "square";
                     roadsType  =  7;
-                    domainParameters  =  make_domain_parameters( 2*PI, 2*PI, 90 );
+                    set_fuDo_square( 2*PI );
                     break;
                 case 3:
                     metricName  =  "dgBump";
                     domainName  =  "square";
                     roadsType  =  11;
-                    domainParameters  =  make_domain_parameters( 2*PI, 2*PI, 90 );
+                    set_fuDo_square( 2*PI );
                     break;
                 case 4:
                     metricName  =  "sqBump";
                     domainName  =  "square";
                     roadsType  =  11;
-                    domainParameters  =  make_domain_parameters( 2*PI, 2*PI, 90 );
+                    set_fuDo_square( 2*PI );
                     break;
                 case 5:
                     metricName  =  "sqAntiBump";
                     domainName  =  "square";
                     roadsType  =  11;
-                    domainParameters  =  make_domain_parameters( 2*PI, 2*PI, 90 );
+                    set_fuDo_square( 2*PI );
                     break;
                 case 6:
                     metricName  =  "torusPsiSqz";
                     domainName  =  "square";
                     roadsType  =  7;
-                    domainParameters  =  make_domain_parameters( 2*PI, 2*PI, 90 );
+                    set_fuDo_square( 2*PI );
                     break;
                 case 7:
                     metricName  =  "dgBumpSqz";
                     domainName  =  "square";
                     roadsType  =  11;
-                    domainParameters  =  make_domain_parameters( 2*PI, 2*PI, 90 );
+                    set_fuDo_square( 2*PI );
                     break;
                 case 8:
                     metricName  =  "hp_flat";
                     domainName  =  "hexagon";
                     roadsType  =  17;
-                    domainParameters  =  make_domain_parameters( 2*PI, 2*PI, 60 );
+                    set_fuDo_hexagon( 2*PI );
                     break;
                 case 9:
                     metricName  =  "hp_p6m";
                     domainName  =  "hexagon";
                     roadsType  =  17;
-                    domainParameters  =  make_domain_parameters( 2*PI, 2*PI, 60 );
+                    set_fuDo_hexagon( 2*PI );
+                    K0  =  dual_lattice_vector( 0, 1 );
+                    K1  =  rot120( K0 );
+                    K2  =  rot240( K0 );
                     break;
                 case 10:
                     metricName  =  "hp_p3m1";
                     domainName  =  "hexagon";
                     roadsType  =  15;
-                    domainParameters  =  make_domain_parameters( 2*PI, 2*PI, 60 );
+                    set_fuDo_hexagon( 2*PI );
+                    K0  =  dual_lattice_vector( 0, 1 );
+                    K1  =  rot120( K0 );
+                    K2  =  rot240( K0 );
                     break;
                 case 11:
                     metricName  =  "hp_p3";
                     domainName  =  "hexagon";
                     roadsType  =  13;
-                    domainParameters  =  make_domain_parameters( 4*PI, 4*PI, 60 );
+                    set_fuDo_hexagon( 4*PI );
+                    K0  =  dual_lattice_vector( 2, 0 );
+                    K1  =  rot120( K0 );
+                    K2  =  rot240( K0 );
+                    K3  =  dual_lattice_vector( 2, 1 );
+                    K4  =  rot120( K3 );
+                    K5  =  rot240( K3 );
                     break;
                 case 12:
                     metricName  =  "torus";
                     domainName  =  "rectangle";
                     roadsType  =  7;
-                    domainParameters  =  make_domain_parameters( 2*PI, 2*PI/Sqrt(3), 90 );
+                    set_fuDo_rectangle( 2*PI, 2*PI/Sqrt(3) );
                     break;
                 case 13:
                     metricName  =  "dupin";
                     domainName  =  "square";
                     roadsType  =  11;
-                    domainParameters  =  make_domain_parameters( 2*PI, 2*PI, 90 );
+                    set_fuDo_square( 2*PI );
                     break;
                 case 14:
                     metricName  =  "dupinSqz3";
                     domainName  =  "square";
                     roadsType  =  11;
-                    domainParameters  =  make_domain_parameters( 2*PI, 2*PI, 90 );
+                    set_fuDo_square( 2*PI );
                     break;
                 case 15:
                     metricName  =  "dupinSqz5";
                     domainName  =  "square";
                     roadsType  =  11;
-                    domainParameters  =  make_domain_parameters( 2*PI, 2*PI, 90 );
+                    set_fuDo_square( 2*PI );
                     break;
                 case 16:
                     metricName  =  "tp_p4";
                     domainName  =  "square";
                     roadsType  =  10;
-                    domainParameters  =  make_domain_parameters( 4*PI, 4*PI, 90 );
+                    set_fuDo_square( 4*PI );
                     break;
                 case 17:
                     metricName  =  "tp_p4gm";
                     domainName  =  "square";
                     roadsType  =  12;
-                    domainParameters  =  make_domain_parameters( 4*PI, 4*PI, 90 );
+                    set_fuDo_square( 4*PI );
                     break;
                 default:
                     metricName  =  "hp_p6";
                     domainName  =  "hexagon";
                     roadsType  =  16;
-                    domainParameters  =  make_domain_parameters( 4*PI, 4*PI, 60 );
-                    kp6_0  =  dual_lattice_vector( 1, 0 );
-                    kp6_1  =  rot120( kp6_0 );
-                    kp6_2  =  rot240( kp6_0 );
-                    kp6_3  =  dual_lattice_vector( 3, 1 );
-                    kp6_4  =  rot120( kp6_3 );
-                    kp6_5  =  rot240( kp6_3 );
+                    set_fuDo_hexagon( 4*PI );
+                    K0  =  dual_lattice_vector( 1, 0 );
+                    K1  =  rot120( K0 );
+                    K2  =  rot240( K0 );
+                    K3  =  dual_lattice_vector( 3, 1 );
+                    K4  =  rot120( K3 );
+                    K5  =  rot240( K3 );
                     break;
             }
 
@@ -601,8 +637,7 @@ public class ScreenScript : MonoBehaviour
             metricField.text  =  metricName;
             domainField.text  =  domainName;
 
-            Vector4  domMat  =  new Vector4( domainParameters.va.x, domainParameters.vb.x, domainParameters.va.y, domainParameters.vb.y );
-            material.SetVector( "_DomMat", domMat );
+            material.SetVector( "_DomMat", new Vector4( fuDo.Lu.x, fuDo.Lv.x, fuDo.Lu.y, fuDo.Lv.y ) );
         }
 
         if( textureChanged ) textureField.text = textureNumber.ToString();
@@ -665,9 +700,9 @@ public class ScreenScript : MonoBehaviour
 
         if( stopVul.ReadValue<float>() == 0 )
         {
-            vulture.state.pos  =  reset_to_fundamental_domain( vulture.state.pos + dt*vulture.state.vel, domainParameters );
+            vulture.state.pos  =  reset_to_fundamental_domain( vulture.state.pos + dt*vulture.state.vel );
 
-            observer.state.ang  =  observer.state.ang - da*rad2deg;
+            observer.state.ang  =  observer.state.ang - da*rad2deg_factor;
         }
 
         vulture.state.nor  =  rotate_by_90( vulture.state.tan );
@@ -731,7 +766,7 @@ public class ScreenScript : MonoBehaviour
         toggleFullscreenRendering = InputSystem.actions.FindAction("Toggle Fullscreen Rendering");
         toggleDisplayRoads = InputSystem.actions.FindAction("Toggle Display Roads");
 
-        domainParameters  =  make_domain_parameters( 2*PI, 2*PI, 90 );
+        set_fuDo_square( 2*PI );
 
         tilingTexture  =  AssetDatabase.LoadAssetAtPath<Texture2D>( "Assets/Textures/Tilings/" + metricName + "_" + textureNumber.ToString() + ".png" );
         material.SetTexture( "_BaseMap", tilingTexture );
