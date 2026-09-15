@@ -39,23 +39,22 @@ Shader "Custom/Confmets/hp_p6"
             #include "Common/ConfMetsShaderPreamble.hlsl"
             #include "Common/ConfMetsWaveVec.hlsl"
 
-            static const float2  k0  =  dual_lattice_vector( 1, 0 );
-            static const float2  k1  =  rot120( k0 );
-            static const float2  k2  =  rot240( k0 );
-
-            static const float2  k3  =  dual_lattice_vector( 3, 1 );
-            static const float2  k4  =  rot120( k3 );
-            static const float2  k5  =  rot240( k3 );
+            static const float2  k1  =  dual_lattice_vector( 1, 0 );
+            static const float2  k2  =  rot120( k1 );
+            static const float2  k3  =  rot240( k1 );
+            static const float2  k4  =  dual_lattice_vector( 3, 1 );
+            static const float2  k5  =  rot120( k4 );
+            static const float2  k6  =  rot240( k4 );
 
             float mu( float2 p )
             {
-                return ( 9 + cop(p,k0) + cop(p,k1) + cop(p,k2) + cop(p,k3) + cop(p,k4) + cop(p,k5) ) / 9;
+                return  ( 9 + cop(p,k1) + cop(p,k2) + cop(p,k3) + cop(p,k4) + cop(p,k5) + cop(p,k6) ) / 9;
             }
 
             float2 mu_grad( float2 p )
             {
-                return  float2( cop_dx(p,k0) + cop_dx(p,k1) + cop_dx(p,k2) + cop_dx(p,k3) + cop_dx(p,k4) + cop_dx(p,k5),
-                                cop_dy(p,k0) + cop_dy(p,k1) + cop_dy(p,k2) + cop_dy(p,k3) + cop_dy(p,k4) + cop_dy(p,k5)  ) / 9;
+                return  float2( cop_dx(p,k1) + cop_dx(p,k2) + cop_dx(p,k3) + cop_dx(p,k4) + cop_dx(p,k5) + cop_dx(p,k6),
+                                cop_dy(p,k1) + cop_dy(p,k2) + cop_dy(p,k3) + cop_dy(p,k4) + cop_dy(p,k5) + cop_dy(p,k6)  ) / 9;
             }
 
             #include "Common/ConfMets_mu.hlsl"

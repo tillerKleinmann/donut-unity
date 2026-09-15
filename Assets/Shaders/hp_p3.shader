@@ -39,22 +39,22 @@ Shader "Custom/Confmets/hp_p3"
             #include "Common/ConfMetsShaderPreamble.hlsl"
             #include "Common/ConfMetsWaveVec.hlsl"
 
-            static const float2 K0 = dual_lattice_vector( 2, 0 );
-            static const float2 K1 = rot120( K0 );
-            static const float2 K2 = rot240( K0 );
-            static const float2 K3 = dual_lattice_vector( 2, 1 );
-            static const float2 K4 = rot120( K3 );
-            static const float2 K5 = rot240( K3 );
+            static const float2 k1 = dual_lattice_vector( 2, 0 );
+            static const float2 k2 = rot120( k1 );
+            static const float2 k3 = rot240( k1 );
+            static const float2 k4 = dual_lattice_vector( 2, 1 );
+            static const float2 k5 = rot120( k4 );
+            static const float2 k6 = rot240( k4 );
 
             float mu( float2 p )
             {
-                return ( 9 + sip(p,K0) + sip(p,K1) + sip(p,K2) + sip(p,K3) + sip(p,K4) + sip(p,K5) ) / 9;
+                return ( 9 + sip(p,k1) + sip(p,k2) + sip(p,k3) + sip(p,k4) + sip(p,k5) + sip(p,k6) ) / 9;
             }
 
             float2 mu_grad( float2 p )
             {
-                return  float2( sip_dx(p,K0) + sip_dx(p,K1) + sip_dx(p,K2) + sip_dx(p,K3) + sip_dx(p,K4) + sip_dx(p,K5),
-                                sip_dy(p,K0) + sip_dy(p,K1) + sip_dy(p,K2) + sip_dy(p,K3) + sip_dy(p,K4) + sip_dy(p,K5)  ) / 9;
+                return  float2( sip_dx(p,k1) + sip_dx(p,k2) + sip_dx(p,k3) + sip_dx(p,k4) + sip_dx(p,k5) + sip_dx(p,k6),
+                                sip_dy(p,k1) + sip_dy(p,k2) + sip_dy(p,k3) + sip_dy(p,k4) + sip_dy(p,k5) + sip_dy(p,k6)  ) / 9;
             }
 
             #include "Common/ConfMets_mu.hlsl"

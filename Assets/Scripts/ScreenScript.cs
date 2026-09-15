@@ -13,7 +13,7 @@ public class ScreenScript : MonoBehaviour
     public float vultureMoveSpeed = 2.0f, visionRadius = 2.0f*PI, rocketSpeed = 11.0f, rocketInitialLive = 3.142f;
 
     public int accuracy = 16, metricNumber = 1, textureNumber = 1, gsmNumber = 1, roadsType = 1;
-    public int metricCount = 18, textureCount = 4, roadsTypeCount = 24;
+    public int metricCount = 19, textureCount = 4, roadsTypeCount = 24;
 
     private InputAction moveAction, nextMetric, prevMetric, incrVisRad, decrVisRad, incrAccuracy, decrAccuracy, nextTexture, prevTexture, nextRoadsType, prevRoadsType, nextGSM, prevGSM, nextCT, prevCT, stopVul, shoot, toggleFullscreenRendering, toggleDisplayRoads, resetVulPos;
 
@@ -22,7 +22,8 @@ public class ScreenScript : MonoBehaviour
 
     private Vector2 vulPos, vulVel, vulTan, vulNor;
 
-    private Vector2 K0, K1, K2, K3, K4, K5;
+    private float a1, a2, a3, a4, a5, a6;
+    private Vector2 k1, k2, k3, k4, k5, k6;
 
     private Vector4[] rocketsState = new Vector4[16];
     private float[] rocketsLive = new float[16];
@@ -232,11 +233,11 @@ public class ScreenScript : MonoBehaviour
             case 8:
                 return  0f;
             case 9:
-                return  Log(5) - Log( 5 + cop(p,K0) + cop(p,K1) + cop(p,K2) );
+                return  Log(5) - Log( 5 + cop(p,k1) + cop(p,k2) + cop(p,k3) );
             case 10:
-                return  Log(5) - Log( 5 + sip(p,K0) + sip(p,K1) + sip(p,K2) );
+                return  Log(5) - Log( 5 + sip(p,k1) + sip(p,k2) + sip(p,k3) );
             case 11:
-                return  Log(9) - Log( 9 + sip(p,K0) + sip(p,K1) + sip(p,K2) + sip(p,K3) + sip(p,K4) + sip(p,K5) );
+                return  Log(9) - Log( 9 + sip(p,k1) + sip(p,k2) + sip(p,k3) + sip(p,k4) + sip(p,k5) + sip(p,k6) );
             case 12:
                 return  Log(3) - Log( 2 - Cos(p.y*Sqrt(3)) );
             case 13:
@@ -249,8 +250,10 @@ public class ScreenScript : MonoBehaviour
                 return  Log(6) - Log( 6 + Cos(p.x) + Cos(p.y) + Cos( p.x + p.y/2 ) + Cos( -p.x/2 + p.y ) );
             case 17:
                 return  Log(5) - Log( 5 + Cos(p.x/2)*Cos(p.y/2) + Sin(p.x/2)*Sin(p.y) - Sin(p.x)*Sin(p.y/2) );
+            case 18:
+                return  Log(9) - Log( 9 + cop(p,k1) + cop(p,k2) + cop(p,k3) + cop(p,k4) + cop(p,k5) + cop(p,k6) );
             default:
-                return  Log(9) - Log( 9 + cop(p,K0) + cop(p,K1) + cop(p,K2) + cop(p,K3) + cop(p,K4) + cop(p,K5) );
+                return  Log(8) - Log( 8 + 2*Cos(p.x*a4)*Cos(p.y*a5) + Cos(p.y*a6) + 2*Sin(p.x*a1)*Cos(p.y*a2) - Sin(p.x*a3) );
         }
     }
 
@@ -278,20 +281,20 @@ public class ScreenScript : MonoBehaviour
             case 8:
                 return new Vector2( 0f, 0f );
             case 9:
-                return new Vector2( cop_dx(p,K0) + cop_dx(p,K1) + cop_dx(p,K2),
-                                    cop_dy(p,K0) + cop_dy(p,K1) + cop_dy(p,K2)  )
+                return new Vector2( cop_dx(p,k1) + cop_dx(p,k2) + cop_dx(p,k3),
+                                    cop_dy(p,k1) + cop_dy(p,k2) + cop_dy(p,k3)  )
                                         /
-                                    -( 5 + cop(p,K0) + cop(p,K1) + cop(p,K2) );
+                                    -( 5 + cop(p,k1) + cop(p,k2) + cop(p,k3) );
             case 10:
-                return new Vector2( sip_dx(p,K0) + sip_dx(p,K1) + sip_dx(p,K2),
-                                    sip_dy(p,K0) + sip_dy(p,K1) + sip_dy(p,K2)  )
+                return new Vector2( sip_dx(p,k1) + sip_dx(p,k2) + sip_dx(p,k3),
+                                    sip_dy(p,k1) + sip_dy(p,k2) + sip_dy(p,k3)  )
                                         /
-                                    -( 5 + sip(p,K0) + sip(p,K1) + sip(p,K2) );
+                                    -( 5 + sip(p,k1) + sip(p,k2) + sip(p,k3) );
             case 11:
-                return new Vector2( sip_dx(p,K0) + sip_dx(p,K1) + sip_dx(p,K2) + sip_dx(p,K3) + sip_dx(p,K4) + sip_dx(p,K5),
-                                    sip_dy(p,K0) + sip_dy(p,K1) + sip_dy(p,K2) + sip_dy(p,K3) + sip_dy(p,K4) + sip_dy(p,K5)  )
+                return new Vector2( sip_dx(p,k1) + sip_dx(p,k2) + sip_dx(p,k3) + sip_dx(p,k4) + sip_dx(p,k5) + sip_dx(p,k6),
+                                    sip_dy(p,k1) + sip_dy(p,k2) + sip_dy(p,k3) + sip_dy(p,k4) + sip_dy(p,k5) + sip_dy(p,k6)  )
                                         /
-                                    -( 9 + sip(p,K0) + sip(p,K1) + sip(p,K2) + sip(p,K3) + sip(p,K4) + sip(p,K5) );
+                                    -( 9 + sip(p,k1) + sip(p,k2) + sip(p,k3) + sip(p,k4) + sip(p,k5) + sip(p,k6) );
             case 12:
                 return new Vector2( 0f,
                                     Sin(p.y*Sqrt(3)) )
@@ -322,11 +325,16 @@ public class ScreenScript : MonoBehaviour
                                     Cos(p.x/2)*Sin(p.y/2)/2 - Sin(p.x/2)*Cos(p.y)   + Sin(p.x)*Cos(p.y/2)/2 )
                                         /
                                     ( 5 + Cos(p.x/2)*Cos(p.y/2) + Sin(p.x/2)*Sin(p.y) - Sin(p.x)*Sin(p.y/2) );
-            default:
-                return new Vector2( cop_dx(p,K0) + cop_dx(p,K1) + cop_dx(p,K2) + cop_dx(p,K3) + cop_dx(p,K4) + cop_dx(p,K5),
-                                    cop_dy(p,K0) + cop_dy(p,K1) + cop_dy(p,K2) + cop_dy(p,K3) + cop_dy(p,K4) + cop_dy(p,K5)  )
+            case 18:
+                return new Vector2( cop_dx(p,k1) + cop_dx(p,k2) + cop_dx(p,k3) + cop_dx(p,k4) + cop_dx(p,k5) + cop_dx(p,k6),
+                                    cop_dy(p,k1) + cop_dy(p,k2) + cop_dy(p,k3) + cop_dy(p,k4) + cop_dy(p,k5) + cop_dy(p,k6)  )
                                         /
-                                    -( 9 + cop(p,K0) + cop(p,K1) + cop(p,K2) + cop(p,K3) + cop(p,K4) + cop(p,K5) );
+                                    -( 9 + cop(p,k1) + cop(p,k2) + cop(p,k3) + cop(p,k4) + cop(p,k5) + cop(p,k6) );
+            default:
+                return new Vector2( 2*a4*Sin(p.x*a4)*Cos(p.y*a5)                  - 2*a1*Cos(p.x*a1)*Cos(p.y*a2) + a3*Cos(p.x*a3),
+                                    2*a5*Cos(p.x*a4)*Sin(p.y*a5) + a6*Sin(p.y*a6) + 2*a2*Sin(p.x*a1)*Sin(p.y*a2)                   )
+                                        /
+                                    ( 8 + 2*Cos(p.x*a4)*Cos(p.y*a5) + Cos(p.y*a6) + 2*Sin(p.x*a1)*Cos(p.y*a2) - Sin(p.x*a3) );
         }
     }
     
@@ -558,30 +566,30 @@ public class ScreenScript : MonoBehaviour
                     domainName  =  "hexagon";
                     roadsType  =  17;
                     set_fuDo_hexagon( 2*PI );
-                    K0  =  dual_lattice_vector( 0, 1 );
-                    K1  =  rot120( K0 );
-                    K2  =  rot240( K0 );
+                    k1  =  dual_lattice_vector( 0, 1 );
+                    k2  =  rot120( k1 );
+                    k3  =  rot240( k1 );
                     break;
                 case 10:
                     metricName  =  "hp_p3m1";
                     domainName  =  "hexagon";
                     roadsType  =  15;
                     set_fuDo_hexagon( 2*PI );
-                    K0  =  dual_lattice_vector( 0, 1 );
-                    K1  =  rot120( K0 );
-                    K2  =  rot240( K0 );
+                    k1  =  dual_lattice_vector( 0, 1 );
+                    k2  =  rot120( k1 );
+                    k3  =  rot240( k1 );
                     break;
                 case 11:
                     metricName  =  "hp_p3";
                     domainName  =  "hexagon";
                     roadsType  =  13;
                     set_fuDo_hexagon( 4*PI );
-                    K0  =  dual_lattice_vector( 2, 0 );
-                    K1  =  rot120( K0 );
-                    K2  =  rot240( K0 );
-                    K3  =  dual_lattice_vector( 2, 1 );
-                    K4  =  rot120( K3 );
-                    K5  =  rot240( K3 );
+                    k1  =  dual_lattice_vector( 2, 0 );
+                    k2  =  rot120( k1 );
+                    k3  =  rot240( k1 );
+                    k4  =  dual_lattice_vector( 2, 1 );
+                    k5  =  rot120( k4 );
+                    k6  =  rot240( k4 );
                     break;
                 case 12:
                     metricName  =  "torus";
@@ -619,17 +627,29 @@ public class ScreenScript : MonoBehaviour
                     roadsType  =  12;
                     set_fuDo_square( 4*PI );
                     break;
-                default:
+                case 18:
                     metricName  =  "hp_p6";
                     domainName  =  "hexagon";
                     roadsType  =  16;
                     set_fuDo_hexagon( 4*PI );
-                    K0  =  dual_lattice_vector( 1, 0 );
-                    K1  =  rot120( K0 );
-                    K2  =  rot240( K0 );
-                    K3  =  dual_lattice_vector( 3, 1 );
-                    K4  =  rot120( K3 );
-                    K5  =  rot240( K3 );
+                    k1  =  dual_lattice_vector( 1, 0 );
+                    k2  =  rot120( k1 );
+                    k3  =  rot240( k1 );
+                    k4  =  dual_lattice_vector( 3, 1 );
+                    k5  =  rot120( k4 );
+                    k6  =  rot240( k4 );
+                    break;
+                default:
+                    metricName  =  "hp_p31m";
+                    domainName  =  "hexagon";
+                    roadsType  =  14;
+                    set_fuDo_hexagon( 4*PI );
+                    a1  =  2*PI / fuDo.w;
+                    a2  =  2*PI / fuDo.w * Sqrt(3);
+                    a3  =  4*PI / fuDo.w;
+                    a4  =  4*PI / fuDo.w;
+                    a5  =  4*PI / fuDo.w / Sqrt(3);
+                    a6  =  8*PI / fuDo.w / Sqrt(3);
                     break;
             }
 

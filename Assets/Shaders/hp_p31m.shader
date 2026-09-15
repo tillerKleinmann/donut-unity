@@ -37,45 +37,23 @@ Shader "Custom/Confmets/hp_p31m"
             #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/GlobalSamplers.hlsl"
 
             #include "Common/ConfMetsShaderPreamble.hlsl"
+            #include "Common/ConfMetsWaveVec.hlsl"
 
-            static const float  htri  =  2 / sqrt(3);
-
-            static const float2  k0  =  float2(        0,  1 ) * htri;
-            static const float2  k1  =  float2( +sqrt(3), -1 ) * htri / 2;
-            static const float2  k2  =  float2( -sqrt(3), -1 ) * htri / 2;
-
-            static const float2  k31_0  =  dual_vec( 3, 1 );
-            static const float2  k31_1  =  rot120( k31_0 );
-            static const float2  k31_2  =  rot240( k31_0 );
-
-            float skap( float2 p, float2 k )
-            {
-                return p.x*k.x + p.y*k.y;
-            }
-
-            float skapn( float2 p, float2 k )
-            {
-                return ( p.x*k.x*u2p.w + p.y*( k.y*u2p.x - k.x*u2p.y ) ) * 2*PI / ( u2p.x*u2p.w );
-                //return ( k.x*( p.x*u2p.w - p.y*u2p.y ) + k.y*p.y*u2p.x ) * 2*PI / ( u2p.x*u2p.w );
-            }
-
-            float cop( float2 p, float2 k ){ return cos(skap(k,p)); }
-            float sip( float2 p, float2 k ){ return sin(skap(k,p)); }
-
-            static const float2  fp_a  =  4*PI/u2p.x;
-            static const float2  fp_b  =  4*PI/u2p.x/sqrt(3);
-            static const float2  fp_c  =  8*PI/u2p.x;
+            static const float  a1  =  2*PI / u2p.x;
+            static const float  a2  =  2*PI / u2p.x * sqrt(3);
+            static const float  a3  =  4*PI / u2p.x;
+            static const float  a4  =  4*PI / u2p.x;
+            static const float  a5  =  4*PI / u2p.x / sqrt(3);
+            static const float  a6  =  8*PI / u2p.x / sqrt(3);
 
             float mu( float2 p )
             {
-                return ( 8 + cop(p,k31_0) + cop(p,k31_1) + cop(p,k31_2) + 2*cos(p.x*fp_a)*cos(p.y*fp_b) + cos(x*fp_c) ) / 8;
+                return  ( 8 + 2*cos(p.x*a4)*cos(p.y*a5) + cos(p.y*a6) + 2*sin(p.x*a1)*cos(p.y*a2) - sin(p.x*a3) ) / 8;
             }
             float2 mu_grad( float2 p )
             {
-                return float2(
-                                k31_0.x*sip(p,k31_0) + k31_1.x*sip(p,k31_1) + k31_2.x*sip(p,k31_2) + 2*fp_a*sin(p.x*fp_a)*cos(p.y*fp_b) + fp_c*sin(p.x*fp_c),
-                                k31_0.y*sip(p,k31_0) + k31_1.y*sip(p,k31_1) + k31_2.y*sip(p,k31_2) + 2*fp_b*cos(p.x*fp_a)*sin(p.y*fp_b)
-                            ) * ( -1.0 / 5 );
+                return  float2( -2*a4*sin(p.x*a4)*cos(p.y*a5)                  + 2*a1*cos(p.x*a1)*cos(p.y*a2) - a3*cos(p.x*a3),
+                                -2*a5*cos(p.x*a4)*sin(p.y*a5) - a6*sin(p.y*a6) - 2*a2*sin(p.x*a1)*sin(p.y*a2)                   ) / 8;
             }
 
             #include "Common/ConfMets_mu.hlsl"
