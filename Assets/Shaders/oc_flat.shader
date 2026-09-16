@@ -1,4 +1,4 @@
-Shader "Custom/Confmets/tp_p4gm"
+Shader "Custom/Confmets/oc_flat"
 {
     Properties
     {
@@ -38,16 +38,8 @@ Shader "Custom/Confmets/tp_p4gm"
 
             #include "Common/ConfMetsShaderPreamble.hlsl"
 
-            float mu( float2 p )
-            {
-                return ( 5 + cos(p.x/2)*cos(p.y/2) + sin(p.x/2)*sin(p.y) - sin(p.x)*sin(p.y/2) ) / 5;
-            }
-
-            float2 mu_grad( float2 p )
-            {
-                return float2( -sin(p.x/2)*cos(p.y/2)/2 + cos(p.x/2)*sin(p.y)/2 - cos(p.x)*sin(p.y/2),
-                               -cos(p.x/2)*sin(p.y/2)/2 + sin(p.x/2)*cos(p.y)   - sin(p.x)*cos(p.y/2)/2 ) / 5;
-            }
+            float  mu     ( float2 p ){ return 1; }
+            float2 mu_grad( float2 p ){ return float2(0,0); }
 
             #include "Common/ConfMets_mu.hlsl"
             #include "Common/ConfMetsIncludes.hlsl"

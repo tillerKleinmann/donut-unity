@@ -1,4 +1,4 @@
-Shader "Custom/Confmets/hp_p31m"
+Shader "Custom/Confmets/op_flat"
 {
     Properties
     {
@@ -37,25 +37,9 @@ Shader "Custom/Confmets/hp_p31m"
             #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/GlobalSamplers.hlsl"
 
             #include "Common/ConfMetsShaderPreamble.hlsl"
-            #include "Common/ConfMetsWaveVec.hlsl"
 
-            static const float  a1  =  2*PI / u2p.x;
-            static const float  a2  =  2*PI / u2p.x * sqrt(3);
-            static const float  a3  =  4*PI / u2p.x;
-            static const float  a4  =  4*PI / u2p.x;
-            static const float  a5  =  4*PI / u2p.x / sqrt(3);
-            static const float  a6  =  8*PI / u2p.x / sqrt(3);
-
-            float mu( float2 p )
-            {
-                return  ( 8 + 2*cos(p.x*a4)*cos(p.y*a5) + cos(p.y*a6) + 2*sin(p.x*a1)*cos(p.y*a2) - sin(p.x*a3) ) / 8;
-            }
-            
-            float2 mu_grad( float2 p )
-            {
-                return  float2( -2*a4*sin(p.x*a4)*cos(p.y*a5)                  + 2*a1*cos(p.x*a1)*cos(p.y*a2) - a3*cos(p.x*a3),
-                                -2*a5*cos(p.x*a4)*sin(p.y*a5) - a6*sin(p.y*a6) - 2*a2*sin(p.x*a1)*sin(p.y*a2)                   ) / 8;
-            }
+            float  mu     ( float2 p ){ return 1; }
+            float2 mu_grad( float2 p ){ return float2(0,0); }
 
             #include "Common/ConfMets_mu.hlsl"
             #include "Common/ConfMetsIncludes.hlsl"

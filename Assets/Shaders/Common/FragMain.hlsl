@@ -41,13 +41,10 @@ half4 frag( Varyings IN ) : SV_Target
         float2 tarPos  =  pv[0];
 
         float2 uv  =  mul( tarPos, plg2usq );
-        
+
         uv  +=  float2(1,1)*0.5;
 
-        uv  =  reset_to_unit_square_shifted( uv );
-
         float3 col  =  SAMPLE_TEXTURE2D( _BaseMap, sampler_LinearRepeat, uv ).xyz;
-        //float3 col  =  float3( uv.x, uv.y, 0 );
 
         if( display_roads )
         {
@@ -151,38 +148,38 @@ half4 frag( Varyings IN ) : SV_Target
                 cola =  rotation_symmetry_points__p6( tarPos );
                 col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
             }
-            else if( roadsType == 18 )
-            {
-                cola =  rotation_symmetry_points__c2( tarPos );
-                col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
-            }
-            else if( roadsType == 19 )
-            {
-                cola =  symmetry_line_color_alpha__p31m__colored( tarPos );
-                col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
-                cola =  rotation_symmetry_points__p3( tarPos );
-                col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
-            }
-            else if( roadsType == 20 )
-            {
-                cola =  symmetry_line_color_alpha__p3m1__colored( tarPos );
-                col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
-                cola =  rotation_symmetry_points__p3( tarPos );
-                col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
-            }
-            else if( roadsType == 21 )
-            {
-                cola =  symmetry_line_color_alpha__p6m__colored( tarPos );
-                col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
-                cola =  rotation_symmetry_points__p6( tarPos );
-                col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
-            }
-            else if( roadsType == 22 )
-                col  =  add_main_roads_rectangle_2( col, tarPos );
-            else if( roadsType == 23 )
-                col  =  add_symmetry_roads_p3m1_colored( col, tarPos );
-            else if( roadsType == 24 )
-                col  =  add_main_roads_hexagon_4( col, tarPos );
+            // else if( roadsType == 18 )
+            // {
+            //     cola =  rotation_symmetry_points__c2( tarPos );
+            //     col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
+            // }
+            // else if( roadsType == 19 )
+            // {
+            //     cola =  symmetry_line_color_alpha__p31m__colored( tarPos );
+            //     col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
+            //     cola =  rotation_symmetry_points__p3( tarPos );
+            //     col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
+            // }
+            // else if( roadsType == 20 )
+            // {
+            //     cola =  symmetry_line_color_alpha__p3m1__colored( tarPos );
+            //     col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
+            //     cola =  rotation_symmetry_points__p3( tarPos );
+            //     col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
+            // }
+            // else if( roadsType == 21 )
+            // {
+            //     cola =  symmetry_line_color_alpha__p6m__colored( tarPos );
+            //     col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
+            //     cola =  rotation_symmetry_points__p6( tarPos );
+            //     col  =  lerp( col, float3( cola.x, cola.y, cola.z ), cola.w );
+            // }
+            // else if( roadsType == 22 )
+            //     col  =  add_main_roads_rectangle_2( col, tarPos );
+            // else if( roadsType == 23 )
+            //     col  =  add_symmetry_roads_p3m1_colored( col, tarPos );
+            // else if( roadsType == 24 )
+            //     col  =  add_main_roads_hexagon_4( col, tarPos );
         }
 
         col  =  draw_sprite_quadratic( col, tarPos, camPos, vulVec, _VulTex, 1.0 );
