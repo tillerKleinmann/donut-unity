@@ -4,7 +4,9 @@ half4 frag( Varyings IN ) : SV_Target
     
     xy  =  2*xy - float2(1,1);
     
-    xy.x *= 2;
+    xy.x *= 2; // adjust for 2x1 canvas size
+
+    xy  *=  -1; // correct for canvas orientation
     
     if( ( pow(xy.x,2) + pow(xy.y,2) < 1.0 ) || fullscreen )
     {
@@ -40,11 +42,11 @@ half4 frag( Varyings IN ) : SV_Target
 
         float2 tarPos  =  pv[0];
 
-        float2 uv  =  mul( tarPos, plg2usq );
+        float2 ab  =  mul( tarPos, plg2usq );
 
+        float2 uv  =  float2( -ab.y, ab.x );
+        
         uv  +=  float2(1,1)*0.5;
-
-        uv  =  float2( uv.y, -uv.x );
 
         float3 col  =  SAMPLE_TEXTURE2D( _BaseMap, sampler_LinearRepeat, uv ).xyz;
 
@@ -204,6 +206,14 @@ half4 frag( Varyings IN ) : SV_Target
 
         return float4(col,1);
     }
+    else if( -0.95 < xy.x & xy.x < -0.85 & -0.95 < xy.y & xy.y < -0.85 )
+        return float4(0,0,0.5,1);
+    else if(  0.85 < xy.x & xy.x <  0.95 & -0.95 < xy.y & xy.y < -0.85 )
+        return float4(1,0,0.5,1);
+    else if( -0.95 < xy.x & xy.x < -0.85 &  0.85 < xy.y & xy.y <  0.95 )
+        return float4(0,1,0.5,1);
+    else if(  0.85 < xy.x & xy.x <  0.95 &  0.85 < xy.y & xy.y <  0.95 )
+        return float4(1,1,0.5,1);
     else
         return float4(0,0,0,1);
 }

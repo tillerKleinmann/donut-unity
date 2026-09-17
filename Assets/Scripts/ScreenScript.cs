@@ -430,7 +430,7 @@ public class ScreenScript : MonoBehaviour
 
     private Vector2 move2vel( Vector2 pos, Vector2 moveVec, float camAng_deg, float speed )
     {
-        return rotate_by_angle( moveVec, deg2rad(camAng_deg) ) * ( Exp( -confun( pos, metricNumber ) ) * (-speed) );
+        return rotate_by_angle( moveVec, deg2rad(camAng_deg) ) * ( Exp( -confun( pos, metricNumber ) ) * (speed) );
     }
 
     private Vector2 reset_to_domain_unit_square( Vector2 p )
@@ -708,9 +708,9 @@ public class ScreenScript : MonoBehaviour
         {
             vulture.state.pos  =  new Vector2( 0.0f, 0.0f );
             vulture.state.vel  =  new Vector2( 0.0f, 0.0f );
-            vulture.state.tan  =  new Vector2( 0.0f, 1.0f );
-            vulture.state.nor  =  new Vector2(-1.0f, 0.0f );
-            vulture.state.ang  =  90;
+            vulture.state.tan  =  new Vector2( 1.0f, 0.0f );
+            vulture.state.nor  =  new Vector2( 1.0f, 1.0f );
+            vulture.state.ang  =  0;
             vulture.state.sgn  =  1.0f;
         }
     }
