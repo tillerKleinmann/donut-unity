@@ -136,7 +136,8 @@ public class ScreenScript : MonoBehaviour
     {
         fuDo.w  =  w;
         fuDo.h  =  w * (Sqrt(3)/2);
-        fuDo.s  = -w / 2;
+        //fuDo.s  = -w / 2;
+        fuDo.s  =  w / 2;
 
         complete_fuDo_from_whs();
     }
@@ -163,14 +164,16 @@ public class ScreenScript : MonoBehaviour
     {
         fuDo.w  =  w;
         fuDo.h  =  h;
-        fuDo.s  = -w / 2;
+        //fuDo.s  = -w / 2;
+        fuDo.s  =  w / 2;
 
         complete_fuDo_from_whs();
     }
 
     private Vector2 dual_lattice_vector( int k, int l )
     {
-        return new Vector2( k / fuDo.w, l / fuDo.h  +  k * (fuDo.s/(fuDo.w*fuDo.h)) ) * 2*PI;
+        //return new Vector2( k / fuDo.w, l / fuDo.h  +  k * (fuDo.s/(fuDo.w*fuDo.h)) ) * 2*PI;
+        return new Vector2( k / fuDo.w, l / fuDo.h  -  k * (fuDo.s/(fuDo.w*fuDo.h)) ) * 2*PI;
     }
 
     private Vector2 rot180( Vector2 p ){ return new Vector2( -p.x, -p.y ); }
@@ -823,9 +826,9 @@ public class ScreenScript : MonoBehaviour
 
         vulture.state.pos  =  new Vector2( 0.0f, 0.0f );
         vulture.state.vel  =  new Vector2( 0.0f, 0.0f );
-        vulture.state.tan  =  new Vector2( 0.0f, 1.0f );
-        vulture.state.nor  =  new Vector2(-1.0f, 0.0f );
-        vulture.state.ang  =  90;
+        vulture.state.tan  =  new Vector2( 1.0f, 0.0f );
+        vulture.state.nor  =  new Vector2( 0.0f, 1.0f );
+        vulture.state.ang  =  0;
         vulture.state.sgn  =  1.0f;
 
         vulture.moveSpeed  =  vultureMoveSpeed;

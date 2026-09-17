@@ -44,6 +44,8 @@ half4 frag( Varyings IN ) : SV_Target
 
         uv  +=  float2(1,1)*0.5;
 
+        uv  =  float2( uv.y, -uv.x );
+
         float3 col  =  SAMPLE_TEXTURE2D( _BaseMap, sampler_LinearRepeat, uv ).xyz;
 
         if( display_roads )
