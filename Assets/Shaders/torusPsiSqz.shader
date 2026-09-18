@@ -38,8 +38,17 @@ Shader "Custom/Confmets/torusPsiSqz"
 
             #include "Common/ConfMetsShaderPreamble.hlsl"
 
-            float  psi(      float2 p ){ return 0.5 + cos(p.x)*(3-pow(cos(p.x),2))/8; }
-            float2 psi_grad( float2 p ){ return float2( -3*sin(p.x)*(1-pow(cos(p.x),2))/8, 0 ); }
+            static float a1 = 2*PI/u2p.w;
+
+            float psi( float2 p )
+            {
+                return 0.5 - cos(p.y*a1)*(3-pow(cos(p.y*a1),2))/8;
+            }
+            
+            float2 psi_grad( float2 p )
+            {
+                return float2( 0, a1*sin(p.y*a1)*(1-pow(cos(p.y*a1),2))*(3.0/8) );
+            }
 
             #include "Common/ConfMets_psi.hlsl"
             #include "Common/ConfMetsIncludes.hlsl"

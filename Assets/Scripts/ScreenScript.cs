@@ -13,6 +13,7 @@ public class ScreenScript : MonoBehaviour
     public float vultureMoveSpeed = 2.0f, visionRadius = 2.0f*PI, rocketSpeed = 11.0f, rocketInitialLive = 3.142f;
 
     public int accuracy = 16, metricNumber = 1, textureNumber = 1, gsmNumber = 1, roadsType = 1;
+
     public int metricCount = 22, textureCount = 4, roadsTypeCount = 17;
 
     private InputAction moveAction, nextMetric, prevMetric, incrVisRad, decrVisRad, incrAccuracy, decrAccuracy, nextTexture, prevTexture, nextRoadsType, prevRoadsType, nextGSM, prevGSM, nextCT, prevCT, stopVul, shoot, toggleFullscreenRendering, toggleDisplayRoads, resetVulPos;
@@ -136,7 +137,6 @@ public class ScreenScript : MonoBehaviour
     {
         fuDo.w  =  w;
         fuDo.h  =  w * (Sqrt(3)/2);
-        //fuDo.s  = -w / 2;
         fuDo.s  =  w / 2;
 
         complete_fuDo_from_whs();
@@ -164,7 +164,6 @@ public class ScreenScript : MonoBehaviour
     {
         fuDo.w  =  w;
         fuDo.h  =  h;
-        //fuDo.s  = -w / 2;
         fuDo.s  =  w / 2;
 
         complete_fuDo_from_whs();
@@ -172,7 +171,6 @@ public class ScreenScript : MonoBehaviour
 
     private Vector2 dual_lattice_vector( int k, int l )
     {
-        //return new Vector2( k / fuDo.w, l / fuDo.h  +  k * (fuDo.s/(fuDo.w*fuDo.h)) ) * 2*PI;
         return new Vector2( k / fuDo.w, l / fuDo.h  -  k * (fuDo.s/(fuDo.w*fuDo.h)) ) * 2*PI;
     }
 
@@ -215,141 +213,137 @@ public class ScreenScript : MonoBehaviour
         return ( 1 - 2*x*x + Pow(x,4) ) * 15/8;
     }
 
-    private float confun(Vector2 p, int n)
+    private float confun( Vector2 p )
     {
-        switch (n)
+        switch( metricName )
         {
-            case 1:
-                return  0f;
-            case 2:
-                return  Cos(p.x) / 4;
-            case 3:
-                return  Cos(p.x)*Cos(p.y) / 4;
-            case 4:
-                return  (1-Cos(p.x))*(1-Cos(p.y)) / 4;
-            case 5:
-                return  ( 2 - (1-Cos(p.x))*(1-Cos(p.y)) ) / 7;
-            case 6:
-                return  ( 4 + Cos(p.x)*(3-Pow(Cos(p.x),2)) ) / 8;
-            case 7:
-                return  ( 4 + Cos(p.x)*(3-Pow(Cos(p.x),2))*Cos(p.y)*(3-Pow(Cos(p.y),2)) ) / 8;
-            case 8:
-                return  0f;
-            case 9:
-                return  Log(3) - Log( 2 - Cos(p.y*Sqrt(3)) );
-            case 10:
-                return  Log(6) - Log( 6 + Cos(p.x) + Cos(p.y) + Cos( p.x + p.y/2 ) + Cos( -p.x/2 + p.y ) );// tp_p4
-            case 11:
-                return  Log(3) - Log( 3 + Cos(p.x) + Cos(p.y) );// dupin (tp_p4m)
-            case 12:
-                return  Log(5) - Log( 5 + Cos(p.x/2)*Cos(p.y/2) + Sin(p.x/2)*Sin(p.y) - Sin(p.x)*Sin(p.y/2) );// tp_p4g
-            case 13:
-                return  Log(9) - Log( 9 + sip(p,k1) + sip(p,k2) + sip(p,k3) + sip(p,k4) + sip(p,k5) + sip(p,k6) );// hp_p3
-            case 14:
-                return  Log(8) - Log( 8 + 2*Cos(p.x*a4)*Cos(p.y*a5) + Cos(p.y*a6) + 2*Sin(p.x*a1)*Cos(p.y*a2) - Sin(p.x*a3) );// hp_p31m
-            case 15:
-                return  Log(5) - Log( 5 + sip(p,k1) + sip(p,k2) + sip(p,k3) );// hp_p3m1
-            case 16:
-                return  Log(9) - Log( 9 + cop(p,k1) + cop(p,k2) + cop(p,k3) + cop(p,k4) + cop(p,k5) + cop(p,k6) );// hp_p6
-            case 17:
-                return  Log(5) - Log( 5 + cop(p,k1) + cop(p,k2) + cop(p,k3) );// hp_p6m
-            case 18:
-                return  Log(3) - Log( 3 + psqueeze3(Cos(p.x)) + psqueeze3(Cos(p.y)) );// dupin_sqz3
-            case 19:
-                return  Log(3) - Log( 3 + psqueeze5(Cos(p.x)) + psqueeze5(Cos(p.y)) );// dupin_sqz5
-            case 20:
-                return  0f;// mp_flat
-            case 21:
-                return  0f;// op_flat
             default:
-                return  0f;// oc_flat
+                return 0f;
+            case "tp_flat":
+                return 0f;
+            case "hp_flat":
+                return 0f;
+            case "mp_flat":
+                return 0f;
+            case "op_flat":
+                return 0f;
+            case "oc_flat":
+                return 0f;
+            case "torus":
+                return  Log(3) - Log( 2 + Cos(p.y*a1) );
+            case "torusPsi":
+                return  -Cos(p.y*a1) / 4;
+            case "torusPsiSqz":
+                return  0.5f - Cos(p.y*a1)*(3-Pow(Cos(p.y*a1),2))/8;
+            case "dgBump":
+                return  Cos(p.x)*Cos(p.y) / 4;
+            case "sqBump":
+                return  (1-Cos(p.x))*(1-Cos(p.y)) / 4;
+            case "sqAntiBump":
+                return  ( 2 - (1-Cos(p.x))*(1-Cos(p.y)) ) / 7;
+            case "dgBumpSqz":
+                return  ( 4 + Cos(p.x)*(3-Pow(Cos(p.x),2))*Cos(p.y)*(3-Pow(Cos(p.y),2)) ) / 8;
+            case "tp_p4":
+                return  Log(6) - Log( 6 + Cos(p.x) + Cos(p.y) + Cos( p.x + p.y/2 ) + Cos( -p.x/2 + p.y ) );// tp_p4
+            case "dupin":
+                return  Log(3) - Log( 3 + Cos(p.x) + Cos(p.y) );// dupin (tp_p4m)
+            case "tp_p4g":
+                return  Log(5) - Log( 5 + Cos(p.x/2)*Cos(p.y/2) + Sin(p.x/2)*Sin(p.y) - Sin(p.x)*Sin(p.y/2) );// tp_p4g
+            case "hp_p3":
+                return  Log(9) - Log( 9 + sip(p,k1) + sip(p,k2) + sip(p,k3) + sip(p,k4) + sip(p,k5) + sip(p,k6) );// hp_p3
+            case "hp_p31m":
+                return  Log(8) - Log( 8 + 2*Cos(p.x*a4)*Cos(p.y*a5) + Cos(p.y*a6) + 2*Sin(p.x*a1)*Cos(p.y*a2) - Sin(p.x*a3) );// hp_p31m
+            case "hp_p3m1":
+                return  Log(5) - Log( 5 + sip(p,k1) + sip(p,k2) + sip(p,k3) );// hp_p3m1
+            case "hp_p6":
+                return  Log(9) - Log( 9 + cop(p,k1) + cop(p,k2) + cop(p,k3) + cop(p,k4) + cop(p,k5) + cop(p,k6) );// hp_p6
+            case "hp_p6m":
+                return  Log(5) - Log( 5 + cop(p,k1) + cop(p,k2) + cop(p,k3) );// hp_p6m
+            case "dupinSqz3":
+                return  Log(3) - Log( 3 + psqueeze3(Cos(p.x)) + psqueeze3(Cos(p.y)) );// dupin_sqz3
+            case "dupinSqz5":
+                return  Log(3) - Log( 3 + psqueeze5(Cos(p.x)) + psqueeze5(Cos(p.y)) );// dupin_sqz5
         }
     }
 
-    private Vector2 confun_grad(Vector2 p, int n)
+    private Vector2 confun_grad( Vector2 p )
     {
-        switch (n)
+        switch( metricName )
         {
-            case 1:
+            default:
                 return new Vector2( 0f, 0f );
-            case 2:
-                return new Vector2( -Sin(p.x), 0f ) / 4;
-            case 3:
+            case "tp_flat":
+                return new Vector2( 0f, 0f );
+            case "hp_flat":
+                return new Vector2( 0f, 0f );
+            case "mp_flat":
+                return new Vector2( 0f, 0f );
+            case "op_flat":
+                return new Vector2( 0f, 0f );
+            case "oc_flat":
+                return new Vector2( 0f, 0f );
+            case "torus":
+                return new Vector2( 0f, Sin(p.y*a1) * a1 / ( 2 + Cos(p.y*a1) ) );
+            case "torusPsi":
+                return new Vector2( 0f, a1 * Sin(p.y*a1) / 4 );
+            case "torusPsiSqz":
+                return new Vector2( 0f, a1 * Sin(p.y*a1)*(1-Pow(Cos(p.y*a1),2)) * (3f/8) );
+            case "dgBump":
                 return new Vector2( -Sin(p.x)*Cos(p.y), -Cos(p.x)*Sin(p.y) ) / 4;
-            case 4:
+            case "sqBump":
                 return new Vector2( Sin(p.x)*(1-Cos(p.y)), Sin(p.y)*(1-Cos(p.x)) ) / 4;
-            case 5:
+            case "sqAntiBump":
                 return new Vector2( Sin(p.x)*(Cos(p.y)-1), Sin(p.y)*(Cos(p.x)-1) ) / 7;
-            case 6:
-                return new Vector2( Sin(p.x)*(1-Pow(Cos(p.x),2)), 0 ) * ( -3f / 8 );
-            case 7:
+            case "dgBumpSqz":
                 return new Vector2( Sin(p.x)*(1-Pow(Cos(p.x),2))*Cos(p.y)*(3-Pow(Cos(p.y),2)),
-                                    Sin(p.y)*(1-Pow(Cos(p.y),2))*Cos(p.x)*(3-Pow(Cos(p.x),2))  )
-                                        *
-                                    ( -3f / 8 );
-            case 8:
-                return new Vector2( 0f, 0f );
-            case 9:
-                return new Vector2( 0f,
-                                    Sin(p.y*Sqrt(3)) )
-                                        *
-                                    ( -Sqrt(3) ) / ( 2 - Cos(p.y*Sqrt(3)) );
-            case 10:// hp_p4
-                return new Vector2( Sin(p.x) + Sin( p.x + p.y/2 )   - Sin( -p.x/2 + p.y )/2,
+                                    Sin(p.y)*(1-Pow(Cos(p.y),2))*Cos(p.x)*(3-Pow(Cos(p.x),2))  ) * (-3f/8);
+            case "tp_p4":
+                return new Vector2( Sin(p.x) + Sin(p.x+p.y/2) - Sin(-p.x/2+p.y)/2,
                                     Sin(p.y) + Sin( p.x + p.y/2 )/2 + Sin( -p.x/2 + p.y )    )
                                         /
                                     ( 6 + Cos(p.x) + Cos(p.y) + Cos( p.x + p.y/2 ) + Cos( -p.x/2 + p.y ) );
-            case 11:// dupin (p4m)
-                return new Vector2( Sin(p.x),
-                                    Sin(p.y)  )
-                                        /
-                                    ( 3 + Cos(p.x) + Cos(p.y) );
-            case 12:// tp_p4g
+            case "dupin":// dupin (p4m)
+                return new Vector2( Sin(p.x), Sin(p.y) ) / ( 3 + Cos(p.x) + Cos(p.y) );
+            case "tp_p4g":
                 return new Vector2( Sin(p.x/2)*Cos(p.y/2)/2 - Cos(p.x/2)*Sin(p.y)/2 + Cos(p.x)*Sin(p.y/2),
                                     Cos(p.x/2)*Sin(p.y/2)/2 - Sin(p.x/2)*Cos(p.y)   + Sin(p.x)*Cos(p.y/2)/2 )
                                         /
                                     ( 5 + Cos(p.x/2)*Cos(p.y/2) + Sin(p.x/2)*Sin(p.y) - Sin(p.x)*Sin(p.y/2) );
-            case 13:// hp_p3
+            case "hp_p3":
                 return new Vector2( sip_dx(p,k1) + sip_dx(p,k2) + sip_dx(p,k3) + sip_dx(p,k4) + sip_dx(p,k5) + sip_dx(p,k6),
                                     sip_dy(p,k1) + sip_dy(p,k2) + sip_dy(p,k3) + sip_dy(p,k4) + sip_dy(p,k5) + sip_dy(p,k6)  )
                                         /
                                     -( 9 + sip(p,k1) + sip(p,k2) + sip(p,k3) + sip(p,k4) + sip(p,k5) + sip(p,k6) );
-            case 14:// hp_p31m
+            case "hp_p31m":
                 return new Vector2( 2*a4*Sin(p.x*a4)*Cos(p.y*a5)                  - 2*a1*Cos(p.x*a1)*Cos(p.y*a2) + a3*Cos(p.x*a3),
                                     2*a5*Cos(p.x*a4)*Sin(p.y*a5) + a6*Sin(p.y*a6) + 2*a2*Sin(p.x*a1)*Sin(p.y*a2)                   )
                                         /
                                     ( 8 + 2*Cos(p.x*a4)*Cos(p.y*a5) + Cos(p.y*a6) + 2*Sin(p.x*a1)*Cos(p.y*a2) - Sin(p.x*a3) );
-            case 15:// hp_p3m1
+            case "hp_p3m1":
                 return new Vector2( sip_dx(p,k1) + sip_dx(p,k2) + sip_dx(p,k3),
                                     sip_dy(p,k1) + sip_dy(p,k2) + sip_dy(p,k3)  )
                                         /
                                     -( 5 + sip(p,k1) + sip(p,k2) + sip(p,k3) );
-            case 16:// hp_p6
+            case "hp_p6":
                 return new Vector2( cop_dx(p,k1) + cop_dx(p,k2) + cop_dx(p,k3) + cop_dx(p,k4) + cop_dx(p,k5) + cop_dx(p,k6),
                                     cop_dy(p,k1) + cop_dy(p,k2) + cop_dy(p,k3) + cop_dy(p,k4) + cop_dy(p,k5) + cop_dy(p,k6)  )
                                         /
                                     -( 9 + cop(p,k1) + cop(p,k2) + cop(p,k3) + cop(p,k4) + cop(p,k5) + cop(p,k6) );
-            case 17:// hp_p6m
+            case "hp_p6m":
                 return new Vector2( cop_dx(p,k1) + cop_dx(p,k2) + cop_dx(p,k3),
                                     cop_dy(p,k1) + cop_dy(p,k2) + cop_dy(p,k3)  )
                                         /
                                     -( 5 + cop(p,k1) + cop(p,k2) + cop(p,k3) );
-            case 18:// dupin_sqz3
+            case "dupinSqz3":
                 return new Vector2( Sin(p.x)*psqueeze3_d(Cos(p.x)),
                                     Sin(p.y)*psqueeze3_d(Cos(p.y))  )
                                         /
                                     ( 3 + psqueeze3(Cos(p.x)) + psqueeze3(Cos(p.y)) );
-            case 19:// dupin_sqz5
+            case "dupinSqz5":
                 return new Vector2( Sin(p.x)*psqueeze5_d(Cos(p.x)),
                                     Sin(p.y)*psqueeze5_d(Cos(p.y))  )
                                         /
                                     ( 3 + psqueeze5(Cos(p.x)) + psqueeze5(Cos(p.y)) );
-            case 20:// mp_flat
-                return new Vector2( 0f, 0f );
-            case 21:// op_flat
-                return new Vector2( 0f, 0f );
-            default:// oc_flat
-                return new Vector2( 0f, 0f );
         }
     }
     
@@ -376,15 +370,15 @@ public class ScreenScript : MonoBehaviour
         return new Vector2( -v.y, v.x );
     }
 
-    private float distance( Vector2 p, Vector2 q, int n )
+    private float distance( Vector2 p, Vector2 q )
     {
         Vector2  diff  =  reset_to_fundamental_domain( p - q );
-        return diff.magnitude * Exp( 0.5f*(confun(p,n)+confun(q,n)) );
+        return diff.magnitude * Exp( 0.5f*( confun(p) + confun(q) ) );
     }
 
-    private Vector2 christoffel( Vector2 p, Vector2 u, Vector2 v, int n )
+    private Vector2 christoffel( Vector2 p, Vector2 u, Vector2 v )
     {
-        Vector2 cfd  =  confun_grad( p, n );
+        Vector2 cfd  =  confun_grad( p );
 
         float a  =  u.x*v.x - u.y*v.y;
         float b  =  u.x*v.y + u.y*v.x;
@@ -392,45 +386,45 @@ public class ScreenScript : MonoBehaviour
         return new Vector2( cfd.x*a + cfd.y*b, -cfd.y*a + cfd.x*b );
     }
 
-    private Vector2 parallel_transport_step__euler(Vector2 x, Vector2 dx, Vector2 y, float dt, int n)
+    private Vector2 parallel_transport_step__euler(Vector2 x, Vector2 dx, Vector2 y, float dt)
     {
-        return y - dt*christoffel( x, dx, y, n );
+        return y - dt*christoffel( x, dx, y );
     }
 
-    private void apply_geodesic_step__euler(ref Vector2 p, ref Vector2 v, float dt, int n)
+    private void apply_geodesic_step__euler(ref Vector2 p, ref Vector2 v, float dt)
     {
-        Vector2 Ga = christoffel( p, v, v, n );
+        Vector2 Ga = christoffel( p, v, v );
 
         p += dt*v;
         v -= dt*Ga;
     }
 
-    private void apply_geodesic_step__midpoint( ref Vector2 p, ref Vector2 v, float dt, int n )
+    private void apply_geodesic_step__midpoint( ref Vector2 p, ref Vector2 v, float dt )
     {
-        Vector2 Ga  =  christoffel( p, v, v, n );
+        Vector2 Ga  =  christoffel( p, v, v );
 
         Vector2 p_m  =  p + (dt/2)*v;
         Vector2 v_m  =  v - (dt/2)*Ga;
 
-        Vector2 Ga_m  =  christoffel( p_m, v_m, v_m, n );
+        Vector2 Ga_m  =  christoffel( p_m, v_m, v_m );
 
         p  =  p + dt*v_m;
         v  =  v - dt*Ga_m;
     }
 
-    private void propagate_rocket( ref Vector4 rp, float dt, int n )
+    private void propagate_rocket( ref Vector4 rp, float dt )
     {
         Vector2  rp_p  =  new Vector2( rp.x, rp.y );
         Vector2  rp_v  =  new Vector2( rp.z, rp.w );
 
-        apply_geodesic_step__midpoint( ref rp_p, ref rp_v, dt, n );
+        apply_geodesic_step__midpoint( ref rp_p, ref rp_v, dt );
 
         rp  =  new Vector4( rp_p.x, rp_p.y, rp_v.x, rp_v.y );
     }
 
     private Vector2 move2vel( Vector2 pos, Vector2 moveVec, float camAng_deg, float speed )
     {
-        return rotate_by_angle( moveVec, deg2rad(camAng_deg) ) * ( Exp( -confun( pos, metricNumber ) ) * (speed) );
+        return rotate_by_angle( moveVec, deg2rad(camAng_deg) ) * ( Exp( -confun( pos ) ) * speed );
     }
 
     private Vector2 reset_to_domain_unit_square( Vector2 p )
@@ -498,15 +492,9 @@ public class ScreenScript : MonoBehaviour
 
         switch( gsmNumber )
         {
-            case 1:
-                GSMField.text = "RK4";
-                break;
-            case 2:
-                GSMField.text = "midp";
-                break;
-            case 3:
-                GSMField.text = "euler";
-                break;
+            default:    GSMField.text = "RK4";      break;
+            case 2:     GSMField.text = "midp";     break;
+            case 3:     GSMField.text = "euler";    break;
         }
     }
 
@@ -528,80 +516,127 @@ public class ScreenScript : MonoBehaviour
         {
             switch( metricNumber )
             {
-                case 1:
-                    metricName  =  "tp_flat";
+                default:    metricName  =  "tp_flat";       break;
+                case 1:     metricName  =  "tp_flat";       break;
+                case 2:     metricName  =  "op_flat";       break;
+                case 3:     metricName  =  "hp_flat";       break;
+                case 4:     metricName  =  "oc_flat";       break;
+                case 5:     metricName  =  "mp_flat";       break;
+                case 6:     metricName  =  "torus";         break;
+                case 7:     metricName  =  "torusPsi";      break;
+                case 8:     metricName  =  "torusPsiSqz";   break;
+                case 9:     metricName  =  "dgBump";        break;
+                case 12:    metricName  =  "dgBumpSqz";     break;
+                case 10:    metricName  =  "sqBump";        break;
+                case 11:    metricName  =  "sqAntiBump";    break;
+                case 13:    metricName  =  "tp_p4";         break;
+                case 14:    metricName  =  "dupin";         break;
+                case 15:    metricName  =  "dupinSqz3";     break;
+                case 16:    metricName  =  "dupinSqz5";     break;
+                case 17:    metricName  =  "tp_p4g";        break;
+                case 18:    metricName  =  "hp_p3";         break;
+                case 19:    metricName  =  "hp_p31m";       break;
+                case 20:    metricName  =  "hp_p3m1";       break;
+                case 21:    metricName  =  "hp_p6";         break;
+                case 22:    metricName  =  "hp_p6m";        break;
+            }
+
+            switch( metricName )
+            {
+                default:
                     domainName  =  "square";
                     roadsType  =  11;
                     set_fuDo_square( 2*PI );
                     break;
-                case 2:
-                    metricName  =  "torusPsi";
-                    domainName  =  "square";
-                    roadsType  =  7;
-                    set_fuDo_square( 2*PI );
-                    break;
-                case 3:
-                    metricName  =  "dgBump";
+                case "tp_flat":
                     domainName  =  "square";
                     roadsType  =  11;
                     set_fuDo_square( 2*PI );
                     break;
-                case 4:
-                    metricName  =  "sqBump";
-                    domainName  =  "square";
-                    roadsType  =  11;
-                    set_fuDo_square( 2*PI );
-                    break;
-                case 5:
-                    metricName  =  "sqAntiBump";
-                    domainName  =  "square";
-                    roadsType  =  11;
-                    set_fuDo_square( 2*PI );
-                    break;
-                case 6:
-                    metricName  =  "torusPsiSqz";
-                    domainName  =  "square";
-                    roadsType  =  7;
-                    set_fuDo_square( 2*PI );
-                    break;
-                case 7:
-                    metricName  =  "dgBumpSqz";
-                    domainName  =  "square";
-                    roadsType  =  11;
-                    set_fuDo_square( 2*PI );
-                    break;
-                case 8:
-                    metricName  =  "hp_flat";
+                case "hp_flat":
                     domainName  =  "hexagon";
                     roadsType  =  17;
                     set_fuDo_hexagon( 2*PI );
                     break;
-                case 9:
-                    metricName  =  "torus";
+                case "mp_flat":
+                    domainName  =  "oblique";
+                    roadsType  =  1;
+                    set_fuDo( 2*PI, 2*PI, 2*PI/3 );
+                    break;
+                case "op_flat":
+                    domainName  =  "rectangle";
+                    roadsType  =  1;
+                    set_fuDo_rectangle( 2*PI, 3*PI );
+                    break;
+                case "oc_flat":
+                    domainName  =  "centered";
+                    roadsType  =  1;
+                    set_fuDo_centered( 2*PI, 2*PI );
+                    break;
+                case "torus":
                     domainName  =  "rectangle";
                     roadsType  =  7;
                     set_fuDo_rectangle( 2*PI, 2*PI/Sqrt(3) );
+                    a1  =  2*PI / fuDo.h;
                     break;
-                case 10:
-                    metricName  =  "tp_p4";
+                case "torusPsi":
                     domainName  =  "square";
-                    roadsType  =  10;
-                    set_fuDo_square( 4*PI );
+                    roadsType  =  7;
+                    set_fuDo_square( 2*PI );
+                    a1  =  2*PI / fuDo.h;
                     break;
-                case 11:
-                    metricName  =  "dupin";
+                case "torusPsiSqz":
+                    domainName  =  "square";
+                    roadsType  =  7;
+                    set_fuDo_square( 2*PI );
+                    a1  =  2*PI / fuDo.h;
+                    break;
+                case "dupinSqz3":
                     domainName  =  "square";
                     roadsType  =  11;
                     set_fuDo_square( 2*PI );
                     break;
-                case 12:
-                    metricName  =  "tp_p4g";
+                case "dgBump":
+                    domainName  =  "square";
+                    roadsType  =  11;
+                    set_fuDo_square( 2*PI );
+                    break;
+                case "sqBump":
+                    domainName  =  "square";
+                    roadsType  =  11;
+                    set_fuDo_square( 2*PI );
+                    break;
+                case "sqAntiBump":
+                    domainName  =  "square";
+                    roadsType  =  11;
+                    set_fuDo_square( 2*PI );
+                    break;
+                case "dgBumpSqz":
+                    domainName  =  "square";
+                    roadsType  =  11;
+                    set_fuDo_square( 2*PI );
+                    break;
+                case "dupinSqz5":
+                    domainName  =  "square";
+                    roadsType  =  11;
+                    set_fuDo_square( 2*PI );
+                    break;
+                case "tp_p4":
+                    domainName  =  "square";
+                    roadsType  =  10;
+                    set_fuDo_square( 4*PI );
+                    break;
+                case "dupin":
+                    domainName  =  "square";
+                    roadsType  =  11;
+                    set_fuDo_square( 2*PI );
+                    break;
+                case "tp_p4g":
                     domainName  =  "square";
                     roadsType  =  12;
                     set_fuDo_square( 4*PI );
                     break;
-                case 13:
-                    metricName  =  "hp_p3";
+                case "hp_p3":
                     domainName  =  "hexagon";
                     roadsType  =  13;
                     set_fuDo_hexagon( 4*PI );
@@ -612,8 +647,7 @@ public class ScreenScript : MonoBehaviour
                     k5  =  rot120( k4 );
                     k6  =  rot240( k4 );
                     break;
-                case 14:
-                    metricName  =  "hp_p31m";
+                case "hp_p31m":
                     domainName  =  "hexagon";
                     roadsType  =  14;
                     set_fuDo_hexagon( 4*PI );
@@ -624,8 +658,7 @@ public class ScreenScript : MonoBehaviour
                     a5  =  4*PI / fuDo.w / Sqrt(3);
                     a6  =  8*PI / fuDo.w / Sqrt(3);
                     break;
-                case 15:
-                    metricName  =  "hp_p3m1";
+                case "hp_p3m1":
                     domainName  =  "hexagon";
                     roadsType  =  15;
                     set_fuDo_hexagon( 2*PI );
@@ -633,8 +666,7 @@ public class ScreenScript : MonoBehaviour
                     k2  =  rot120( k1 );
                     k3  =  rot240( k1 );
                     break;
-                case 16:
-                    metricName  =  "hp_p6";
+                case "hp_p6":
                     domainName  =  "hexagon";
                     roadsType  =  16;
                     set_fuDo_hexagon( 4*PI );
@@ -645,44 +677,13 @@ public class ScreenScript : MonoBehaviour
                     k5  =  rot120( k4 );
                     k6  =  rot240( k4 );
                     break;
-                case 17:
-                    metricName  =  "hp_p6m";
+                case "hp_p6m":
                     domainName  =  "hexagon";
                     roadsType  =  17;
                     set_fuDo_hexagon( 2*PI );
                     k1  =  dual_lattice_vector( 0, 1 );
                     k2  =  rot120( k1 );
                     k3  =  rot240( k1 );
-                    break;
-                case 18:
-                    metricName  =  "dupinSqz3";
-                    domainName  =  "square";
-                    roadsType  =  11;
-                    set_fuDo_square( 2*PI );
-                    break;
-                case 19:
-                    metricName  =  "dupinSqz5";
-                    domainName  =  "square";
-                    roadsType  =  11;
-                    set_fuDo_square( 2*PI );
-                    break;
-                case 20:
-                    metricName  =  "mp_flat";
-                    domainName  =  "oblique";
-                    roadsType  =  1;
-                    set_fuDo( 2*PI, 2*PI, 2*PI/3 );
-                    break;
-                case 21:
-                    metricName  =  "op_flat";
-                    domainName  =  "rectangle";
-                    roadsType  =  1;
-                    set_fuDo_rectangle( 2*PI, 3*PI );
-                    break;
-                default:
-                    metricName  =  "oc_flat";
-                    domainName  =  "centered";
-                    roadsType  =  1;
-                    set_fuDo_centered( 2*PI, 2*PI );
                     break;
             }
 
@@ -722,7 +723,7 @@ public class ScreenScript : MonoBehaviour
             rocketsLive[nextRocket] = rocketInitialLive;
             rocketsState[nextRocket] = material.GetVector("_CamPos");
 
-            float rsf = rocketSpeed * Exp(-confun(new Vector2(rocketsState[nextRocket].x, rocketsState[nextRocket].y), metricNumber));
+            float rsf = rocketSpeed * Exp( -confun( new Vector2(rocketsState[nextRocket].x, rocketsState[nextRocket].y ) ) );
 
             rocketsState[nextRocket].z *= rsf;
             rocketsState[nextRocket].w *= rsf;
@@ -744,7 +745,7 @@ public class ScreenScript : MonoBehaviour
 
         if( vulture.state.vel.magnitude > 0 )
         {
-            Vector2  accel  =  -christoffel( vulture.state.pos, vulture.state.vel, vulture.state.vel, metricNumber );
+            Vector2  accel  =  -christoffel( vulture.state.pos, vulture.state.vel, vulture.state.vel );
 
             da  =  dt * det( accel, vulture.state.vel ) / sqn( vulture.state.vel );
 
@@ -763,7 +764,7 @@ public class ScreenScript : MonoBehaviour
 
     private void update_rocket( int k )
     {
-        propagate_rocket( ref rocketsState[k], Time.deltaTime, metricNumber );
+        propagate_rocket( ref rocketsState[k], Time.deltaTime );
 
         if( rocketsLive[k] > 0 )
             rocketsLive[k] -= Time.deltaTime;        
@@ -778,7 +779,7 @@ public class ScreenScript : MonoBehaviour
     private void detect_vulture_rocket_collisions()
     {
         for( int k = 0; k < 16; k++ )
-            if( distance( new Vector2( rocketsState[k].x, rocketsState[k].y ), vulture.state.pos, metricNumber ) < 0.35f )
+            if( distance( new Vector2( rocketsState[k].x, rocketsState[k].y ), vulture.state.pos ) < 0.35f )
                 if( rocketsLive[k] < 3f )
                     rocketsLive[k] = 0f;
     }

@@ -38,10 +38,19 @@ Shader "Custom/Confmets/torus"
 
             #include "Common/ConfMetsShaderPreamble.hlsl"
 
-            float  psi(      float2 p ){ return log( 3 ) - log( 2 - cos(p.y*sqrt(3)) ); }
-            float2 psi_grad( float2 p ){ return float2( 0, -sqrt(3)*sin(p.y*sqrt(3)) ) / ( 2 - cos(p.y*sqrt(3)) ); }
+            static float a1 = 2*PI/u2p.w;
 
-            #include "Common/ConfMets_psi.hlsl"
+            float mu( float2 p )
+            {
+                return ( 2 + cos(p.y*a1) ) / 3;
+            }
+            
+            float2 mu_grad( float2 p )
+            {
+                return float2( 0, -a1*sin(p.y*a1) / 3 );
+            }
+
+            #include "Common/ConfMets_mu.hlsl"
             #include "Common/ConfMetsIncludes.hlsl"
             #include "Common/FragMain.hlsl"
 

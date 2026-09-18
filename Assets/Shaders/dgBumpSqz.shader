@@ -38,8 +38,15 @@ Shader "Custom/Confmets/dgBumpSqz"
 
             #include "Common/ConfMetsShaderPreamble.hlsl"
 
-            float  psi(      float2 p ){ return 0.5 + cos(p.x)*(3-pow(cos(p.x),2))*cos(p.y)*(3-pow(cos(p.y),2))/8; }
-            float2 psi_grad( float2 p ){ return float2( -3*sin(p.x)*(1-pow(cos(p.x),2))*cos(p.y)*(3-pow(cos(p.y),2))/8, -3*sin(p.y)*(1-pow(cos(p.y),2))*cos(p.x)*(3-pow(cos(p.x),2))/8 ); }
+            float psi( float2 p )
+            {
+                return 0.5 + cos(p.x)*(3-pow(cos(p.x),2))*cos(p.y)*(3-pow(cos(p.y),2))/8;
+            }
+            float2 psi_grad( float2 p )
+            {
+                return float2(  -3*sin(p.x)*(1-pow(cos(p.x),2))*cos(p.y)*(3-pow(cos(p.y),2))/8,
+                                -3*sin(p.y)*(1-pow(cos(p.y),2))*cos(p.x)*(3-pow(cos(p.x),2))/8 );
+            }
 
             #include "Common/ConfMets_psi.hlsl"
             #include "Common/ConfMetsIncludes.hlsl"

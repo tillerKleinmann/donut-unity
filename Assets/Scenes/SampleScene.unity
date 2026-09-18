@@ -638,6 +638,10 @@ MonoBehaviour:
   metricNumber: 1
   textureNumber: 1
   gsmNumber: 1
+  roadsType: 1
+  metricCount: 22
+  textureCount: 4
+  roadsTypeCount: 17
   domainField: {fileID: 236050780}
   metricField: {fileID: 1403395823}
   textureField: {fileID: 1748283655}
@@ -1175,7 +1179,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Domain :
+  m_Text: 'FuDo Type :
 
 '
 --- !u!222 &922891772
@@ -1638,7 +1642,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: sqFlat
+  m_text: tp_flat
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
