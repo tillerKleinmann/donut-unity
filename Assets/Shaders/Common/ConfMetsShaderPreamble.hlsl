@@ -76,3 +76,5 @@ static const float dpAl = 2*PI*dpal;
 static const float dpBe = 2*PI*dpbe;
 
 static const float gameTime  =  _GameTime;
+
+#include "Common/ConfMetsWaveVec.hlsl"

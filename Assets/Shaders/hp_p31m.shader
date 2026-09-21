@@ -37,7 +37,6 @@ Shader "Custom/Confmets/hp_p31m"
             #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/GlobalSamplers.hlsl"
 
             #include "Common/ConfMetsShaderPreamble.hlsl"
-            #include "Common/ConfMetsWaveVec.hlsl"
 
             static const float  a1  =  2*PI / u2p.x;
             static const float  a2  =  2*PI / u2p.x * sqrt(3);

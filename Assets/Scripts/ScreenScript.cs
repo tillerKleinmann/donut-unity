@@ -237,32 +237,32 @@ public class ScreenScript : MonoBehaviour
                 return  0.5f - Cos(p.y*a1)*(3-Pow(Cos(p.y*a1),2))/8;
             case "dgBump":
                 return  Cos(p.x)*Cos(p.y) / 4;
+            case "dgBumpSqz":
+                return  ( 4 + Cos(p.x)*(3-Pow(Cos(p.x),2))*Cos(p.y)*(3-Pow(Cos(p.y),2)) ) / 8;
             case "sqBump":
                 return  (1-Cos(p.x))*(1-Cos(p.y)) / 4;
             case "sqAntiBump":
                 return  ( 2 - (1-Cos(p.x))*(1-Cos(p.y)) ) / 7;
-            case "dgBumpSqz":
-                return  ( 4 + Cos(p.x)*(3-Pow(Cos(p.x),2))*Cos(p.y)*(3-Pow(Cos(p.y),2)) ) / 8;
             case "tp_p4":
-                return  Log(6) - Log( 6 + Cos(p.x) + Cos(p.y) + Cos( p.x + p.y/2 ) + Cos( -p.x/2 + p.y ) );// tp_p4
-            case "dupin":
-                return  Log(3) - Log( 3 + Cos(p.x) + Cos(p.y) );// dupin (tp_p4m)
-            case "tp_p4g":
-                return  Log(5) - Log( 5 + Cos(p.x/2)*Cos(p.y/2) + Sin(p.x/2)*Sin(p.y) - Sin(p.x)*Sin(p.y/2) );// tp_p4g
-            case "hp_p3":
-                return  Log(9) - Log( 9 + sip(p,k1) + sip(p,k2) + sip(p,k3) + sip(p,k4) + sip(p,k5) + sip(p,k6) );// hp_p3
-            case "hp_p31m":
-                return  Log(8) - Log( 8 + 2*Cos(p.x*a4)*Cos(p.y*a5) + Cos(p.y*a6) + 2*Sin(p.x*a1)*Cos(p.y*a2) - Sin(p.x*a3) );// hp_p31m
-            case "hp_p3m1":
-                return  Log(5) - Log( 5 + sip(p,k1) + sip(p,k2) + sip(p,k3) );// hp_p3m1
-            case "hp_p6":
-                return  Log(9) - Log( 9 + cop(p,k1) + cop(p,k2) + cop(p,k3) + cop(p,k4) + cop(p,k5) + cop(p,k6) );// hp_p6
-            case "hp_p6m":
-                return  Log(5) - Log( 5 + cop(p,k1) + cop(p,k2) + cop(p,k3) );// hp_p6m
+                return  Log(6) - Log( 6 + Cos(p.x) + Cos(p.y) + Cos( p.x + p.y/2 ) + Cos( -p.x/2 + p.y ) );
+            case "dupin": // p4m
+                return  Log(3) - Log( 3 + Cos(p.x) + Cos(p.y) );
             case "dupinSqz3":
-                return  Log(3) - Log( 3 + psqueeze3(Cos(p.x)) + psqueeze3(Cos(p.y)) );// dupin_sqz3
+                return  Log(3) - Log( 3 + psqueeze3(Cos(p.x)) + psqueeze3(Cos(p.y)) );
             case "dupinSqz5":
-                return  Log(3) - Log( 3 + psqueeze5(Cos(p.x)) + psqueeze5(Cos(p.y)) );// dupin_sqz5
+                return  Log(3) - Log( 3 + psqueeze5(Cos(p.x)) + psqueeze5(Cos(p.y)) );
+            case "tp_p4g":
+                return  Log(5) - Log( 5 + Cos(p.x/2)*Cos(p.y/2) + Sin(p.x/2)*Sin(p.y) - Sin(p.x)*Sin(p.y/2) );
+            case "hp_p3":
+                return  Log(9) - Log( 9 + sip(p,k1) + sip(p,k2) + sip(p,k3) + sip(p,k4) + sip(p,k5) + sip(p,k6) );
+            case "hp_p31m":
+                return  Log(8) - Log( 8 + 2*Sin(p.x*a1)*Cos(p.y*a2) - Sin(p.x*a3) + 2*Cos(p.x*a4)*Cos(p.y*a5) + Cos(p.y*a6) );
+            case "hp_p3m1":
+                return  Log(5) - Log( 5 + sip(p,k1) + sip(p,k2) + sip(p,k3) );
+            case "hp_p6":
+                return  Log(9) - Log( 9 + cop(p,k1) + cop(p,k2) + cop(p,k3) + cop(p,k4) + cop(p,k5) + cop(p,k6) );
+            case "hp_p6m":
+                return  Log(5) - Log( 5 + cop(p,k1) + cop(p,k2) + cop(p,k3) );
         }
     }
 
@@ -290,20 +290,30 @@ public class ScreenScript : MonoBehaviour
                 return new Vector2( 0f, a1 * Sin(p.y*a1)*(1-Pow(Cos(p.y*a1),2)) * (3f/8) );
             case "dgBump":
                 return new Vector2( -Sin(p.x)*Cos(p.y), -Cos(p.x)*Sin(p.y) ) / 4;
+            case "dgBumpSqz":
+                return new Vector2( Sin(p.x)*(1-Pow(Cos(p.x),2))*Cos(p.y)*(3-Pow(Cos(p.y),2)),
+                                    Sin(p.y)*(1-Pow(Cos(p.y),2))*Cos(p.x)*(3-Pow(Cos(p.x),2))  ) * (-3f/8);
             case "sqBump":
                 return new Vector2( Sin(p.x)*(1-Cos(p.y)), Sin(p.y)*(1-Cos(p.x)) ) / 4;
             case "sqAntiBump":
                 return new Vector2( Sin(p.x)*(Cos(p.y)-1), Sin(p.y)*(Cos(p.x)-1) ) / 7;
-            case "dgBumpSqz":
-                return new Vector2( Sin(p.x)*(1-Pow(Cos(p.x),2))*Cos(p.y)*(3-Pow(Cos(p.y),2)),
-                                    Sin(p.y)*(1-Pow(Cos(p.y),2))*Cos(p.x)*(3-Pow(Cos(p.x),2))  ) * (-3f/8);
             case "tp_p4":
                 return new Vector2( Sin(p.x) + Sin(p.x+p.y/2) - Sin(-p.x/2+p.y)/2,
-                                    Sin(p.y) + Sin( p.x + p.y/2 )/2 + Sin( -p.x/2 + p.y )    )
+                                    Sin(p.y) + Sin( p.x + p.y/2 )/2 + Sin( -p.x/2 + p.y ) )
                                         /
                                     ( 6 + Cos(p.x) + Cos(p.y) + Cos( p.x + p.y/2 ) + Cos( -p.x/2 + p.y ) );
-            case "dupin":// dupin (p4m)
+            case "dupin":// p4m
                 return new Vector2( Sin(p.x), Sin(p.y) ) / ( 3 + Cos(p.x) + Cos(p.y) );
+            case "dupinSqz3":
+                return new Vector2( Sin(p.x)*psqueeze3_d(Cos(p.x)),
+                                    Sin(p.y)*psqueeze3_d(Cos(p.y))  )
+                                        /
+                                    ( 3 + psqueeze3(Cos(p.x)) + psqueeze3(Cos(p.y)) );
+            case "dupinSqz5":
+                return new Vector2( Sin(p.x)*psqueeze5_d(Cos(p.x)),
+                                    Sin(p.y)*psqueeze5_d(Cos(p.y))  )
+                                        /
+                                    ( 3 + psqueeze5(Cos(p.x)) + psqueeze5(Cos(p.y)) );
             case "tp_p4g":
                 return new Vector2( Sin(p.x/2)*Cos(p.y/2)/2 - Cos(p.x/2)*Sin(p.y)/2 + Cos(p.x)*Sin(p.y/2),
                                     Cos(p.x/2)*Sin(p.y/2)/2 - Sin(p.x/2)*Cos(p.y)   + Sin(p.x)*Cos(p.y/2)/2 )
@@ -334,16 +344,6 @@ public class ScreenScript : MonoBehaviour
                                     cop_dy(p,k1) + cop_dy(p,k2) + cop_dy(p,k3)  )
                                         /
                                     -( 5 + cop(p,k1) + cop(p,k2) + cop(p,k3) );
-            case "dupinSqz3":
-                return new Vector2( Sin(p.x)*psqueeze3_d(Cos(p.x)),
-                                    Sin(p.y)*psqueeze3_d(Cos(p.y))  )
-                                        /
-                                    ( 3 + psqueeze3(Cos(p.x)) + psqueeze3(Cos(p.y)) );
-            case "dupinSqz5":
-                return new Vector2( Sin(p.x)*psqueeze5_d(Cos(p.x)),
-                                    Sin(p.y)*psqueeze5_d(Cos(p.y))  )
-                                        /
-                                    ( 3 + psqueeze5(Cos(p.x)) + psqueeze5(Cos(p.y)) );
         }
     }
     
@@ -591,12 +591,12 @@ public class ScreenScript : MonoBehaviour
                     set_fuDo_square( 2*PI );
                     a1  =  2*PI / fuDo.h;
                     break;
-                case "dupinSqz3":
+                case "dgBump":
                     domainName  =  "square";
                     roadsType  =  11;
                     set_fuDo_square( 2*PI );
                     break;
-                case "dgBump":
+                case "dgBumpSqz":
                     domainName  =  "square";
                     roadsType  =  11;
                     set_fuDo_square( 2*PI );
@@ -611,22 +611,22 @@ public class ScreenScript : MonoBehaviour
                     roadsType  =  11;
                     set_fuDo_square( 2*PI );
                     break;
-                case "dgBumpSqz":
-                    domainName  =  "square";
-                    roadsType  =  11;
-                    set_fuDo_square( 2*PI );
-                    break;
-                case "dupinSqz5":
-                    domainName  =  "square";
-                    roadsType  =  11;
-                    set_fuDo_square( 2*PI );
-                    break;
                 case "tp_p4":
                     domainName  =  "square";
                     roadsType  =  10;
                     set_fuDo_square( 4*PI );
                     break;
                 case "dupin":
+                    domainName  =  "square";
+                    roadsType  =  11;
+                    set_fuDo_square( 2*PI );
+                    break;
+                case "dupinSqz3":
+                    domainName  =  "square";
+                    roadsType  =  11;
+                    set_fuDo_square( 2*PI );
+                    break;
+                case "dupinSqz5":
                     domainName  =  "square";
                     roadsType  =  11;
                     set_fuDo_square( 2*PI );

@@ -37,7 +37,6 @@ Shader "Custom/Confmets/hp_p6m"
             #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/GlobalSamplers.hlsl"
 
             #include "Common/ConfMetsShaderPreamble.hlsl"
-            #include "Common/ConfMetsWaveVec.hlsl"
 
             static const float2  k1  =  dual_lattice_vector( 0, 1 );
             static const float2  k2  =  rot120( k1 );

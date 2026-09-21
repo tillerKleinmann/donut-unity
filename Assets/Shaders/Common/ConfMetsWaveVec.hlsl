@@ -3,7 +3,7 @@ float2 dual_lattice_vector( int k, int l )
     return float2( k / dp_b, l / dp_h  -  k * (dp_s/(dp_b*dp_h)) ) * 2*PI;
 }
 
-float2 rot180( float2 p ){ return float2( -p.x,  p.y ); }
+float2 rot180( float2 p ){ return float2( -p.x, -p.y ); }
 
 float2 rot90(  float2 p ){ return float2( -p.y,  p.x ); }
 float2 rot270( float2 p ){ return float2(  p.y, -p.x ); }
