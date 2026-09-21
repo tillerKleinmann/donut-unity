@@ -39,7 +39,7 @@ half4 frag( Varyings IN ) : SV_Target
 
         float2 uv  =  mul( tarPos, plg2usq );
 
-        uv  =  rot90( uv );
+        uv  =  rot270( uv );
 
         uv  +=  float2(1,1)*0.5;
 
