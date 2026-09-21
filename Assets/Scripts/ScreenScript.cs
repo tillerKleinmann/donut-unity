@@ -10,11 +10,11 @@ public class ScreenScript : MonoBehaviour
 
     public InputActionAsset InputActions;
 
-    public float vultureMoveSpeed = 2.0f, visionRadius = 2.0f*PI, rocketSpeed = 11.0f, rocketInitialLive = 3.142f;
+    public float vultureMoveSpeed, visionRadius, rocketSpeed, rocketInitialLive;
 
-    public int accuracy = 16, metricNumber = 1, textureNumber = 1, gsmNumber = 1, roadsType = 1;
+    public int accuracy, metricNumber, textureNumber, gsmNumber, roadsType;
 
-    public int metricCount = 22, textureCount = 4, roadsTypeCount = 17;
+    public int metricCount, textureCount, roadsTypeCount;
 
     private InputAction moveAction, nextMetric, prevMetric, incrVisRad, decrVisRad, incrAccuracy, decrAccuracy, nextTexture, prevTexture, nextRoadsType, prevRoadsType, nextGSM, prevGSM, nextCT, prevCT, stopVul, shoot, toggleFullscreenRendering, toggleDisplayRoads, resetVulPos;
 
@@ -840,6 +840,21 @@ public class ScreenScript : MonoBehaviour
         material.SetFloat(  "_CamAng", observer.state.ang );
         material.SetVectorArray( "_RocketsState", rocketsState );
         material.SetFloatArray(  "_RocketsLive",  rocketsLive );
+
+        metricCount     =  22;
+        textureCount    =  6;
+        roadsTypeCount  =  17;
+
+        accuracy       =  16;
+        metricNumber   =  1;
+        textureNumber  =  1;
+        gsmNumber      =  1;
+        roadsType      =  1;
+
+        vultureMoveSpeed   =  2.0f;
+        visionRadius       =  2.0f*PI;
+        rocketSpeed        =  11.0f;
+        rocketInitialLive  =  3.142f;
     }
 
     private void Start()
