@@ -38,7 +38,7 @@ public class ScreenScript : MonoBehaviour
     private float rad2deg( float al_rad ){ return al_rad * rad2deg_factor; }
 
     private string metricName = "tp_flat";
-    private string domainName = "square";
+    private string latticeTypeName = "square";
 
     public TextMeshProUGUI domainField, metricField, textureField, radiusField, GSMField, accuracyField, frameRateField;
 
@@ -133,7 +133,7 @@ public class ScreenScript : MonoBehaviour
         complete_fuDo_from_whs();
     }
 
-    private void set_fuDo_hexagon( float w )
+    private void set_fuDo_hexagonal( float w )
     {
         fuDo.w  =  w;
         fuDo.h  =  w * (Sqrt(3)/2);
@@ -151,7 +151,7 @@ public class ScreenScript : MonoBehaviour
         complete_fuDo_from_whs();
     }
 
-    private void set_fuDo_rectangle( float lu, float lv )
+    private void set_fuDo_rectangular( float lu, float lv )
     {
         fuDo.w  =  lu;
         fuDo.h  =  lv;
@@ -160,7 +160,7 @@ public class ScreenScript : MonoBehaviour
         complete_fuDo_from_whs();
     }
 
-    private void set_fuDo_centered( float w, float h )
+    private void set_fuDo_rhombic( float w, float h )
     {
         fuDo.w  =  w;
         fuDo.h  =  h;
@@ -544,102 +544,102 @@ public class ScreenScript : MonoBehaviour
             switch( metricName )
             {
                 default:
-                    domainName  =  "square";
+                    latticeTypeName  =  "square";
                     roadsType  =  11;
                     set_fuDo_square( 2*PI );
                     break;
                 case "tp_flat":
-                    domainName  =  "square";
+                    latticeTypeName  =  "square";
                     roadsType  =  11;
                     set_fuDo_square( 2*PI );
                     break;
                 case "hp_flat":
-                    domainName  =  "hexagon";
+                    latticeTypeName  =  "hexagonal";
                     roadsType  =  17;
-                    set_fuDo_hexagon( 2*PI );
+                    set_fuDo_hexagonal( 2*PI );
                     break;
                 case "mp_flat":
-                    domainName  =  "oblique";
+                    latticeTypeName  =  "oblique";
                     roadsType  =  1;
                     set_fuDo( 2*PI, 2*PI, 2*PI/3 );
                     break;
                 case "op_flat":
-                    domainName  =  "rectangle";
+                    latticeTypeName  =  "rectangular";
                     roadsType  =  1;
-                    set_fuDo_rectangle( 2*PI, 3*PI );
+                    set_fuDo_rectangular( 2*PI, 3*PI );
                     break;
                 case "oc_flat":
-                    domainName  =  "centered";
+                    latticeTypeName  =  "rhombic";
                     roadsType  =  1;
-                    set_fuDo_centered( 2*PI, 2*PI );
+                    set_fuDo_rhombic( 2*PI, 2*PI );
                     break;
                 case "torus":
-                    domainName  =  "rectangle";
+                    latticeTypeName  =  "rectangular";
                     roadsType  =  7;
-                    set_fuDo_rectangle( 2*PI, 2*PI/Sqrt(3) );
+                    set_fuDo_rectangular( 2*PI, 2*PI/Sqrt(3) );
                     a1  =  2*PI / fuDo.h;
                     break;
                 case "torusPsi":
-                    domainName  =  "square";
+                    latticeTypeName  =  "square";
                     roadsType  =  7;
                     set_fuDo_square( 2*PI );
                     a1  =  2*PI / fuDo.h;
                     break;
                 case "torusPsiSqz":
-                    domainName  =  "square";
+                    latticeTypeName  =  "square";
                     roadsType  =  7;
                     set_fuDo_square( 2*PI );
                     a1  =  2*PI / fuDo.h;
                     break;
                 case "dgBump":
-                    domainName  =  "square";
+                    latticeTypeName  =  "square";
                     roadsType  =  11;
                     set_fuDo_square( 2*PI );
                     break;
                 case "dgBumpSqz":
-                    domainName  =  "square";
+                    latticeTypeName  =  "square";
                     roadsType  =  11;
                     set_fuDo_square( 2*PI );
                     break;
                 case "sqBump":
-                    domainName  =  "square";
+                    latticeTypeName  =  "square";
                     roadsType  =  11;
                     set_fuDo_square( 2*PI );
                     break;
                 case "sqAntiBump":
-                    domainName  =  "square";
+                    latticeTypeName  =  "square";
                     roadsType  =  11;
                     set_fuDo_square( 2*PI );
                     break;
                 case "tp_p4":
-                    domainName  =  "square";
+                    latticeTypeName  =  "square";
                     roadsType  =  10;
                     set_fuDo_square( 4*PI );
                     break;
                 case "dupin":
-                    domainName  =  "square";
+                    latticeTypeName  =  "square";
                     roadsType  =  11;
                     set_fuDo_square( 2*PI );
                     break;
                 case "dupinSqz3":
-                    domainName  =  "square";
+                    latticeTypeName  =  "square";
                     roadsType  =  11;
                     set_fuDo_square( 2*PI );
                     break;
                 case "dupinSqz5":
-                    domainName  =  "square";
+                    latticeTypeName  =  "square";
                     roadsType  =  11;
                     set_fuDo_square( 2*PI );
                     break;
                 case "tp_p4g":
-                    domainName  =  "square";
+                    latticeTypeName  =  "square";
                     roadsType  =  12;
                     set_fuDo_square( 4*PI );
                     break;
                 case "hp_p3":
-                    domainName  =  "hexagon";
+                    latticeTypeName  =  "hexagonal";
                     roadsType  =  13;
-                    set_fuDo_hexagon( 4*PI );
+                    set_fuDo_hexagonal( 4*PI );
                     k1  =  dual_lattice_vector( 2, 0 );
                     k2  =  rot120( k1 );
                     k3  =  rot240( k1 );
@@ -648,9 +648,9 @@ public class ScreenScript : MonoBehaviour
                     k6  =  rot240( k4 );
                     break;
                 case "hp_p31m":
-                    domainName  =  "hexagon";
+                    latticeTypeName  =  "hexagonal";
                     roadsType  =  14;
-                    set_fuDo_hexagon( 4*PI );
+                    set_fuDo_hexagonal( 4*PI );
                     a1  =  2*PI / fuDo.w;
                     a2  =  2*PI / fuDo.w * Sqrt(3);
                     a3  =  4*PI / fuDo.w;
@@ -659,17 +659,17 @@ public class ScreenScript : MonoBehaviour
                     a6  =  8*PI / fuDo.w / Sqrt(3);
                     break;
                 case "hp_p3m1":
-                    domainName  =  "hexagon";
+                    latticeTypeName  =  "hexagonal";
                     roadsType  =  15;
-                    set_fuDo_hexagon( 2*PI );
+                    set_fuDo_hexagonal( 2*PI );
                     k1  =  dual_lattice_vector( 0, 1 );
                     k2  =  rot120( k1 );
                     k3  =  rot240( k1 );
                     break;
                 case "hp_p6":
-                    domainName  =  "hexagon";
+                    latticeTypeName  =  "hexagonal";
                     roadsType  =  16;
-                    set_fuDo_hexagon( 4*PI );
+                    set_fuDo_hexagonal( 4*PI );
                     k1  =  dual_lattice_vector( 1, 0 );
                     k2  =  rot120( k1 );
                     k3  =  rot240( k1 );
@@ -678,9 +678,9 @@ public class ScreenScript : MonoBehaviour
                     k6  =  rot240( k4 );
                     break;
                 case "hp_p6m":
-                    domainName  =  "hexagon";
+                    latticeTypeName  =  "hexagonal";
                     roadsType  =  17;
-                    set_fuDo_hexagon( 2*PI );
+                    set_fuDo_hexagonal( 2*PI );
                     k1  =  dual_lattice_vector( 0, 1 );
                     k2  =  rot120( k1 );
                     k3  =  rot240( k1 );
@@ -689,7 +689,7 @@ public class ScreenScript : MonoBehaviour
 
             material.shader  =  Shader.Find( "Custom/Confmets/" + metricName );
             metricField.text  =  metricName;
-            domainField.text  =  domainName;
+            domainField.text  =  latticeTypeName;
 
             material.SetVector( "_DomMat", new Vector4( fuDo.Lu.x, fuDo.Lv.x, fuDo.Lu.y, fuDo.Lv.y ) );
         }

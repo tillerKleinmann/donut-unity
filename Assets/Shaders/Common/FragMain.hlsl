@@ -201,14 +201,14 @@ half4 frag( Varyings IN ) : SV_Target
 
         return float4(col,1);
     }
-    else if( -0.95 < xy.x & xy.x < -0.85 & -0.95 < xy.y & xy.y < -0.85 )
-        return float4(0,0,0.5,1);
-    else if(  0.85 < xy.x & xy.x <  0.95 & -0.95 < xy.y & xy.y < -0.85 )
-        return float4(1,0,0.5,1);
-    else if( -0.95 < xy.x & xy.x < -0.85 &  0.85 < xy.y & xy.y <  0.95 )
-        return float4(0,1,0.5,1);
-    else if(  0.85 < xy.x & xy.x <  0.95 &  0.85 < xy.y & xy.y <  0.95 )
-        return float4(1,1,0.5,1);
+    // else if( -0.95 < xy.x & xy.x < -0.85 & -0.95 < xy.y & xy.y < -0.85 )
+    //     return float4(0,0,0.5,1);
+    // else if(  0.85 < xy.x & xy.x <  0.95 & -0.95 < xy.y & xy.y < -0.85 )
+    //     return float4(1,0,0.5,1);
+    // else if( -0.95 < xy.x & xy.x < -0.85 &  0.85 < xy.y & xy.y <  0.95 )
+    //     return float4(0,1,0.5,1);
+    // else if(  0.85 < xy.x & xy.x <  0.95 &  0.85 < xy.y & xy.y <  0.95 )
+    //     return float4(1,1,0.5,1);
     else
         return float4(0,0,0,1);
 }
