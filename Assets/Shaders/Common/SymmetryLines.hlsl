@@ -23,8 +23,11 @@ float4 symmetry_line_color_alpha__pm__colored( float2 tarPos )
     float3 color;
     float  alpha;
 
-    float dR0  =  x_distance_estimate_to_y_parameter_line( tarPos, 0.0     );
-    float dR1  =  x_distance_estimate_to_y_parameter_line( tarPos, u2p.x/2 );
+    // float dR0  =  x_distance_estimate_to_y_parameter_line( tarPos, 0.0     );
+    // float dR1  =  x_distance_estimate_to_y_parameter_line( tarPos, u2p.x/2 );
+
+    float dR0  =  y_distance_estimate_to_x_parameter_line( tarPos, 0.0     );
+    float dR1  =  y_distance_estimate_to_x_parameter_line( tarPos, u2p.w/2 );
 
     float dR_min  =  min( dR0, dR1 );
 
@@ -64,8 +67,11 @@ float4 symmetry_line_color_alpha__pg__colored( float2 tarPos )
     float3 color;
     float  alpha;
 
-    float dR0  =  2*x_distance_estimate_to_y_parameter_line( tarPos, 0.0     );
-    float dR1  =  2*x_distance_estimate_to_y_parameter_line( tarPos, u2p.x/2 );
+    // float dR0  =  2*x_distance_estimate_to_y_parameter_line( tarPos, 0.0     );
+    // float dR1  =  2*x_distance_estimate_to_y_parameter_line( tarPos, u2p.x/2 );
+
+    float dR0  =  2*y_distance_estimate_to_x_parameter_line( tarPos, 0.0     );
+    float dR1  =  2*y_distance_estimate_to_x_parameter_line( tarPos, u2p.w/2 );
 
     float dR_min  =  min( dR0, dR1 );
 
@@ -105,11 +111,17 @@ float4 symmetry_line_color_alpha__cm__colored( float2 tarPos )
     float3 color;
     float  alpha;
 
-    float dRm0  =    x_distance_estimate_to_y_parameter_line( tarPos, 0.0     );
-    float dRm1  =    x_distance_estimate_to_y_parameter_line( tarPos, u2p.x/2 );
+    // float dRm0  =    x_distance_estimate_to_y_parameter_line( tarPos, 0.0     );
+    // float dRm1  =    x_distance_estimate_to_y_parameter_line( tarPos, u2p.x/2 );
 
-    float dRg0  =  2*x_distance_estimate_to_y_parameter_line( tarPos, 1*u2p.x/4 );
-    float dRg1  =  2*x_distance_estimate_to_y_parameter_line( tarPos, 3*u2p.x/4 );
+    // float dRg0  =  2*x_distance_estimate_to_y_parameter_line( tarPos, 1*u2p.x/4 );
+    // float dRg1  =  2*x_distance_estimate_to_y_parameter_line( tarPos, 3*u2p.x/4 );
+
+    float dRm0  =    y_distance_estimate_to_x_parameter_line( tarPos, 0.0     );
+    float dRm1  =    y_distance_estimate_to_x_parameter_line( tarPos, u2p.w );
+
+    float dRg0  =  2*y_distance_estimate_to_x_parameter_line( tarPos, 2*u2p.w/4 );
+    float dRg1  =  2*y_distance_estimate_to_x_parameter_line( tarPos, 6*u2p.w/4 );
 
     float dRm  =  min( dRm0, dRm1 );
     float dRg  =  min( dRg0, dRg1 );
@@ -155,8 +167,6 @@ float4 symmetry_line_color_alpha__cmm__colored( float2 tarPos )
 {
     float3 color;
     float  alpha;
-
-    //tarPos  =  reset_to_parallelogram( tarPos );
 
     float dRm0  =    x_distance_estimate_to_y_parameter_line( tarPos, 0.0     );
     float dRm1  =    x_distance_estimate_to_y_parameter_line( tarPos, u2p.x/2 );
@@ -269,11 +279,17 @@ float4 symmetry_line_color_alpha__pmg__colored( float2 tarPos )
     float3 color;
     float  alpha;
 
-    float dRx0  =    x_distance_estimate_to_y_parameter_line( tarPos, +u2p.x/4 );
-    float dRx1  =    x_distance_estimate_to_y_parameter_line( tarPos, -u2p.x/4 );
+    // float dRx0  =    x_distance_estimate_to_y_parameter_line( tarPos, +u2p.x/4 );
+    // float dRx1  =    x_distance_estimate_to_y_parameter_line( tarPos, -u2p.x/4 );
 
-    float dRy0  =  2*y_distance_estimate_to_x_parameter_line( tarPos, 0       );
-    float dRy1  =  2*y_distance_estimate_to_x_parameter_line( tarPos, u2p.w/2 );
+    // float dRy0  =  2*y_distance_estimate_to_x_parameter_line( tarPos, 0       );
+    // float dRy1  =  2*y_distance_estimate_to_x_parameter_line( tarPos, u2p.w/2 );
+
+    float dRx0  =    y_distance_estimate_to_x_parameter_line( tarPos, +u2p.w/4 );
+    float dRx1  =    y_distance_estimate_to_x_parameter_line( tarPos, -u2p.w/4 );
+
+    float dRy0  =  2*x_distance_estimate_to_y_parameter_line( tarPos, 0       );
+    float dRy1  =  2*x_distance_estimate_to_y_parameter_line( tarPos, u2p.x/2 );
 
     float dR_min  =  min( min( dRx0, dRx1 ), min( dRy0, dRy1 ) );
 
@@ -602,51 +618,51 @@ float4 symmetry_line_color_alpha__p31m_glide__colored( float2 tarPos )
     return float4( color.x, color.y, color.z, alpha );
 }
 
-float4 symmetry_line_color_alpha__p3m1__colored( float2 tarPos )
-{
-    float3 color;
-    float  alpha;
+// float4 symmetry_line_color_alpha__p3m1__colored( float2 tarPos )
+// {
+//     float3 color;
+//     float  alpha;
 
-    float dR0  =  distance_from_parameter_line( tarPos, float2(0,0), hex_k0m );
-    float dR1  =  distance_from_parameter_line( tarPos, float2(0,0), hex_k1m );
-    float dR2  =  distance_from_parameter_line( tarPos, float2(0,0), hex_k2m );
+//     float dR0  =  distance_from_parameter_line( tarPos, float2(0,0), hex_k0m );
+//     float dR1  =  distance_from_parameter_line( tarPos, float2(0,0), hex_k1m );
+//     float dR2  =  distance_from_parameter_line( tarPos, float2(0,0), hex_k2m );
 
-    float dR_min  =  min( dR0, min( dR1, dR2 ) );
+//     float dR_min  =  min( dR0, min( dR1, dR2 ) );
 
-    float dR_pow2  =  1 / pow( pow(dR0,-2) + pow(dR1,-2) + pow(dR2,-2), 0.5 );
+//     float dR_pow2  =  1 / pow( pow(dR0,-2) + pow(dR1,-2) + pow(dR2,-2), 0.5 );
 
-    float la0  =  pow( max( 0, symLineWidth - dR0 ), 2 );
-    float la1  =  pow( max( 0, symLineWidth - dR1 ), 2 );
-    float la2  =  pow( max( 0, symLineWidth - dR2 ), 2 );
+//     float la0  =  pow( max( 0, symLineWidth - dR0 ), 2 );
+//     float la1  =  pow( max( 0, symLineWidth - dR1 ), 2 );
+//     float la2  =  pow( max( 0, symLineWidth - dR2 ), 2 );
 
-    float la  =  la0 + la1 + la2;
+//     float la  =  la0 + la1 + la2;
 
-    if( la > 0 )
-    {
-        la0  =  la0 / la;
-        la1  =  la1 / la;
-        la2  =  la2 / la;
-    }
+//     if( la > 0 )
+//     {
+//         la0  =  la0 / la;
+//         la1  =  la1 / la;
+//         la2  =  la2 / la;
+//     }
 
-    if( dR_pow2 < symLineDoubleWidth & dR_min >= symLineWidth )
-    {
-        color  =  colorGrey;
-        alpha  =  pow( sin( PI/2 * clamp( 2 - dR_pow2/symLineWidth, 0, 1 ) ), 2 );
-    }
-    else if( dR_min < symLineWidth )
-    {
-        color  =  float3( la1 + la2, la0 + la2, la0 + la1 );
+//     if( dR_pow2 < symLineDoubleWidth & dR_min >= symLineWidth )
+//     {
+//         color  =  colorGrey;
+//         alpha  =  pow( sin( PI/2 * clamp( 2 - dR_pow2/symLineWidth, 0, 1 ) ), 2 );
+//     }
+//     else if( dR_min < symLineWidth )
+//     {
+//         color  =  float3( la1 + la2, la0 + la2, la0 + la1 );
 
-        color  =  lerp( colorGrey, color, pow( cos( PI/2 * dR_min/symLineWidth ), 2 ) );
-        alpha  =  1.0;
-    }
-    else
-    {
-        alpha  =  0.0;
-    }
+//         color  =  lerp( colorGrey, color, pow( cos( PI/2 * dR_min/symLineWidth ), 2 ) );
+//         alpha  =  1.0;
+//     }
+//     else
+//     {
+//         alpha  =  0.0;
+//     }
 
-    return float4( color.x, color.y, color.z, alpha );
-}
+//     return float4( color.x, color.y, color.z, alpha );
+// }
 
 float4 symmetry_line_color_alpha__p3m1_glide__colored( float2 tarPos )
 {
@@ -710,65 +726,65 @@ float4 symmetry_line_color_alpha__p3m1_glide__colored( float2 tarPos )
     return float4( color.x, color.y, color.z, alpha );
 }
 
-float4 symmetry_line_color_alpha__p6m__colored( float2 tarPos )
-{
-    float3 color;
-    float  alpha;
+// float4 symmetry_line_color_alpha__p6m__colored( float2 tarPos )
+// {
+//     float3 color;
+//     float  alpha;
 
-    float dRp0  =  distance_from_parameter_line( tarPos, float2(0,0), hex_k0 );
-    float dRp1  =  distance_from_parameter_line( tarPos, float2(0,0), hex_k1 );
-    float dRp2  =  distance_from_parameter_line( tarPos, float2(0,0), hex_k2 );
+//     float dRp0  =  distance_from_parameter_line( tarPos, float2(0,0), hex_k0 );
+//     float dRp1  =  distance_from_parameter_line( tarPos, float2(0,0), hex_k1 );
+//     float dRp2  =  distance_from_parameter_line( tarPos, float2(0,0), hex_k2 );
 
-    float dRs0  =  distance_from_parameter_line( tarPos, float2(0,0), hex_k0m );
-    float dRs1  =  distance_from_parameter_line( tarPos, float2(0,0), hex_k1m );
-    float dRs2  =  distance_from_parameter_line( tarPos, float2(0,0), hex_k2m );
+//     float dRs0  =  distance_from_parameter_line( tarPos, float2(0,0), hex_k0m );
+//     float dRs1  =  distance_from_parameter_line( tarPos, float2(0,0), hex_k1m );
+//     float dRs2  =  distance_from_parameter_line( tarPos, float2(0,0), hex_k2m );
 
-    float dRp  =  min( dRp0, min( dRp1, dRp2 ) );
-    float dRs  =  min( dRs0, min( dRs1, dRs2 ) );
+//     float dRp  =  min( dRp0, min( dRp1, dRp2 ) );
+//     float dRs  =  min( dRs0, min( dRs1, dRs2 ) );
     
-    float dR_min  =  min( dRp, dRs );
+//     float dR_min  =  min( dRp, dRs );
 
-    float dR_pow2  =  1 / pow( pow(dRp0,-2) + pow(dRp1,-2) + pow(dRp2,-2) + pow(dRs0,-2) + pow(dRs1,-2) + pow(dRs2,-2), 0.5 );
+//     float dR_pow2  =  1 / pow( pow(dRp0,-2) + pow(dRp1,-2) + pow(dRp2,-2) + pow(dRs0,-2) + pow(dRs1,-2) + pow(dRs2,-2), 0.5 );
 
-    float la0  =  pow( max( 0, symLineWidth - dRp0 ), 2 );
-    float la1  =  pow( max( 0, symLineWidth - dRp1 ), 2 );
-    float la2  =  pow( max( 0, symLineWidth - dRp2 ), 2 );
+//     float la0  =  pow( max( 0, symLineWidth - dRp0 ), 2 );
+//     float la1  =  pow( max( 0, symLineWidth - dRp1 ), 2 );
+//     float la2  =  pow( max( 0, symLineWidth - dRp2 ), 2 );
 
-    float mu0  =  pow( max( 0, symLineWidth - dRs0 ), 2 );
-    float mu1  =  pow( max( 0, symLineWidth - dRs1 ), 2 );
-    float mu2  =  pow( max( 0, symLineWidth - dRs2 ), 2 );
+//     float mu0  =  pow( max( 0, symLineWidth - dRs0 ), 2 );
+//     float mu1  =  pow( max( 0, symLineWidth - dRs1 ), 2 );
+//     float mu2  =  pow( max( 0, symLineWidth - dRs2 ), 2 );
 
-    float et  =  la0 + la1 + la2 + mu0 + mu1 + mu2;
+//     float et  =  la0 + la1 + la2 + mu0 + mu1 + mu2;
 
-    if( et > 0 )
-    {
-        la0  =  la0 / et;
-        la1  =  la1 / et;
-        la2  =  la2 / et;
-        mu0  =  mu0 / et;
-        mu1  =  mu1 / et;
-        mu2  =  mu2 / et;
-    }
+//     if( et > 0 )
+//     {
+//         la0  =  la0 / et;
+//         la1  =  la1 / et;
+//         la2  =  la2 / et;
+//         mu0  =  mu0 / et;
+//         mu1  =  mu1 / et;
+//         mu2  =  mu2 / et;
+//     }
 
-    if( dR_pow2 < symLineDoubleWidth & dR_min >= symLineWidth )
-    {
-        color  =  colorGrey;
-        alpha  =  pow( sin( PI/2 * clamp( 2 - dR_pow2/symLineWidth, 0, 1 ) ), 2 );
-    }
-    else if( dR_min < symLineWidth )
-    {
-        color  =  float3( la0 + mu1 + mu2, mu0 + la1 + mu2, mu0 + mu1 + la2 );
+//     if( dR_pow2 < symLineDoubleWidth & dR_min >= symLineWidth )
+//     {
+//         color  =  colorGrey;
+//         alpha  =  pow( sin( PI/2 * clamp( 2 - dR_pow2/symLineWidth, 0, 1 ) ), 2 );
+//     }
+//     else if( dR_min < symLineWidth )
+//     {
+//         color  =  float3( la0 + mu1 + mu2, mu0 + la1 + mu2, mu0 + mu1 + la2 );
         
-        color  =  lerp( colorGrey, color, pow( cos( PI/2 * dR_min/symLineWidth ), 2 ) );
-        alpha  =  1.0;
-    }
-    else
-    {
-        alpha  =  0.0;
-    }
+//         color  =  lerp( colorGrey, color, pow( cos( PI/2 * dR_min/symLineWidth ), 2 ) );
+//         alpha  =  1.0;
+//     }
+//     else
+//     {
+//         alpha  =  0.0;
+//     }
 
-    return float4( color.x, color.y, color.z, alpha );
-}
+//     return float4( color.x, color.y, color.z, alpha );
+// }
 
 float4 symmetry_line_color_alpha__p6m_glide__colored( float2 tarPos )
 {

@@ -245,7 +245,9 @@ public class ScreenScript : MonoBehaviour
                 return  ( 2 - (1-Cos(p.x))*(1-Cos(p.y)) ) / 7;
             case "tp_p4":
                 return  Log(6) - Log( 6 + Cos(p.x) + Cos(p.y) + Cos( p.x + p.y/2 ) + Cos( -p.x/2 + p.y ) );
-            case "dupin": // p4m
+            case "tp_p4m":
+                return  Log(3) - Log( 3 + Cos(p.x) + Cos(p.y) );
+            case "dupin":
                 return  Log(3) - Log( 3 + Cos(p.x) + Cos(p.y) );
             case "dupinSqz3":
                 return  Log(3) - Log( 3 + sqz3(Cos(p.x)) + sqz3(Cos(p.y)) );
@@ -320,18 +322,8 @@ public class ScreenScript : MonoBehaviour
                                     Sin(p.y) + Sin( p.x + p.y/2 )/2 + Sin( -p.x/2 + p.y ) )
                                         /
                                     ( 6 + Cos(p.x) + Cos(p.y) + Cos( p.x + p.y/2 ) + Cos( -p.x/2 + p.y ) );
-            case "dupin":// p4m
+            case "tp_p4m":
                 return new Vector2( Sin(p.x), Sin(p.y) ) / ( 3 + Cos(p.x) + Cos(p.y) );
-            case "dupinSqz3":
-                return new Vector2( Sin(p.x)*sqz3_d(Cos(p.x)),
-                                    Sin(p.y)*sqz3_d(Cos(p.y))  )
-                                        /
-                                    ( 3 + sqz3(Cos(p.x)) + sqz3(Cos(p.y)) );
-            case "dupinSqz5":
-                return new Vector2( Sin(p.x)*sqz5_d(Cos(p.x)),
-                                    Sin(p.y)*sqz5_d(Cos(p.y))  )
-                                        /
-                                    ( 3 + sqz5(Cos(p.x)) + sqz5(Cos(p.y)) );
             case "tp_p4g":
                 return new Vector2( Sin(p.x/2)*Cos(p.y/2)/2 - Cos(p.x/2)*Sin(p.y)/2 + Cos(p.x)*Sin(p.y/2),
                                     Cos(p.x/2)*Sin(p.y/2)/2 - Sin(p.x/2)*Cos(p.y)   + Sin(p.x)*Cos(p.y/2)/2 )
@@ -407,6 +399,18 @@ public class ScreenScript : MonoBehaviour
                                     -a2*Cos(p.x*a1)*Sin(p.y*a2) )
                                         /
                                     -( 3 + Cos(p.x*2*a1) + Cos(p.x*a1)*Cos(p.y*a2) );
+            case "dupin":
+                return new Vector2( Sin(p.x), Sin(p.y) ) / ( 3 + Cos(p.x) + Cos(p.y) );
+            case "dupinSqz3":
+                return new Vector2( Sin(p.x)*sqz3_d(Cos(p.x)),
+                                    Sin(p.y)*sqz3_d(Cos(p.y))  )
+                                        /
+                                    ( 3 + sqz3(Cos(p.x)) + sqz3(Cos(p.y)) );
+            case "dupinSqz5":
+                return new Vector2( Sin(p.x)*sqz5_d(Cos(p.x)),
+                                    Sin(p.y)*sqz5_d(Cos(p.y))  )
+                                        /
+                                    ( 3 + sqz5(Cos(p.x)) + sqz5(Cos(p.y)) );
         }
     }
 
@@ -442,12 +446,8 @@ public class ScreenScript : MonoBehaviour
                 return  ( 2 - (1-Cos(p.x))*(1-Cos(p.y)) ) / 7;
             case "tp_p4":
                 return  Log(6) - Log( 6 + Cos(p.x) + Cos(p.y) + Cos( p.x + p.y/2 ) + Cos( -p.x/2 + p.y ) );
-            case "dupin": // p4m
+            case "tp_p4m":
                 return  Log(3) - Log( 3 + Cos(p.x) + Cos(p.y) );
-            case "dupinSqz3":
-                return  Log(3) - Log( 3 + sqz3(Cos(p.x)) + sqz3(Cos(p.y)) );
-            case "dupinSqz5":
-                return  Log(3) - Log( 3 + sqz5(Cos(p.x)) + sqz5(Cos(p.y)) );
             case "tp_p4g":
                 return  Log(5) - Log( 5 + Cos(p.x/2)*Cos(p.y/2) + Sin(p.x/2)*Sin(p.y) - Sin(p.x)*Sin(p.y/2) );
             case "hp_p3":
@@ -478,6 +478,12 @@ public class ScreenScript : MonoBehaviour
                 return  Log(5) - Log( Cos(p.x*2*a1) + Sin(p.x*2*a1) + 2*Cos(p.x*a1)*Cos(p.y*a2) );
             case "oc_cmm":
                 return  Log(3) - Log( Cos(p.x*2*a1) + Cos(p.x*a1)*Cos(p.y*a2) );
+            case "dupin":
+                return  Log(3) - Log( 3 + Cos(p.x) + Cos(p.y) );
+            case "dupinSqz3":
+                return  Log(3) - Log( 3 + sqz3(Cos(p.x)) + sqz3(Cos(p.y)) );
+            case "dupinSqz5":
+                return  Log(3) - Log( 3 + sqz5(Cos(p.x)) + sqz5(Cos(p.y)) );
         }
     }
     
@@ -652,69 +658,84 @@ public class ScreenScript : MonoBehaviour
             {
                 default:    metricName  =  "tp_flat";       break;
                 case 1:     metricName  =  "tp_flat";       break;
-                case 2:     metricName  =  "op_flat";       break;
-                case 3:     metricName  =  "hp_flat";       break;
-                case 4:     metricName  =  "oc_flat";       break;
-                case 5:     metricName  =  "mp_flat";       break;
-                case 6:     metricName  =  "torus";         break;
-                case 7:     metricName  =  "torusPsi";      break;
-                case 8:     metricName  =  "torusPsiSqz";   break;
-                case 9:     metricName  =  "dgBump";        break;
-                case 12:    metricName  =  "dgBumpSqz";     break;
-                case 10:    metricName  =  "sqBump";        break;
-                case 11:    metricName  =  "sqAntiBump";    break;
-                case 13:    metricName  =  "tp_p4";         break;
-                case 14:    metricName  =  "dupin";         break;
-                case 15:    metricName  =  "dupinSqz3";     break;
-                case 16:    metricName  =  "dupinSqz5";     break;
-                case 17:    metricName  =  "tp_p4g";        break;
-                case 18:    metricName  =  "hp_p3";         break;
-                case 19:    metricName  =  "hp_p31m";       break;
-                case 20:    metricName  =  "hp_p3m1";       break;
-                case 21:    metricName  =  "hp_p6";         break;
-                case 22:    metricName  =  "hp_p6m";        break;
-                case 23:    metricName  =  "mp_p2";         break;
-                case 24:    metricName  =  "mp_p1";         break;
-                case 25:    metricName  =  "op_pm";         break;
-                case 26:    metricName  =  "op_pg";         break;
-                case 27:    metricName  =  "op_pmm";        break;
-                case 28:    metricName  =  "op_pmg";        break;
-                case 29:    metricName  =  "op_pgg";        break;
-                case 30:    metricName  =  "oc_cm";         break;
-                case 31:    metricName  =  "oc_cmm";        break;
+                case 2:     metricName  =  "tp_p4";         break;
+                case 3:     metricName  =  "tp_p4m";        break;
+                case 4:     metricName  =  "tp_p4g";        break;
+                case 5:     metricName  =  "hp_flat";       break;
+                case 6:     metricName  =  "hp_p3";         break;
+                case 7:     metricName  =  "hp_p31m";       break;
+                case 8:     metricName  =  "hp_p3m1";       break;
+                case 9:     metricName  =  "hp_p6";         break;
+                case 10:    metricName  =  "hp_p6m";        break;
+                case 11:    metricName  =  "op_flat";       break;
+                case 12:    metricName  =  "op_pm";         break;
+                case 13:    metricName  =  "op_pg";         break;
+                case 14:    metricName  =  "op_pmm";        break;
+                case 15:    metricName  =  "op_pmg";        break;
+                case 16:    metricName  =  "op_pgg";        break;
+                case 17:    metricName  =  "oc_flat";       break;
+                case 18:    metricName  =  "oc_cm";         break;
+                case 19:    metricName  =  "oc_cmm";        break;
+                case 20:    metricName  =  "mp_flat";       break;
+                case 21:    metricName  =  "mp_p1";         break;
+                case 22:    metricName  =  "mp_p2";         break;
+                case 23:    metricName  =  "dupin";         break;
+                case 24:    metricName  =  "dupinSqz3";     break;
+                case 25:    metricName  =  "dupinSqz5";     break;
+                case 26:    metricName  =  "torus";         break;
+                case 27:    metricName  =  "torusPsi";      break;
+                case 28:    metricName  =  "torusPsiSqz";   break;
+                case 29:    metricName  =  "dgBump";        break;
+                case 30:    metricName  =  "dgBumpSqz";     break;
+                case 31:    metricName  =  "sqBump";        break;
+                case 32:    metricName  =  "sqAntiBump";    break;
             }
 
             switch( metricName )
             {
                 default:
                     latticeTypeName  =  "square";
-                    roadsType  =  11;
+                    roadsType  =  1;
                     set_fuDo_square( 2*PI );
                     break;
                 case "tp_flat":
                     latticeTypeName  =  "square";
-                    roadsType  =  11;
+                    roadsType  =  1;
                     set_fuDo_square( 2*PI );
                     break;
                 case "hp_flat":
                     latticeTypeName  =  "hexagonal";
-                    roadsType  =  17;
+                    roadsType  =  1;
                     set_fuDo_hexagonal( 2*PI );
                     break;
                 case "mp_flat":
                     latticeTypeName  =  "oblique";
                     roadsType  =  1;
-                    set_fuDo( 2*PI, 2*PI, 1/3*2*PI );
+                    set_fuDo( 2*PI, 2*PI, 2*PI/3 );
                     break;
                 case "op_flat":
                     latticeTypeName  =  "rectangular";
                     roadsType  =  1;
-                    set_fuDo_rectangular( 2*PI, 3/2*2*PI );
+                    set_fuDo_rectangular( 2*PI, 3*PI );
                     break;
                 case "oc_flat":
                     latticeTypeName  =  "rhombic";
                     roadsType  =  1;
-                    set_fuDo_rhombic( 2*PI, 2*PI );
+                    set_fuDo_rhombic( 7*PI/2, 3*PI/2 );
+                    break;
+                case "oc_cm":
+                    latticeTypeName  =  "rhombic";
+                    roadsType  =  5;
+                    set_fuDo_rhombic( 7*PI/2, 3*PI/2 );
+                    a1  =  2*PI/fuDo.w;
+                    a2  =    PI/fuDo.h;
+                    break;
+                case "oc_cmm":
+                    latticeTypeName  =  "rhombic";
+                    roadsType  =  6;
+                    set_fuDo_rhombic( 7*PI/2, 3*PI/2 );
+                    a1  =  2*PI/fuDo.w;
+                    a2  =    PI/fuDo.h;
                     break;
                 case "torus":
                     latticeTypeName  =  "rectangular";
@@ -758,6 +779,11 @@ public class ScreenScript : MonoBehaviour
                     latticeTypeName  =  "square";
                     roadsType  =  10;
                     set_fuDo_square( 2*2*PI );
+                    break;
+                case "tp_p4m":
+                    latticeTypeName  =  "square";
+                    roadsType  =  11;
+                    set_fuDo_square( 2*PI );
                     break;
                 case "dupin":
                     latticeTypeName  =  "square";
@@ -877,20 +903,6 @@ public class ScreenScript : MonoBehaviour
                     set_fuDo_rectangular( Sqrt(2)*2*PI, 2*PI );
                     a1  =  2*PI/fuDo.w;
                     a2  =  2*PI/fuDo.h;
-                    break;
-                case "oc_cm":
-                    latticeTypeName  =  "rhombic";
-                    roadsType  =  5;
-                    set_fuDo_rhombic( 7*PI/2, 3*PI/2 );
-                    a1  =  2*PI/fuDo.w;
-                    a2  =    PI/fuDo.h;
-                    break;
-                case "oc_cmm":
-                    latticeTypeName  =  "rhombic";
-                    roadsType  =  6;
-                    set_fuDo_rhombic( 7*PI/2, 3*PI/2 );
-                    a1  =  2*PI/fuDo.w;
-                    a2  =    PI/fuDo.h;
                     break;
             }
 
