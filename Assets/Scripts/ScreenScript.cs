@@ -193,22 +193,22 @@ public class ScreenScript : MonoBehaviour
     private float cop_dy( Vector2 p, Vector2 k ){ return -sip(k,p)*k.y; }
     private float sip_dy( Vector2 p, Vector2 k ){ return  cop(k,p)*k.y; }
 
-    private float psqueeze3( float x )
+    private float sqz3( float x )
     {
         return x * ( 3 - x*x ) / 2;
     }
 
-    private float psqueeze3_d( float x )
+    private float sqz3_d( float x )
     {
         return ( 1 - x*x ) * 3/2;
     }
 
-    private float psqueeze5( float x )
+    private float sqz5( float x )
     {
         return x * ( 15 - 10*x*x + 3*Pow(x,4) ) / 8;
     }
 
-    private float psqueeze5_d( float x )
+    private float sqz5_d( float x )
     {
         return ( 1 - 2*x*x + Pow(x,4) ) * 15/8;
     }
@@ -248,9 +248,9 @@ public class ScreenScript : MonoBehaviour
             case "dupin": // p4m
                 return  Log(3) - Log( 3 + Cos(p.x) + Cos(p.y) );
             case "dupinSqz3":
-                return  Log(3) - Log( 3 + psqueeze3(Cos(p.x)) + psqueeze3(Cos(p.y)) );
+                return  Log(3) - Log( 3 + sqz3(Cos(p.x)) + sqz3(Cos(p.y)) );
             case "dupinSqz5":
-                return  Log(3) - Log( 3 + psqueeze5(Cos(p.x)) + psqueeze5(Cos(p.y)) );
+                return  Log(3) - Log( 3 + sqz5(Cos(p.x)) + sqz5(Cos(p.y)) );
             case "tp_p4g":
                 return  Log(5) - Log( 5 + Cos(p.x/2)*Cos(p.y/2) + Sin(p.x/2)*Sin(p.y) - Sin(p.x)*Sin(p.y/2) );
             case "hp_p3":
@@ -263,6 +263,24 @@ public class ScreenScript : MonoBehaviour
                 return  Log(9) - Log( 9 + cop(p,k1) + cop(p,k2) + cop(p,k3) + cop(p,k4) + cop(p,k5) + cop(p,k6) );
             case "hp_p6m":
                 return  Log(5) - Log( 5 + cop(p,k1) + cop(p,k2) + cop(p,k3) );
+            case "mp_p2":
+                return  Log(4) - Log( 4 + cop(p,k1) + cop(p,k2) );
+            case "mp_p1":
+                return  Log(6) - Log( 6 + cop(p,k1) + cop(p,k2) + sip(p,k3) );
+            case "op_pm":
+                return  Log(5) - Log( 5 + Cos(p.x*a1) + Sin(p.x*a1) + 2*Cos(p.x*a1)*Cos(p.y*a2) );
+            case "op_pg":
+                return  Log(6) - Log( 6 + ( Cos(p.x*2*a1) - Sin(p.x*2*a1) )*Cos(p.y*a2) + 2*Cos(p.x*a1)*Sin(p.y*a2) );
+            case "op_pmm":
+                return  Log(5) - Log( 5 + Cos(p.x*a1) + 2*Cos(p.y*a2) );
+            case "op_pmg":
+                return  Log(3) - Log( 3 + Cos(p.x*a1) + Sin(p.x*a1)*Sin(p.y*a2) );
+            case "op_pgg":
+                return  Log(4) - Log( 4 + 2*Cos(p.x*a1)*Cos(p.y*a2) - Sin(p.x*a1)*Sin(p.y*2*a2) );
+            case "oc_cm":
+                return  Log(5) - Log( 5 + Cos(p.x*2*a1) + Sin(p.x*2*a1) + 2*Cos(p.x*a1)*Cos(p.y*a2) );
+            case "oc_cmm":
+                return  Log(3) - Log( 3 + Cos(p.x*2*a1) + Cos(p.x*a1)*Cos(p.y*a2) );
         }
     }
 
@@ -305,15 +323,15 @@ public class ScreenScript : MonoBehaviour
             case "dupin":// p4m
                 return new Vector2( Sin(p.x), Sin(p.y) ) / ( 3 + Cos(p.x) + Cos(p.y) );
             case "dupinSqz3":
-                return new Vector2( Sin(p.x)*psqueeze3_d(Cos(p.x)),
-                                    Sin(p.y)*psqueeze3_d(Cos(p.y))  )
+                return new Vector2( Sin(p.x)*sqz3_d(Cos(p.x)),
+                                    Sin(p.y)*sqz3_d(Cos(p.y))  )
                                         /
-                                    ( 3 + psqueeze3(Cos(p.x)) + psqueeze3(Cos(p.y)) );
+                                    ( 3 + sqz3(Cos(p.x)) + sqz3(Cos(p.y)) );
             case "dupinSqz5":
-                return new Vector2( Sin(p.x)*psqueeze5_d(Cos(p.x)),
-                                    Sin(p.y)*psqueeze5_d(Cos(p.y))  )
+                return new Vector2( Sin(p.x)*sqz5_d(Cos(p.x)),
+                                    Sin(p.y)*sqz5_d(Cos(p.y))  )
                                         /
-                                    ( 3 + psqueeze5(Cos(p.x)) + psqueeze5(Cos(p.y)) );
+                                    ( 3 + sqz5(Cos(p.x)) + sqz5(Cos(p.y)) );
             case "tp_p4g":
                 return new Vector2( Sin(p.x/2)*Cos(p.y/2)/2 - Cos(p.x/2)*Sin(p.y)/2 + Cos(p.x)*Sin(p.y/2),
                                     Cos(p.x/2)*Sin(p.y/2)/2 - Sin(p.x/2)*Cos(p.y)   + Sin(p.x)*Cos(p.y/2)/2 )
@@ -344,6 +362,122 @@ public class ScreenScript : MonoBehaviour
                                     cop_dy(p,k1) + cop_dy(p,k2) + cop_dy(p,k3)  )
                                         /
                                     -( 5 + cop(p,k1) + cop(p,k2) + cop(p,k3) );
+            case "mp_p2":
+                return new Vector2( cop_dx(p,k1) + cop_dx(p,k2),
+                                    cop_dy(p,k1) + cop_dy(p,k2)  )
+                                        /
+                                    -( 4 + cop(p,k1) + cop(p,k2) );
+            case "mp_p1":
+                return new Vector2( cop_dx(p,k1) + cop_dx(p,k2) + sip_dx(p,k3),
+                                    cop_dy(p,k1) + cop_dy(p,k2) + sip_dy(p,k3)  )
+                                        /
+                                    -( 6 + cop(p,k1) + cop(p,k2) + sip(p,k3) );
+            case "op_pm":
+                return new Vector2( -a1*( Sin(p.x*a1) - Cos(p.x*a1) + 2*Sin(p.x*a1)*Cos(p.y*a2) ),
+                                                                    - 2*a2*Cos(p.x*a1)*Sin(p.y*a2) )
+                                        /
+                                    -( 5 + Cos(p.x*a1) + Sin(p.x*a1) + 2*Cos(p.x*a1)*Cos(p.y*a2) );
+            case "op_pg":
+                return new Vector2( -2*a1*( ( Sin(p.x*2*a1) + Cos(p.x*2*a1) )*Cos(p.y*a2) +   Sin(p.x*a1)*Sin(p.y*a2) ),
+                                      -a2*( ( Cos(p.x*2*a1) - Sin(p.x*2*a1) )*Sin(p.y*a2) - 2*Cos(p.x*a1)*Cos(p.y*a2) )  )
+                                        /
+                                    -( 6 + (Cos(p.x*2*a1)-Sin(p.x*2*a1))*Cos(p.y*a2) + 2*Cos(p.x*a1)*Sin(p.y*a2) );
+            case "op_pmm":
+                return new Vector2( -a1*Sin(p.x*a1),
+                                    -a2*2*Sin(p.y*a2) )
+                                        /
+                                    -( 5 + Cos(p.x*a1) + 2*Cos(p.y*a2) );
+            case "op_pmg":
+                return new Vector2( -a1*Sin(p.x*a1) + a1*Cos(p.x*a1)*Sin(p.y*a2),
+                                                      a2*Sin(p.x*a1)*Cos(p.y*a2)  )
+                                        /
+                                    -( 3 + Cos(p.x*a1) + Sin(p.x*a1)*Sin(p.y*a2) );
+            case "op_pgg":
+                return new Vector2(   -a1*( 2*Sin(p.x*a1)*Cos(p.y*a2) + Cos(p.x*a1)*Sin(p.y*2*a2) ),
+                                    -2*a2*(   Cos(p.x*a1)*Sin(p.y*a2) + Sin(p.x*a1)*Cos(p.y*2*a2) )  )
+                                        /
+                                    -( 4 + 2*Cos(p.x*a1)*Cos(p.y*a2) - Sin(p.x*a1)*Sin(p.y*2*a2) );
+            case "oc_cm":
+                return new Vector2(  2*a1*( -Sin(p.x*2*a1) + Cos(p.x*2*a1) - Sin(p.x*a1)*Cos(p.y*a2) ),
+                                    -2*a2*Cos(p.x*a1)*Sin(p.y*a2)                                       )
+                                        /
+                                    -( 5 + Cos(p.x*2*a1) + Sin(p.x*2*a1) + 2*Cos(p.x*a1)*Cos(p.y*a2) );
+            case "oc_cmm":
+                return new Vector2( -a1*( 2*Sin(p.x*2*a1) + Sin(p.x*a1)*Cos(p.y*a2) ),
+                                    -a2*Cos(p.x*a1)*Sin(p.y*a2) )
+                                        /
+                                    -( 3 + Cos(p.x*2*a1) + Cos(p.x*a1)*Cos(p.y*a2) );
+        }
+    }
+
+    private float sigma( Vector2 p )
+    {
+        switch( metricName )
+        {
+            default:
+                return  0f;
+            case "tp_flat":
+                return  0f;
+            case "hp_flat":
+                return  0f;
+            case "mp_flat":
+                return  0f;
+            case "op_flat":
+                return  0f;
+            case "oc_flat":
+                return  0f;
+            case "torus":
+                return  Cos(p.y*a1)/2;
+            case "torusPsi":
+                return -Cos(p.y*a1)/4;
+            case "torusPsiSqz":
+                return  sqz3(Cos(p.y*a1)) / 4;
+            case "dgBump":
+                return  Cos(p.x)*Cos(p.y) / 4;
+            case "dgBumpSqz":
+                return  sqz3(Cos(p.x))*sqz3(Cos(p.y)) / 4;
+            case "sqBump":
+                return  (1-Cos(p.x))*(1-Cos(p.y)) / 4;
+            case "sqAntiBump":
+                return  ( 2 - (1-Cos(p.x))*(1-Cos(p.y)) ) / 7;
+            case "tp_p4":
+                return  Log(6) - Log( 6 + Cos(p.x) + Cos(p.y) + Cos( p.x + p.y/2 ) + Cos( -p.x/2 + p.y ) );
+            case "dupin": // p4m
+                return  Log(3) - Log( 3 + Cos(p.x) + Cos(p.y) );
+            case "dupinSqz3":
+                return  Log(3) - Log( 3 + sqz3(Cos(p.x)) + sqz3(Cos(p.y)) );
+            case "dupinSqz5":
+                return  Log(3) - Log( 3 + sqz5(Cos(p.x)) + sqz5(Cos(p.y)) );
+            case "tp_p4g":
+                return  Log(5) - Log( 5 + Cos(p.x/2)*Cos(p.y/2) + Sin(p.x/2)*Sin(p.y) - Sin(p.x)*Sin(p.y/2) );
+            case "hp_p3":
+                return  Log(9) - Log( 9 + sip(p,k1) + sip(p,k2) + sip(p,k3) + sip(p,k4) + sip(p,k5) + sip(p,k6) );
+            case "hp_p31m":
+                return  Log(8) - Log( 8 + 2*Sin(p.x*a1)*Cos(p.y*a2) - Sin(p.x*a3) + 2*Cos(p.x*a4)*Cos(p.y*a5) + Cos(p.y*a6) );
+            case "hp_p3m1":
+                return  Log(5) - Log( 5 + sip(p,k1) + sip(p,k2) + sip(p,k3) );
+            case "hp_p6":
+                return  Log(9) - Log( 9 + cop(p,k1) + cop(p,k2) + cop(p,k3) + cop(p,k4) + cop(p,k5) + cop(p,k6) );
+            case "hp_p6m":
+                return  Log(5) - Log( 5 + cop(p,k1) + cop(p,k2) + cop(p,k3) );
+            case "mp_p2":
+                return  Log(4) - Log( 4 + cop(p,k1) + cop(p,k2) );
+            case "mp_p1":
+                return  Log(6) - Log( 6 + cop(p,k1) + cop(p,k2) + sip(p,k3) );
+            case "op_pm":
+                return  Log(5) - Log( Cos(p.x*a1) + Sin(p.x*a1) + 2*Cos(p.x*a1)*Cos(p.y*a2) );
+            case "op_pg":
+                return  Log(6) - Log( (Cos(p.x*2*a1)-Sin(p.x*2*a1))*Cos(p.y*a2) + 2*Cos(p.x*a1)*Sin(p.y*a2) );
+            case "op_pmm":
+                return  Log(5) - Log( Cos(p.x*a1) + 2*Cos(p.y*a2) );
+            case "op_pmg":
+                return  Log(3) - Log( Cos(p.x*a1) + Sin(p.x*a1)*Sin(p.y*a2) );
+            case "op_pgg":
+                return  Log(4) - Log( 2*Cos(p.x*a1)*Cos(p.y*a2) - Sin(p.x*a1)*Sin(p.y*2*a2) );
+            case "oc_cm":
+                return  Log(5) - Log( Cos(p.x*2*a1) + Sin(p.x*2*a1) + 2*Cos(p.x*a1)*Cos(p.y*a2) );
+            case "oc_cmm":
+                return  Log(3) - Log( Cos(p.x*2*a1) + Cos(p.x*a1)*Cos(p.y*a2) );
         }
     }
     
@@ -539,6 +673,15 @@ public class ScreenScript : MonoBehaviour
                 case 20:    metricName  =  "hp_p3m1";       break;
                 case 21:    metricName  =  "hp_p6";         break;
                 case 22:    metricName  =  "hp_p6m";        break;
+                case 23:    metricName  =  "mp_p2";         break;
+                case 24:    metricName  =  "mp_p1";         break;
+                case 25:    metricName  =  "op_pm";         break;
+                case 26:    metricName  =  "op_pg";         break;
+                case 27:    metricName  =  "op_pmm";        break;
+                case 28:    metricName  =  "op_pmg";        break;
+                case 29:    metricName  =  "op_pgg";        break;
+                case 30:    metricName  =  "oc_cm";         break;
+                case 31:    metricName  =  "oc_cmm";        break;
             }
 
             switch( metricName )
@@ -561,12 +704,12 @@ public class ScreenScript : MonoBehaviour
                 case "mp_flat":
                     latticeTypeName  =  "oblique";
                     roadsType  =  1;
-                    set_fuDo( 2*PI, 2*PI, 2*PI/3 );
+                    set_fuDo( 2*PI, 2*PI, 1/3*2*PI );
                     break;
                 case "op_flat":
                     latticeTypeName  =  "rectangular";
                     roadsType  =  1;
-                    set_fuDo_rectangular( 2*PI, 3*PI );
+                    set_fuDo_rectangular( 2*PI, 3/2*2*PI );
                     break;
                 case "oc_flat":
                     latticeTypeName  =  "rhombic";
@@ -576,7 +719,7 @@ public class ScreenScript : MonoBehaviour
                 case "torus":
                     latticeTypeName  =  "rectangular";
                     roadsType  =  7;
-                    set_fuDo_rectangular( 2*PI, 2*PI/Sqrt(3) );
+                    set_fuDo_rectangular( 2*PI, 1/Sqrt(3)*2*PI );
                     a1  =  2*PI / fuDo.h;
                     break;
                 case "torusPsi":
@@ -614,7 +757,7 @@ public class ScreenScript : MonoBehaviour
                 case "tp_p4":
                     latticeTypeName  =  "square";
                     roadsType  =  10;
-                    set_fuDo_square( 4*PI );
+                    set_fuDo_square( 2*2*PI );
                     break;
                 case "dupin":
                     latticeTypeName  =  "square";
@@ -634,12 +777,12 @@ public class ScreenScript : MonoBehaviour
                 case "tp_p4g":
                     latticeTypeName  =  "square";
                     roadsType  =  12;
-                    set_fuDo_square( 4*PI );
+                    set_fuDo_square( 2*2*PI );
                     break;
                 case "hp_p3":
                     latticeTypeName  =  "hexagonal";
                     roadsType  =  13;
-                    set_fuDo_hexagonal( 4*PI );
+                    set_fuDo_hexagonal( 2*2*PI );
                     k1  =  dual_lattice_vector( 2, 0 );
                     k2  =  rot120( k1 );
                     k3  =  rot240( k1 );
@@ -650,7 +793,7 @@ public class ScreenScript : MonoBehaviour
                 case "hp_p31m":
                     latticeTypeName  =  "hexagonal";
                     roadsType  =  14;
-                    set_fuDo_hexagonal( 4*PI );
+                    set_fuDo_hexagonal( 2*2*PI );
                     a1  =  2*PI / fuDo.w;
                     a2  =  2*PI / fuDo.w * Sqrt(3);
                     a3  =  4*PI / fuDo.w;
@@ -669,7 +812,7 @@ public class ScreenScript : MonoBehaviour
                 case "hp_p6":
                     latticeTypeName  =  "hexagonal";
                     roadsType  =  16;
-                    set_fuDo_hexagonal( 4*PI );
+                    set_fuDo_hexagonal( 2*2*PI );
                     k1  =  dual_lattice_vector( 1, 0 );
                     k2  =  rot120( k1 );
                     k3  =  rot240( k1 );
@@ -684,6 +827,70 @@ public class ScreenScript : MonoBehaviour
                     k1  =  dual_lattice_vector( 0, 1 );
                     k2  =  rot120( k1 );
                     k3  =  rot240( k1 );
+                    break;
+                case "mp_p2":
+                    latticeTypeName  =  "oblique";
+                    roadsType  =  2;
+                    set_fuDo( 2*PI, 2*PI, 2*PI/3 );
+                    k1  =  dual_lattice_vector( 1, 0 );
+                    k2  =  dual_lattice_vector( 0, 1 );
+                    break;
+                case "mp_p1":
+                    latticeTypeName  =  "oblique";
+                    roadsType  =  1;
+                    set_fuDo( 2*PI, 2*PI, 2*PI/3 );
+                    k1  =  dual_lattice_vector( 1, 0 );
+                    k2  =  dual_lattice_vector( 0, 1 );
+                    k3  =  dual_lattice_vector( 1, 1 );
+                    break;
+                case "op_pm":
+                    latticeTypeName  =  "rectangular";
+                    roadsType  =  4;
+                    set_fuDo_rectangular( Sqrt(2)*2*PI, 2*PI );
+                    a1  =  2*PI/fuDo.w;
+                    a2  =  2*PI/fuDo.h;
+                    break;
+                case "op_pg":
+                    latticeTypeName  =  "rectangular";
+                    roadsType  =  3;
+                    set_fuDo_rectangular( 2*2*PI, 2*PI );
+                    a1  =  2*PI/fuDo.w;
+                    a2  =  2*PI/fuDo.h;
+                    break;
+                case "op_pmm":
+                    latticeTypeName  =  "rectangular";
+                    roadsType  =  7;
+                    set_fuDo_rectangular( Sqrt(2)*2*PI, 2*PI );
+                    a1  =  2*PI/fuDo.w;
+                    a2  =  2*PI/fuDo.h;
+                    break;
+                case "op_pmg":
+                    latticeTypeName  =  "rectangular";
+                    roadsType  =  8;
+                    set_fuDo_rectangular( Sqrt(2)*2*PI, 2*PI );
+                    a1  =  2*PI/fuDo.w;
+                    a2  =  2*PI/fuDo.h;
+                    break;
+                case "op_pgg":
+                    latticeTypeName  =  "rectangular";
+                    roadsType  =  9;
+                    set_fuDo_rectangular( Sqrt(2)*2*PI, 2*PI );
+                    a1  =  2*PI/fuDo.w;
+                    a2  =  2*PI/fuDo.h;
+                    break;
+                case "oc_cm":
+                    latticeTypeName  =  "rhombic";
+                    roadsType  =  5;
+                    set_fuDo_rhombic( 7*PI/2, 3*PI/2 );
+                    a1  =  2*PI/fuDo.w;
+                    a2  =    PI/fuDo.h;
+                    break;
+                case "oc_cmm":
+                    latticeTypeName  =  "rhombic";
+                    roadsType  =  6;
+                    set_fuDo_rhombic( 7*PI/2, 3*PI/2 );
+                    a1  =  2*PI/fuDo.w;
+                    a2  =    PI/fuDo.h;
                     break;
             }
 
@@ -841,7 +1048,7 @@ public class ScreenScript : MonoBehaviour
         material.SetVectorArray( "_RocketsState", rocketsState );
         material.SetFloatArray(  "_RocketsLive",  rocketsLive );
 
-        metricCount     =  22;
+        metricCount     =  31;
         textureCount    =  6;
         roadsTypeCount  =  17;
 
