@@ -7,7 +7,6 @@ Shader "Custom/Confmets/torus"
         [VultureTexture]  _VulTex(     "Vulture Texture",      2D     )  =  "white"
         [RocketTexture]   _RocTex(     "Rocket Texture",       2D     )  =  "white"
         [DomainMatrix]    _DomMat(     "Domain Matrix",        Vector )  =  ( 6.2831853, 0, 0, 6.2831853 ) // ( b, s,  0,  h )
-        [DupinParameters] _DupinPar(   "Dupin Parameters",     Vector )  =  ( 0.333, 0.333, 1.0, 1.0 )     // ( a, b, al, be )
         [RoadsDisp]       _RoadsDisp(  "Display Roads",        Float  )  =  1
         [RoadsType]       _RoadsType(  "Roads Type",           Float  )  =  1
         [ChartType]       _ChartType(  "Chart Type",           Float  )  =  1

@@ -7,7 +7,6 @@ Shader "Custom/Confmets/dupinSqz3"
         [VultureTexture]  _VulTex(     "Vulture Texture",      2D     )  =  "white"
         [RocketTexture]   _RocTex(     "Rocket Texture",       2D     )  =  "white"
         [DomainMatrix]    _DomMat(     "Domain Matrix",        Vector )  =  ( 6.2831853, 0, 0, 6.2831853 ) // ( b, s,  0,  h )
-        [DupinParameters] _DupinPar(   "Dupin Parameters",     Vector )  =  ( 0.333, 0.333, 1.0, 1.0 )     // ( a, b, al, be )
         [RoadsDisp]       _RoadsDisp(  "Display Roads",        Float  )  =  1
         [RoadsType]       _RoadsType(  "Roads Type",           Float  )  =  1
         [ChartType]       _ChartType(  "Chart Type",           Float  )  =  1
@@ -38,6 +37,9 @@ Shader "Custom/Confmets/dupinSqz3"
 
             #include "Common/ConfMetsShaderPreamble.hlsl"
 
+            const static float  a1  =  2*PI / u2p.x;
+            const static float  a2  =  2*PI / u2p.w;
+
             float psqueeze3( float x )
             {
                 return x*(3-x*x)/2;
@@ -50,12 +52,12 @@ Shader "Custom/Confmets/dupinSqz3"
 
             float mu( float2 p )
             {
-                return 1 + dpa*psqueeze3(cos(p.x/dpal)) + dpb*psqueeze3(cos(p.y/dpbe));
+                return ( 3 + psqueeze3(cos(p.x*a1)) + psqueeze3(cos(p.y*a2)) ) / 3;
             }
             float2 mu_grad( float2 p )
             {
-                return float2(  -(dpa/dpal)*sin(p.x/dpal)*psqueeze3_d(cos(p.x/dpal)),
-                                -(dpb/dpbe)*sin(p.y/dpbe)*psqueeze3_d(cos(p.y/dpbe))    );
+                return float2( -a1*sin(p.x*a1)*psqueeze3_d(cos(p.x*a1)),
+                               -a2*sin(p.y*a2)*psqueeze3_d(cos(p.y*a2))  ) / 3;
             }
 
             #include "Common/ConfMets_mu.hlsl"

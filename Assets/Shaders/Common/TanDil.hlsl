@@ -12,32 +12,12 @@ float tandil2( float x, float la )
     return y - 4*PI*round((y-x)/(4*PI));
 }
 
-float gendupin_x_sdiff( float p_x, float q_x, float r_y )
+float sqz_td( float x, float la )
 {
-    float c   =  1 + dpb*cos( r_y / dpbe );
-    float la  =  sqrt( (c-dpa) / (c+dpa) );
-    float C   =  dpal / sqrt( pow(c,2) + pow(dpb,2) );
-
-    p_x  =  p_x - dpAl*round( p_x / dpAl );
-    q_x  =  q_x - dpAl*round( q_x / dpAl );
-
-    float p_sx  =  tandil2( p_x / dpal, la );
-    float q_sx  =  tandil2( q_x / dpal, la );
-
-    return C * ( q_sx - p_sx );
+    return tandil( x * (PI/2), la ) / (PI/2);
 }
 
-float gendupin_y_sdiff( float p_y, float q_y, float r_x )
+float sqz_td_d( float x, float la )
 {
-    float c   =  1 + dpb*cos( r_x / dpal );
-    float la  =  sqrt( (c-dpb) / (c+dpb) );
-    float C   =  dpbe / sqrt( pow(c,2) + pow(dpa,2) );
-
-    p_y  =  p_y - dpBe*round( p_y / dpBe );
-    q_y  =  q_y - dpBe*round( q_y / dpBe );
-
-    float p_sy  =  tandil2( p_y / dpbe, la );
-    float q_sy  =  tandil2( q_y / dpbe, la );
-
-    return C * ( q_sy - p_sy );
+    return 2*la / ( 1 + pow(la,2) + ( 1 - pow(la,2) )*cos(2*x*(PI/2)) );
 }

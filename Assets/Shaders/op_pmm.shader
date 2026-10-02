@@ -7,7 +7,6 @@ Shader "Custom/Confmets/op_pmm"
         [VultureTexture]  _VulTex(     "Vulture Texture",      2D     )  =  "white"
         [RocketTexture]   _RocTex(     "Rocket Texture",       2D     )  =  "white"
         [DomainMatrix]    _DomMat(     "Domain Matrix",        Vector )  =  ( 6.2831853, 0, 0, 6.2831853 ) // ( b, s,  0,  h )
-        [DupinParameters] _DupinPar(   "Dupin Parameters",     Vector )  =  ( 0.333, 0.333, 1.0, 1.0 )     // ( a, b, al, be )
         [RoadsDisp]       _RoadsDisp(  "Display Roads",        Float  )  =  1
         [RoadsType]       _RoadsType(  "Roads Type",           Float  )  =  1
         [ChartType]       _ChartType(  "Chart Type",           Float  )  =  1
@@ -48,8 +47,7 @@ Shader "Custom/Confmets/op_pmm"
 
             float2 mu_grad( float2 p )
             {
-                return  float2( -a1*sin(p.x*a1),
-                                -a2*2*sin(p.y*a2) ) / 5;
+                return  float2( -a1*sin(p.x*a1), -a2*2*sin(p.y*a2) ) / 5;
             }
 
             #include "Common/ConfMets_mu.hlsl"
