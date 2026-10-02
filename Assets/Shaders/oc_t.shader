@@ -1,4 +1,4 @@
-Shader "Custom/Confmets/tp_p4"
+Shader "Custom/Confmets/oc_t"
 {
     Properties
     {
@@ -38,18 +38,10 @@ Shader "Custom/Confmets/tp_p4"
 
             #include "Common/ConfMetsShaderPreamble.hlsl"
 
-            const static float  a1  =  4*PI / u2p.x;
+            const static float  a1  =  2*PI / u2p.w;
 
-            float mu( float2 p )
-            {
-                return ( 6 + cos( p.x*a1 ) + cos( p.y*a1 ) + cos( (p.x+p.y/2)*a1 ) + cos( (-p.x/2+p.y)*a1 ) ) / 6;
-            }
-
-            float2 mu_grad( float2 p )
-            {
-                return float2( -sin( p.x*a1 ) - sin( (p.x+p.y/2)*a1 )   + sin( (-p.x/2+p.y)*a1 )/2,
-                               -sin( p.y*a1 ) - sin( (p.x+p.y/2)*a1 )/2 - sin( (-p.x/2+p.y)*a1 )    ) * a1 / 6;
-            }
+            float  mu(      float2 p ){ return ( 2 + cos( p.y*a1 ) ) / 2; }
+            float2 mu_grad( float2 p ){ return float2( 0, -a1*sin( p.y*a1 ) / 2 ); }
 
             #include "Common/ConfMets_mu.hlsl"
             #include "Common/ConfMetsIncludes.hlsl"

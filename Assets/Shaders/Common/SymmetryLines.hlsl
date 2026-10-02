@@ -886,10 +886,15 @@ float4 rotation_symmetry_points__p2( float2 tarPos )
 
     tarPos  =  reset_to_parallelogram( tarPos );
 
-    float dP0  =  distance_estimate_from_point( tarPos, float2(       0,       0 ) );
-    float dP1  =  distance_estimate_from_point( tarPos, float2( u2p.x/2,       0 ) );
-    float dP2  =  distance_estimate_from_point( tarPos, float2(       0, u2p.w/2 ) );
-    float dP3  =  distance_estimate_from_point( tarPos, float2( u2p.x/2, u2p.w/2 ) );
+    float2 P0  =  float2( 0            ,     0 );
+    float2 P1  =  float2( u2p.x        ,     0 ) / 2;
+    float2 P2  =  float2(         u2p.y, u2p.w ) / 2;
+    float2 P3  =  float2( u2p.x + u2p.y, u2p.w ) / 2;
+
+    float dP0  =  distance_estimate_from_point( tarPos, P0 );
+    float dP1  =  distance_estimate_from_point( tarPos, P1 );
+    float dP2  =  distance_estimate_from_point( tarPos, P2 );
+    float dP3  =  distance_estimate_from_point( tarPos, P3 );
 
     float dP_min  =  min( min( dP0, dP1 ), min( dP2, dP3 ) );
 
@@ -898,13 +903,13 @@ float4 rotation_symmetry_points__p2( float2 tarPos )
         float ang;
 
         if( dP0 < rotPointRadius2 )
-            ang  =  angle_relative_to_point( tarPos, float2( 0, 0 ) );
+            ang  =  angle_relative_to_point( tarPos, P0 );
         else if( dP1 < rotPointRadius2 )
-            ang  =  angle_relative_to_point( tarPos, float2( u2p.x/2, 0 ) );
+            ang  =  angle_relative_to_point( tarPos, P1 );
         else if( dP2 < rotPointRadius2 )
-            ang  =  angle_relative_to_point( tarPos, float2( 0, u2p.w/2 ) );
+            ang  =  angle_relative_to_point( tarPos, P2 );
         else if( dP3 < rotPointRadius2 )
-            ang  =  angle_relative_to_point( tarPos, float2( u2p.x/2, u2p.w/2 ) );
+            ang  =  angle_relative_to_point( tarPos, P3 );
 
         if( reset_to_centered_interval( ang + gameTime, 2*PI ) > 0 )
             color  =  float3(0,0,0);

@@ -1,6 +1,6 @@
 void geodesic_exp( float2 pv[2], int gsmVar, float visRadVar, out float2 pv_next[2] )
 {
-    int itn_exp = floor( itn * length(pv[1])/visRadVar ) + 1;
+    int itn_exp = floor( itn * length(pv[1]) * confac(pv[0]) /visRadVar ) + 1;
     float dt  =  1 / float(itn_exp);
 
     geodesic_propagation( pv, dt, gsmVar, itn_exp, pv_next );

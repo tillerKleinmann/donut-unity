@@ -60,10 +60,13 @@ Material:
     - _EnableExternalAlpha: 0
     - _FullScreen: 0
     - _GSM: 1
+    - _GameTime: 0
+    - _RoadsDisp: 1
+    - _RoadsType: 1
     - _VisRad: 6.283185
     - _ZWrite: 0
     m_Colors:
-    - _BaseColor: {r: 1, g: 0, b: 0, a: 1}
+    - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _CamPos: {r: 0, g: 0, b: 0, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _DomMat: {r: 6.28318, g: 0, b: 0, a: 6.28318}
